@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "94989616634",
+    "firebase_url": "https://kene-6c09d.firebaseio.com",
+    "project_id": "kene-6c09d",
+    "storage_bucket": "kene-6c09d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:94989616634:android:3871432fa4540e13",
+        "android_client_info": {
+          "package_name": "com.example.kene"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "94989616634-c5a91ghcaa531f3t41mp25cf6qmu24ee.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDOttiEXfSMIjaRzgN_XOWqPWdIYs5jByk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "94989616634-c5a91ghcaa531f3t41mp25cf6qmu24ee.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
