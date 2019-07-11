@@ -8,6 +8,7 @@ void main() => runApp(MyApp());
 class MyApp extends StatelessWidget {
 
   FirebaseAnalytics analytics = FirebaseAnalytics();
+  FirebaseAnalyticsObserver observer = FirebaseAnalyticsObserver(analytics: analytics);
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -19,9 +20,9 @@ class MyApp extends StatelessWidget {
         // brightness: Brightness.dark
       ),
       navigatorObservers: [
-        FirebaseAnalyticsObserver(analytics: analytics),
+        observer,
       ],
-      home: Homepage(),
+      home: Homepage(analytics: analytics, observer:observer),
     );
   }
 }

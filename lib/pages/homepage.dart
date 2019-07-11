@@ -3,8 +3,15 @@ import 'package:kene/pages/addons.dart';
 import 'package:kene/pages/mtn_options.dart';
 import 'package:kene/utils/stylesguide.dart';
 import 'package:advanced_share/advanced_share.dart';
+import 'package:firebase_analytics/observer.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 
 class Homepage extends StatefulWidget {
+  final observer;
+  final analytics;
+
+  Homepage({this.analytics, this.observer});
+
   @override
   _HomepageState createState() => _HomepageState();
 } 
@@ -12,6 +19,17 @@ class Homepage extends StatefulWidget {
 class _HomepageState extends State<Homepage> with SingleTickerProviderStateMixin{
   TabController tabController;
 
+
+  Future<Null> _sendAnalytics() async{
+    await widget.analytics.logEvent(
+      name:"home screen opened",
+      parameters: null,
+    );
+  }
+
+  Future<Null> _currentScreen(){
+    
+  }
 
   @override
   initState(){
@@ -165,7 +183,7 @@ class _HomepageState extends State<Homepage> with SingleTickerProviderStateMixin
   drawerNavItemShare(String label, IconData icon){
     return                 GestureDetector(
         onTap: (){
-          AdvancedShare.whatsapp(msg: "It's okay :)")
+          AdvancedShare.whatsapp(msg: "Download Kene Smart USSD from playstore and Apple store for your USSD experiences :)")
               .then((response) {
 //            handleResponse(response, appName: "Whatsapp");
           });
