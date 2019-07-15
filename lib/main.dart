@@ -3,12 +3,15 @@ import 'package:kene/pages/homepage.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 
+import 'auth/signin.dart';
+
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
 
-  FirebaseAnalytics analytics = FirebaseAnalytics();
+  static FirebaseAnalytics analytics = FirebaseAnalytics();
   FirebaseAnalyticsObserver observer = FirebaseAnalyticsObserver(analytics: analytics);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -22,7 +25,9 @@ class MyApp extends StatelessWidget {
       navigatorObservers: [
         observer,
       ],
-      home: Homepage(analytics: analytics, observer:observer),
+      home: Signin(analytics: analytics, observer:observer)
+
+//      Homepage(analytics: analytics, observer:observer),
     );
   }
 }

@@ -9,6 +9,10 @@ import 'package:kene/utils/stylesguide.dart';
 import 'package:native_contact_picker/native_contact_picker.dart';
 
 class MtnOptions extends StatefulWidget {
+  final observer;
+  final analytics;
+
+  MtnOptions({this.analytics, this.observer});
   @override
   State<StatefulWidget> createState() {
     return _MtnOptionsState();
@@ -19,6 +23,7 @@ class _MtnOptionsState extends State<MtnOptions> with TickerProviderStateMixin {
   static const platform = const MethodChannel('com.kene.momouusd');
 
 
+  String buttonClicked = "";
   KDB db = KDB();
 
   List meterList = [];
@@ -104,6 +109,9 @@ class _MtnOptionsState extends State<MtnOptions> with TickerProviderStateMixin {
   @override
   void dispose() {
     _animationController.dispose();
+    _animationController2.dispose();
+    _animationController3.dispose();
+    _positionAnimationController.dispose();
     super.dispose();
   }
 
@@ -183,6 +191,52 @@ class _MtnOptionsState extends State<MtnOptions> with TickerProviderStateMixin {
   Widget optionsCard(title, image, id) {
     return GestureDetector(
       onTap: () {
+        switch(id){
+          case 1:
+            {
+              setState(() {
+                buttonClicked = "check_balance_btn";
+              });
+            }
+            break;
+
+          case 2:
+            {
+              setState(() {
+                buttonClicked = "send_money_btn";
+              });
+            }
+            break;
+
+          case 3:
+            {
+              setState(() {
+                buttonClicked = "buy/send_airtime_btn";
+              });
+            }
+            break;
+
+          case 6:
+            {
+              setState(() {
+                buttonClicked = "buy_electricity_btn";
+              });
+            }
+            break;
+
+          default:
+            {
+              setState(() {
+                buttonClicked = "unregistered_btn";
+              });
+            }
+            break;
+
+
+        }
+
+        sendAnalytics(widget.analytics, buttonClicked, null);
+
         if(id == 5 || id == 7){
           comingSoon();
 
@@ -289,6 +343,10 @@ class _MtnOptionsState extends State<MtnOptions> with TickerProviderStateMixin {
                           onPressed: !inputNotEmpty
                               ? null
                               : (){
+
+                            //send analytics of button
+
+                            sendAnalytics(widget.analytics, buttonClicked+"_sent", null);
                             String code = BASEURL;
 
                             if(id == 1){

@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:kene/pages/addons.dart';
 import 'package:kene/pages/mtn_options.dart';
+import 'package:kene/utils/functions.dart';
 import 'package:kene/utils/stylesguide.dart';
 import 'package:advanced_share/advanced_share.dart';
-import 'package:firebase_analytics/observer.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
+//import 'package:firebase_analytics/observer.dart';
+//import 'package:firebase_analytics/firebase_analytics.dart';
 
 class Homepage extends StatefulWidget {
   final observer;
@@ -19,22 +20,29 @@ class Homepage extends StatefulWidget {
 class _HomepageState extends State<Homepage> with SingleTickerProviderStateMixin{
   TabController tabController;
 
+  String buttonNameClicked = "";
 
-  Future<Null> _sendAnalytics() async{
-    await widget.analytics.logEvent(
-      name:"home screen opened",
-      parameters: null,
+  Future<Null> _appOpen() async{
+    await widget.analytics.logAppOpen(
+    ).then((f) =>
+        print("app open event logged")
     );
   }
 
-  Future<Null> _currentScreen(){
-    
+  Future<Null> _currentScreen() async{
+       await widget.analytics.setCurrentScreen(
+         screenName:"Homepage",
+         screenClassOveride:"HomePage"
+       );
   }
 
   @override
   initState(){
     super.initState();
     tabController = TabController(length: 2, vsync: this);
+//    _currentScreen();
+  sendAnalytics(widget.analytics, "home_screen_opened", null);
+  _appOpen();
 }
   
   @override
@@ -150,8 +158,8 @@ class _HomepageState extends State<Homepage> with SingleTickerProviderStateMixin
       body: TabBarView(
         controller: tabController,
         children: <Widget>[
-          MtnOptions(),
-          MtnOptions()
+          MtnOptions(analytics: widget.analytics, observer: widget.observer),
+          MtnOptions(analytics: widget.analytics, observer: widget.observer)
         ],
       )
     );
