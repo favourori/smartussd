@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
+// import 'package:google_sign_in/google_sign_in.dart';
 import 'package:kene/pages/homepage.dart';
 import 'package:kene/utils/functions.dart';
 
@@ -20,7 +20,7 @@ class _SigninState extends State<Signin> {
   TextEditingController _passworddController = TextEditingController();
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final GoogleSignIn _googleSignIn = GoogleSignIn();
+  // final GoogleSignIn _googleSignIn = GoogleSignIn();
   String phone;
   String verificationId;
   String smsCode;
@@ -167,31 +167,22 @@ class _SigninState extends State<Signin> {
 //    });
   }
 
-  void _signInWithGoogle() async {
-    final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
-    final GoogleSignInAuthentication googleAuth =
-    await googleUser.authentication;
-    final AuthCredential credential = GoogleAuthProvider.getCredential(
-      accessToken: googleAuth.accessToken,
-      idToken: googleAuth.idToken,
-    );
-    final FirebaseUser user = await _auth.signInWithCredential(credential);
-    assert(user.email != null);
-    assert(user.displayName != null);
-    assert(!user.isAnonymous);
-    assert(await user.getIdToken() != null);
+  // void _signInWithGoogle() async {
+  //   final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
+  //   final GoogleSignInAuthentication googleAuth =
+  //   await googleUser.authentication;
+  //   final AuthCredential credential = GoogleAuthProvider.getCredential(
+  //     accessToken: googleAuth.accessToken,
+  //     idToken: googleAuth.idToken,
+  //   );
+  //   final FirebaseUser user = await _auth.signInWithCredential(credential);
+  //   assert(user.email != null);
+  //   assert(user.displayName != null);
+  //   assert(!user.isAnonymous);
+  //   assert(await user.getIdToken() != null);
 
-    final FirebaseUser currentUser = await _auth.currentUser();
-    assert(user.uid == currentUser.uid);
-//    setState(() {
-//      if (user != null) {
-//        _success = true;
-//        _userID = user.uid;
-//      } else {
-//        _success = false;
-//      }
-//    });
-  }
+  //   final FirebaseUser currentUser = await _auth.currentUser();
+  // }
 
 
   Future navigateUsers(f){

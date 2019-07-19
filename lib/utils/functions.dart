@@ -1,4 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 
 launchURL(String link) async {
@@ -18,4 +20,16 @@ Future<Null> sendAnalytics(analytics, eventName, parameters) async{
   ).then((f) =>
       print("event logged")
   );
+}
+
+Future getServices() async{
+  if(FirebaseAuth.instance.currentUser() != null ){
+      Firestore.instance.collection("services").getDocuments().then((s){
+      print(s);
+  });
+  }
+  else{
+    print("not loged in");
+  }
+
 }

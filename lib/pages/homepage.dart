@@ -3,7 +3,7 @@ import 'package:kene/pages/addons.dart';
 import 'package:kene/pages/mtn_options.dart';
 import 'package:kene/utils/functions.dart';
 import 'package:kene/utils/stylesguide.dart';
-import 'package:advanced_share/advanced_share.dart';
+//import 'package:advanced_share/advanced_share.dart';
 //import 'package:firebase_analytics/observer.dart';
 //import 'package:firebase_analytics/firebase_analytics.dart';
 
@@ -43,6 +43,7 @@ class _HomepageState extends State<Homepage> with SingleTickerProviderStateMixin
 //    _currentScreen();
   sendAnalytics(widget.analytics, "home_screen_opened", null);
   _appOpen();
+  getServices();
 }
   
   @override
@@ -191,10 +192,10 @@ class _HomepageState extends State<Homepage> with SingleTickerProviderStateMixin
   drawerNavItemShare(String label, IconData icon){
     return                 GestureDetector(
         onTap: (){
-          AdvancedShare.whatsapp(msg: "Download Kene Smart USSD from playstore and Apple store for your USSD experiences :)")
-              .then((response) {
-//            handleResponse(response, appName: "Whatsapp");
-          });
+//          AdvancedShare.whatsapp(msg: "Download Kene Smart USSD from playstore and Apple store for your USSD experiences :)")
+//              .then((response) {
+////            handleResponse(response, appName: "Whatsapp");
+//          });
 
         },
         child: Row(

@@ -19,15 +19,16 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  cupertino_icons:
-  url_launcher:
-  native_contact_picker:
-  firebase_core:
-  firebase_analytics:
-  sqflite:
-#  advanced_share:
-  firebase_auth:
-  google_sign_in:
+  cupertino_icons: ^0.1.2
+  url_launcher: ^5.0.3
+  native_contact_picker: ^0.0.6
+  firebase_core: 0.2.5+1
+  firebase_analytics: ^1.2.0
+  sqflite: ^1.1.6
+  advanced_share: ^0.1.0
+  firebase_auth: 0.7.0
+  # google_sign_in: 3.2.4
+  cloud_firestore: 0.7.0
 
 dev_dependencies:
   flutter_test:
