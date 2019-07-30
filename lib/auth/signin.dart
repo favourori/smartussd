@@ -151,13 +151,13 @@ class _SigninState extends State<Signin> {
 
   // Example code of how to sign in with phone.
   void _signInWithPhoneNumber() async {
-    final AuthCredential credential = PhoneAuthProvider.getCredential(
-      verificationId: verificationId,
-      smsCode: "",
-    );
-    final FirebaseUser user = await _auth.signInWithCredential(credential);
-    final FirebaseUser currentUser = await _auth.currentUser();
-    assert(user.uid == currentUser.uid);
+    // final AuthCredential credential = PhoneAuthProvider.getCredential(
+    //   verificationId: verificationId,
+    //   smsCode: "",
+    // );
+    // final FirebaseUser user = await _auth.signInWithCredential(credential);
+    // final FirebaseUser currentUser = await _auth.currentUser();
+    // assert(user.uid == currentUser.uid);
 //    setState(() {
 //      if (user != null) {
 //        _message = 'Successfully signed in, uid: ' + user.uid;

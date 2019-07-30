@@ -28,7 +28,7 @@ dependencies:
   advanced_share: ^0.1.0
   firebase_auth: 0.7.0
   # google_sign_in: 3.2.4
-  cloud_firestore: 0.7.0
+#  cloud_firestore: 0.7.0
 
 dev_dependencies:
   flutter_test:
@@ -80,6 +80,10 @@ flutter:
     - family: Mali
       fonts:
         - asset: assets/fonts/Mali-Regular.ttf
+
+    - family: Roboto-Mono
+      fonts:
+        - asset: assets/fonts/RobotoMono-Regular.ttf
         # - asset: fonts/Schyler-Italic.ttf
           # style: italic
   #   - family: Trajan Pro

@@ -17,6 +17,10 @@ class KDB{
           // When creating the db, create the table
           await db.execute(
               'CREATE TABLE Meter (id INTEGER PRIMARY KEY, label TEXT, number TEXT)');
+
+          //create services table
+          await db.execute(
+              'CREATE TABLE Meter (id INTEGER PRIMARY KEY, carier TEXT, serviceID TEXT, serviceLabel TEXT, code TEXT)');
         });
   }
 
@@ -67,6 +71,15 @@ class KDB{
     return true;
   }
   return false;
+  }
+
+
+  Future<int> returnCount(table) async{
+    // Count the records
+    int count = Sqflite
+        .firstIntValue(await database.rawQuery('SELECT COUNT(*) FROM $table'));
+    
+    return count;
   }
 
   close() async{

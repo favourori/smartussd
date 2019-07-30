@@ -220,7 +220,7 @@ class _MtnOptionsState extends State<MtnOptions> with TickerProviderStateMixin {
             {
               setState(() {
                 buttonClicked = "buy_electricity_btn";
-              });
+              }); 
             }
             break;
 
