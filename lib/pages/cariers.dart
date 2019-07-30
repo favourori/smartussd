@@ -65,7 +65,7 @@ class _CarriersState extends State<Carriers> {
                           itemCount: snapshot.data.documents.length,
                           itemBuilder: (context, index){
                             return
-                                buildServiceListItem("${snapshot.data.documents[index]['label']}", Color(0xffED3737), snapshot.data.documents[index].documentID);
+                                buildServiceListItem("${snapshot.data.documents[index]['label']}", snapshot.data.documents[index]['primaryColor'], snapshot.data.documents[index].documentID);
 //                              Text("${snapshot.data.documents[index].documentID}");
                           },
                         );
@@ -87,13 +87,13 @@ class _CarriersState extends State<Carriers> {
   GestureDetector buildServiceListItem(String label, var color, String carrierID) {
     return GestureDetector(
       onTap: (){
-        Navigator.push(context, CustomPageRoute(navigateTo:Services(carrierId: carrierID, primaryColor: color, carrierTitle: label,)));
+        Navigator.push(context, CustomPageRoute(navigateTo:Services(carrierId: carrierID, primaryColor: Color(color), carrierTitle: label,)));
       },
           child: Container(
         margin: EdgeInsets.only(bottom: 10),
         height: 60,
         decoration: BoxDecoration(
-            color: color,
+            color: Color(color),
              borderRadius: BorderRadius.circular(40)),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
