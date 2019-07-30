@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:url_launcher/url_launcher.dart';
-//import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 
 launchURL(String link) async {
@@ -23,14 +23,33 @@ Future<Null> sendAnalytics(analytics, eventName, parameters) async{
 }
 
 Future getServices() async{
-//  if(FirebaseAuth.instance.currentUser() != null ){
-//      Firestore.instance.collection("services").getDocuments().then((s){
-//      print(s);
-//  });
-//  }
-//  else{
-//    print("not loged in");
-//  }
+ if(FirebaseAuth.instance.currentUser() != null ){
+
+
+try{
+  var ser = await Firestore.instance
+    .collection("services")
+    .where("topic", isEqualTo: "flutter")
+    .getDocuments();
+
+    print(ser);
+
+        
+    //       await Firestore.instance
+    //     .collection('services')
+    //     .document('mtn')
+    //     .get()
+    //     .then((DocumentSnapshot ds) {
+    //   // use ds as a snapshot
+    // });
+}
+catch(e){
+  print(e);
+}
+ }
+ else{
+   print("not loged in");
+ }
 
 }
 
