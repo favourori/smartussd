@@ -1,12 +1,15 @@
 import 'dart:core';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:kene/utils/functions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:native_contact_picker/native_contact_picker.dart';
 
 class Services extends StatefulWidget {
-  final carierId;
-  Services({this.carierId});
+  final carrierId;
+  final primaryColor;
+  final carrierTitle;
+  Services({this.carrierId, this.primaryColor, this.carrierTitle});
   @override
   State<StatefulWidget> createState() {
     return _ServicesState();
@@ -31,14 +34,6 @@ class _ServicesState extends State<Services> {
   ];
   static const platform = const MethodChannel('com.kene.momouusd');
   bool isOptionClicked = false;
-  setHeaderColor() {
-    if (widget.carierId == "00002") {
-      setState(() {
-        headerColor = Color(0xffED3737);
-        headerTitle = "Airtel";
-      });
-    }
-  }
 
   scrollListener() {
     print(_listViewController.offset);
@@ -63,19 +58,16 @@ class _ServicesState extends State<Services> {
   TextEditingController _amountController = TextEditingController();
   TextEditingController _recipientController = TextEditingController();
 
+  String codeToSend = "";
   bool needsContact = false;
   bool needsRecipient = false;
   String recipientLabel = "";
   int optionID = 0;
-  String headerTitle = "Mtn";
-  Color headerColor = Color(0xffE0C537);
 
   @override
   void initState() {
     super.initState();
     _listViewController.addListener(scrollListener);
-    setHeaderColor();
-    getServices();
   }
 
   @override
@@ -88,7 +80,7 @@ class _ServicesState extends State<Services> {
             Container(
               height: MediaQuery.of(context).size.height * 0.35,
               decoration: BoxDecoration(
-                  color: headerColor,
+                  color: widget.primaryColor,
                   borderRadius: BorderRadius.only(
                       bottomLeft: Radius.circular(40),
                       bottomRight: Radius.circular(40))),
@@ -112,7 +104,7 @@ class _ServicesState extends State<Services> {
                   Align(
                     alignment: Alignment.center,
                     child: Text(
-                      "$headerTitle",
+                      "${widget.carrierTitle}",
                       style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.w900,
@@ -137,19 +129,16 @@ class _ServicesState extends State<Services> {
                     child: ListView(
                       controller: _listViewController,
                       children: <Widget>[
-                        buildServiceListItem(
-                            codeData[0]['label'], "balance.png", 0),
-                        buildServiceListItem(
-                            codeData[1]['label'], "send_money.png", 1),
-                        buildServiceListItem(
-                          codeData[2]['label'],
-                          "electricity.png",
-                          2,
-                        ),
-                        buildServiceListItem(
-                            codeData[3]['label'], "bank.ico", 3),
-                        buildServiceListItem(
-                            codeData[4]['label'], "balance.png", 4),
+                      StreamBuilder(
+                        stream: Firestore.instance.collection("services/${widget.carrierId}/services").snapshots(),
+                        builder: (context, snapshot){
+                          if(!snapshot.hasData) return Center(child: Text("Loading services"),);
+                          return Column(
+                            children: displayServices(snapshot.data.documents)
+                          );
+                        },
+                      ),
+
                         actionContainer()
                       ],
                     ),
@@ -157,6 +146,21 @@ class _ServicesState extends State<Services> {
                 ),
               ),
             ),
+
+
+//            buildServiceListItem(
+//                codeData[0]['label'], "balance.png", 0),
+//            buildServiceListItem(
+//                codeData[1]['label'], "send_money.png", 1),
+//            buildServiceListItem(
+//              codeData[2]['label'],
+//              "electricity.png",
+//              2,
+//            ),
+//            buildServiceListItem(
+//                codeData[3]['label'], "bank.ico", 3),
+//            buildServiceListItem(
+//                codeData[4]['label'], "balance.png", 4),
             Positioned(
                 top: MediaQuery.of(context).size.height * 0.88,
                 left: MediaQuery.of(context).size.width * 0.75,
@@ -253,25 +257,25 @@ class _ServicesState extends State<Services> {
     );
   }
 
-  Container sendButton() {
-    return Container(
+  GestureDetector sendButton() {
+    return GestureDetector(
+        onTap: () {
+          String code = codeToSend;
+          sendCode(platform, code, _recipientController.text,
+              _amountController.text);
+        },
+        child:Container(
       height: 58,
       width: MediaQuery.of(context).size.width * 0.45,
       decoration: BoxDecoration(
           color: Color(0xffED7937), borderRadius: BorderRadius.circular(40)),
-      child: GestureDetector(
-        onTap: () {
-          String code = codeData[optionID]['code'];
-          sendCode(platform, code, _recipientController.text,
-              _amountController.text);
-        },
-        child: Center(
-          child: Text(
-            "Send",
-            style: TextStyle(color: Colors.white),
-          ),
+      child: Center(
+        child: Text(
+          "Send",
+          style: TextStyle(color: Colors.white),
         ),
-      ),
+      )
+    )
     );
   }
 
@@ -349,15 +353,16 @@ class _ServicesState extends State<Services> {
 
     );
   }
-  GestureDetector buildServiceListItem(String label, String imageName, int id,
+
+  GestureDetector buildServiceListItem(String label, String imageName, String code,recipientLabel,
       {bool needsContact, bool needsRecipient}) {
     return GestureDetector(
       onTap: () {
         setState(() {
           needsContact = needsContact;
           needsRecipient = needsRecipient;
-          optionID = id;
-          recipientLabel = codeData[id]['inputLabel'];
+          codeToSend =  code;
+          recipientLabel = recipientLabel;
           isOptionClicked = true;
         });
         _listViewController.animateTo(544,
@@ -379,7 +384,7 @@ class _ServicesState extends State<Services> {
                 decoration: BoxDecoration(
                     image: DecorationImage(
                         fit: BoxFit.cover,
-                        image: AssetImage("assets/images/$imageName")),
+                        image: NetworkImage("$imageName")),
                     // color: Color(0xffC4C4C4),
                     borderRadius: BorderRadius.circular(15)),
               ),
@@ -411,5 +416,19 @@ class _ServicesState extends State<Services> {
         _recipientController.text = numberToStore;
       });
     }
+  }
+
+
+  displayServices(lists){
+    List<Widget> tmp = [];
+    for(var list in lists){
+        tmp.add(
+
+            buildServiceListItem(
+                list['label'], list['icon'], list['code'], list['recipientLabel']),
+        );
+    }
+
+    return tmp;
   }
 }

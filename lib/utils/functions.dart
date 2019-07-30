@@ -22,26 +22,16 @@ Future<Null> sendAnalytics(analytics, eventName, parameters) async{
   );
 }
 
-Future getServices() async{
+Future getServices(String carier) async{
  if(FirebaseAuth.instance.currentUser() != null ){
 
 
 try{
   var ser = await Firestore.instance
-    .collection("services")
-    .where("topic", isEqualTo: "flutter")
-    .getDocuments();
+    .collection("services/$carier/services").getDocuments();
 
-    print(ser);
+  print(ser.documents[0].data);
 
-        
-    //       await Firestore.instance
-    //     .collection('services')
-    //     .document('mtn')
-    //     .get()
-    //     .then((DocumentSnapshot ds) {
-    //   // use ds as a snapshot
-    // });
 }
 catch(e){
   print(e);

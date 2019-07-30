@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
       navigatorObservers: [
         observer,
       ],
-      home: Cariers()
+      home: Carriers()
       
       // Signin(
       //   analytics: analytics, observer:observer

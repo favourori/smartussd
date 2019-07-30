@@ -43,7 +43,6 @@ class _HomepageState extends State<Homepage> with SingleTickerProviderStateMixin
 //    _currentScreen();
   sendAnalytics(widget.analytics, "home_screen_opened", null);
   _appOpen();
-  getServices();
 }
   
   @override

@@ -1,15 +1,16 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:kene/pages/services.dart';
 import 'package:kene/widgets/custom_nav.dart';
 
-class Cariers extends StatefulWidget {
+class Carriers extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return _CariersState();
+    return _CarriersState();
   }
 }
 
-class _CariersState extends State<Cariers> {
+class _CarriersState extends State<Carriers> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,17 +31,6 @@ class _CariersState extends State<Cariers> {
                   SizedBox(
                     height: MediaQuery.of(context).size.height*0.2,
                   ),
-                  // Align(
-                  // //   alignment: Alignment.topLeft,
-                  // //   child: IconButton(
-                  // //     onPressed: () {},
-                  // //     icon: Icon(
-                  // //       Icons.menu,
-                  // //       color: Colors.white,
-                  // //       size: 30,
-                  // //     ),
-                  // //   ),
-                  // // ),
                   Align(
                     alignment: Alignment.center,
                     child: Text(
@@ -67,14 +57,19 @@ class _CariersState extends State<Cariers> {
                       borderRadius: BorderRadius.circular(40)),
                   child: Padding(
                     padding: const EdgeInsets.all(20.0),
-                    child: ListView(
-                      children: <Widget>[
-                        buildServiceListItem("Mtn", Color(0xffE0C537), "00001"),
-                        buildServiceListItem("Airtel", Color(0xffED3737), "00002"),
-                        // buildServiceListItem("Buy Electricity", "electricity.png"),
-                        // buildServiceListItem("Pay water", "bank.ico"),
-                        // buildServiceListItem("Check airtime balance", "balance.png")
-                      ],
+                    child: StreamBuilder(
+                      stream: Firestore.instance.collection("services").snapshots(),
+                      builder: (context, snapshot){
+                        if(!snapshot.hasData) return Center(child: Text("Loading ..."),);
+                        return ListView.builder(
+                          itemCount: snapshot.data.documents.length,
+                          itemBuilder: (context, index){
+                            return
+                                buildServiceListItem("${snapshot.data.documents[index]['label']}", Color(0xffED3737), snapshot.data.documents[index].documentID);
+//                              Text("${snapshot.data.documents[index].documentID}");
+                          },
+                        );
+                      },
                     ),
                   ),
                 ),
@@ -86,10 +81,13 @@ class _CariersState extends State<Cariers> {
     );
   }
 
-  GestureDetector buildServiceListItem(String label, var color, String carierID) {
+//  buildServiceListItem("Mtn", Color(0xffE0C537), "00001"),
+//  buildServiceListItem("Airtel", Color(0xffED3737), "00002"),
+
+  GestureDetector buildServiceListItem(String label, var color, String carrierID) {
     return GestureDetector(
       onTap: (){
-        Navigator.push(context, CustomPageRoute(navigateTo:Services(carierId: carierID,)));
+        Navigator.push(context, CustomPageRoute(navigateTo:Services(carrierId: carrierID, primaryColor: color, carrierTitle: label,)));
       },
           child: Container(
         margin: EdgeInsets.only(bottom: 10),
