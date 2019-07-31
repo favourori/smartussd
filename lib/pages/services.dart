@@ -1,9 +1,12 @@
 import 'dart:core';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:kene/control.dart';
 import 'package:kene/utils/functions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:kene/widgets/custom_nav.dart';
 import 'package:native_contact_picker/native_contact_picker.dart';
 
 class Services extends StatefulWidget {
@@ -22,20 +25,20 @@ class _ServicesState extends State<Services> {
   bool isOptionClicked = false;
 
   scrollListener() {
-    print(_listViewController.offset);
+    // print(_listViewController.offset);
     if (_listViewController.offset > 40 && !isOptionClicked) {
       _listViewController.animateTo(40,
           duration: Duration(milliseconds: 10), curve: Curves.linearToEaseOut);
     }
 
-    // else if(_listViewController.offset < 469 && isOptionClicked){
+    else if(_listViewController.offset < 469 && isOptionClicked){
 
-    //     _listViewController.animateTo(469, duration: Duration(
-    //       milliseconds: 10
-    //     ),
-    //     curve: Curves.linearToEaseOut
-    //     );
-    // }
+        _listViewController.animateTo(469, duration: Duration(
+          milliseconds: 10
+        ),
+        curve: Curves.linearToEaseOut
+        );
+    }
   }
 
   GlobalKey _formKey = GlobalKey<FormState>();
@@ -44,6 +47,7 @@ class _ServicesState extends State<Services> {
   TextEditingController _amountController = TextEditingController();
   TextEditingController _recipientController = TextEditingController();
 
+  ///default values that are changed when option clicked
   String headTitle = "";
   String codeToSend = "";
   bool needsContact = false;
@@ -82,7 +86,12 @@ class _ServicesState extends State<Services> {
                   Align(
                     alignment: Alignment.topLeft,
                     child: IconButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        print("signout pressed");
+                        FirebaseAuth.instance.signOut().then((f){
+                          Navigator.push(context, CustomPageRoute(navigateTo: Control()));
+                        });
+                      },
                       icon: Icon(
                         Icons.menu,
                         color: Colors.white,

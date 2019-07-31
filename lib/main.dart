@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:kene/pages/cariers.dart';
-import 'package:kene/pages/homepage.dart';
+import 'package:kene/control.dart';
+
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
-import 'package:kene/pages/services.dart';
 
-import 'auth/signin.dart';
 
 void main() => runApp(MyApp());
 
@@ -27,7 +25,7 @@ class MyApp extends StatelessWidget {
       navigatorObservers: [
         observer,
       ],
-      home: Carriers()
+      home: Control()
       
       // Signin(
       //   analytics: analytics, observer:observer
@@ -37,3 +35,4 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
