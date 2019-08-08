@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -85,5 +86,29 @@ class KDB{
   close() async{
     // Close the database
     await database.close();
+  }
+
+ firestoreDelete(String collection, String docId){
+      Firestore.instance.collection(collection)
+      .document(docId)
+      .delete()
+      .catchError((err){
+          return -1;
+      });
+
+    return 1;
+  }
+
+  int firestoreAdd(String collection, Map<String, dynamic> data){
+    Firestore.instance.collection(collection)
+    .add(data)
+    .then((d){
+      return 1;
+    })
+    .catchError((err){
+      print(err.message);
+      return -1;
+    });
+    return 1;
   }
 }

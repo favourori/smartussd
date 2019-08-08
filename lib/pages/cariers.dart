@@ -34,8 +34,8 @@ class _CarriersState extends State<Carriers> {
                   Align(
                     alignment: Alignment.center,
                     child: Text(
-                      "Choose Network \nService",
-                      textAlign: TextAlign.center ,
+                      "Choose Service",
+                      textAlign: TextAlign.center,
                       style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.w900,

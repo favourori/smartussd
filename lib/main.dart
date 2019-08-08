@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
       title: 'Kene',
       theme: ThemeData(
         primaryColor: Colors.black,
-        fontFamily: "Roboto-Mono",
+        fontFamily: "Mali",
         // brightness: Brightness.dark
       ),
       navigatorObservers: [

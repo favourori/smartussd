@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
+import 'dart:io';
 
 launchURL(String link) async {
   String url = 'tel:$link';
@@ -71,4 +72,16 @@ String _computeCodeToSend(String rawCode, aText, rText){
   }
 
   return tmp;
+}
+
+ Future<bool> hasInternetConnection() async{
+   try {
+     final result = await InternetAddress.lookup('google.com');
+     if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+       return true;
+     }
+   } on SocketException catch (_) {
+     return false;
+   }
+  return false;
 }

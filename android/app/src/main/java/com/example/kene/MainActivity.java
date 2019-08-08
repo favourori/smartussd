@@ -20,6 +20,9 @@ public class MainActivity extends FlutterActivity {
     GeneratedPluginRegistrant.registerWith(this);
 //      Hover.initialize(this);
 
+//  TelephonyManager tel = (TelephonyManager) getSystemSerivce(Context.TELEPHONY_SERVICE);
+//  String netWorkOperator = tel.getNetworkOperator();
+
     new MethodChannel(getFlutterView(), CHANNEL).setMethodCallHandler(
             new MethodChannel.MethodCallHandler() {
               @Override

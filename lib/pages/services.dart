@@ -3,6 +3,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:kene/control.dart';
+import 'package:kene/pages/cariers.dart';
+import 'package:kene/pages/save_accounts.dart';
+import 'package:kene/pages/settings.dart';
 import 'package:kene/utils/functions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -22,24 +25,7 @@ class Services extends StatefulWidget {
 
 class _ServicesState extends State<Services> {
   static const platform = const MethodChannel('com.kene.momouusd');
-  bool isOptionClicked = false;
-
-  scrollListener() {
-    // print(_listViewController.offset);
-    if (_listViewController.offset > 40 && !isOptionClicked) {
-      _listViewController.animateTo(40,
-          duration: Duration(milliseconds: 10), curve: Curves.linearToEaseOut);
-    }
-
-    else if(_listViewController.offset < 469 && isOptionClicked){
-
-        _listViewController.animateTo(469, duration: Duration(
-          milliseconds: 10
-        ),
-        curve: Curves.linearToEaseOut
-        );
-    }
-  }
+  scrollListener() {}
 
   GlobalKey _formKey = GlobalKey<FormState>();
   ScrollController _listViewController = new ScrollController();
@@ -47,20 +33,34 @@ class _ServicesState extends State<Services> {
   TextEditingController _amountController = TextEditingController();
   TextEditingController _recipientController = TextEditingController();
 
+  String uid = "";
+
   ///default values that are changed when option clicked
   String headTitle = "";
   String codeToSend = "";
   bool needsContact = false;
+  bool needsRecipient = false;
   String recipientLabel = "";
   int optionID = 0;
+  bool showActionSection = false;
+  String serviceLable = "";
+  bool canSaveLabels;
+  bool needsAmount;
 
   @override
   void initState() {
     super.initState();
     setState(() {
-      headTitle =  widget.carrierTitle;
+      headTitle = widget.carrierTitle;
     });
     _listViewController.addListener(scrollListener);
+    FirebaseAuth.instance.currentUser().then((u) {
+      if (u != null) {
+        setState(() {
+          uid = u.uid;
+        });
+      }
+    });
   }
 
   @override
@@ -83,20 +83,46 @@ class _ServicesState extends State<Services> {
                   SizedBox(
                     height: 40,
                   ),
-                  Align(
-                    alignment: Alignment.topLeft,
-                    child: IconButton(
-                      onPressed: () {
-                        print("signout pressed");
-                        FirebaseAuth.instance.signOut().then((f){
-                          Navigator.push(context, CustomPageRoute(navigateTo: Control()));
-                        });
-                      },
-                      icon: Icon(
-                        Icons.menu,
-                        color: Colors.white,
-                        size: 30,
-                      ),
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    //  decoration: BoxDecoration(
+                    //    border: Border.all()
+                    //  ),
+                    width: MediaQuery.of(context).size.width,
+                    child: Row(
+                      children: <Widget>[
+                        Align(
+                          alignment: Alignment.topLeft,
+                          child: IconButton(
+                            onPressed: () {
+                              Navigator.push(context,
+                                  CustomPageRoute(navigateTo: Carriers()));
+                            },
+                            icon: Icon(
+                              Icons.home,
+                              color: Colors.white,
+                              size: 30,
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          flex: 1,
+                          child: Align(
+                            alignment: Alignment.topRight,
+                            child: IconButton(
+                              onPressed: () {
+                                Navigator.push(context,
+                                    CustomPageRoute(navigateTo: Settings()));
+                              },
+                              icon: Icon(
+                                Icons.settings,
+                                color: Colors.white,
+                                size: 30,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   Align(
@@ -127,17 +153,30 @@ class _ServicesState extends State<Services> {
                     child: ListView(
                       controller: _listViewController,
                       children: <Widget>[
-                      StreamBuilder(
-                        stream: Firestore.instance.collection("services/${widget.carrierId}/services").snapshots(),
-                        builder: (context, snapshot){
-                          if(!snapshot.hasData) return Center(child: Text("Loading services"));
-                          return Column(
-                            children: displayServices(snapshot.data.documents)
-                          );
-                        },
-                      ),
+                        !showActionSection
+                            ? StreamBuilder(
+                                stream: Firestore.instance
+                                    .collection(
+                                        "services/${widget.carrierId}/services")
+                                    .where("isActive", isEqualTo: true)
+                                    .snapshots(),
+                                builder: (context, snapshot) {
+                                  if (!snapshot.hasData) {
+                                    return Center(
+                                        child: Text("Loading services"));
+                                  }
+                                  snapshot.data.documents.sort(
+                                      (DocumentSnapshot a,
+                                              DocumentSnapshot b) =>
+                                          getServiceOrderNo(a)
+                                              .compareTo(getServiceOrderNo(b)));
 
-                        actionContainer()
+                                  return Column(
+                                      children: displayServices(
+                                          snapshot.data.documents));
+                                },
+                              )
+                            : actionContainer(),
                       ],
                     ),
                   ),
@@ -150,34 +189,30 @@ class _ServicesState extends State<Services> {
                 child: Material(
                   color: Colors.transparent,
                   elevation: 14,
-                  child: Container(
-                    decoration: BoxDecoration(
-                        color: Color(0xffED7937),
-                        borderRadius: BorderRadius.circular(30)),
-                    height: 60,
-                    width: 60,
-                    child: IconButton(
-                      onPressed: () {
-                        _listViewController
-                            .animateTo(0,
-                                duration: Duration(milliseconds: 1000),
-                                curve: Curves.linearToEaseOut)
-                            .then((f) {
-                          setState(() {
-                            isOptionClicked = false;
-                            headTitle = widget.carrierTitle;
-                            _amountController.text = "";
-                            _recipientController.text = "";
-                          });
-                        });
-                      },
-                      icon: Icon(
-                        Icons.keyboard_arrow_up,
-                        color: Colors.white,
-                        size: 25,
-                      ),
-                    ),
-                  ),
+                  child: showActionSection
+                      ? Container(
+                          decoration: BoxDecoration(
+                              color: Color(0xffED7937),
+                              borderRadius: BorderRadius.circular(30)),
+                          height: 60,
+                          width: 60,
+                          child: IconButton(
+                            onPressed: () {
+                              setState(() {
+                                showActionSection = false;
+                                headTitle = widget.carrierTitle;
+                                _amountController.text = "";
+                                _recipientController.text = "";
+                              });
+                            },
+                            icon: Icon(
+                              Icons.keyboard_arrow_up,
+                              color: Colors.white,
+                              size: 25,
+                            ),
+                          ),
+                        )
+                      : Container(),
                 )),
           ],
         ),
@@ -185,43 +220,45 @@ class _ServicesState extends State<Services> {
     );
   }
 
+  int getServiceOrderNo(x) {
+    return x['orderNo'];
+  }
+
   Container actionContainer() {
     return Container(
-      margin: EdgeInsets.only(top: 150),
       child: Form(
         key: _formKey,
         child: Column(
           children: <Widget>[
-            textInputContainerAmount("Amount", _amountController),
-            //most recent amount section
-            Container(
-              margin: EdgeInsets.only(top: 20),
-              child: Column(
-                children: <Widget>[
-                  Text("Most recent amount"),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Container(
-                    height: 40,
-                    child: ListView(
-                      scrollDirection: Axis.horizontal,
-                      children: <Widget>[
-                        recentAmountBtn("1500"),
-                        recentAmountBtn("2000"),
-                        recentAmountBtn("10000"),
-                      ],
-                    ),
-                  )
-                ],
-              ),
-            ),
+            needsAmount == null || needsAmount ? textInputContainerAmount("Amount", _amountController) : Container(),
             SizedBox(
               height: 20,
             ),
-             needsContact ? chooseContactBtn(recipientLabel) : textInputContainerRecipient(recipientLabel),
+            needsRecipient
+                ? textInputContainerRecipient(recipientLabel)
+                : Container(),
+            needsContact ? chooseContactBtn(recipientLabel) : Container(),
             SizedBox(
-              height: 30,
+              height: 20,
+            ),
+            canSaveLabels != null && canSaveLabels ? GestureDetector(
+              onTap: () {
+                Navigator.push(
+                    context, CustomPageRoute(navigateTo: SaveAccount()));
+              },
+              child: Padding(
+                padding: const EdgeInsets.only(bottom:10.0),
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: Text(
+                    "Click to save $serviceLable Number",
+                    style: TextStyle(fontSize: 14, color: Colors.orangeAccent, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+            ): Container(),
+             SizedBox(
+              height: 10,
             ),
             Align(
               alignment: Alignment.centerLeft,
@@ -239,21 +276,21 @@ class _ServicesState extends State<Services> {
   GestureDetector sendButton() {
     return GestureDetector(
         onTap: () {
-          sendCode(platform, codeToSend, _amountController.text, _recipientController.text);
+          sendCode(platform, codeToSend, _amountController.text,
+              _recipientController.text);
         },
-        child:Container(
-      height: 58,
-      width: MediaQuery.of(context).size.width * 0.45,
-      decoration: BoxDecoration(
-          color: Color(0xffED7937), borderRadius: BorderRadius.circular(40)),
-      child: Center(
-        child: Text(
-          "Send",
-          style: TextStyle(color: Colors.white),
-        ),
-      )
-    )
-    );
+        child: Container(
+            height: 58,
+            width: MediaQuery.of(context).size.width * 0.45,
+            decoration: BoxDecoration(
+                color: Color(0xffED7937),
+                borderRadius: BorderRadius.circular(40)),
+            child: Center(
+              child: Text(
+                "Submit",
+                style: TextStyle(color: Colors.white),
+              ),
+            )));
   }
 
   Container chooseContactBtn(label) {
@@ -268,11 +305,6 @@ class _ServicesState extends State<Services> {
           ),
           SizedBox(
             height: 20,
-          ),
-          textInputContainerAmount(label, _recipientController),
-
-          SizedBox(
-            height: 30,
           ),
           Container(
             height: 58,
@@ -332,7 +364,8 @@ class _ServicesState extends State<Services> {
     );
   }
 
-  Container textInputContainerAmount(String label, TextEditingController controller) {
+  Container textInputContainerAmount(
+      String label, TextEditingController controller) {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 10),
       decoration: BoxDecoration(
@@ -348,59 +381,84 @@ class _ServicesState extends State<Services> {
     );
   }
 
-  Container textInputContainerRecipient(String label){
+  Container textInputContainerRecipient(String label) {
+    // var docs = data;
     return Container(
-      child:
-        Column(
-          children: <Widget>[
-            SizedBox(
-              height: 20,
-            ),
-            textInputContainerAmount(label, _recipientController),
-            SizedBox(
-              height: 20,
-            ),
-            Text("Saved $label"),
-            SizedBox(
-              height: 20,
-            ),
-            Container(
-              height: 40,
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                children: <Widget>[
-                  recentRecipient("mom", "65832467582389"),
-                  recentRecipient("office", "834758732958723"),
-                  recentRecipient("home", "5789327589273489"),
-                ],
-              ),
-            ),
-
-
-          ],
-        ),
+      child: Column(
+        children: <Widget>[
+          SizedBox(
+            height: 20,
+          ),
+          textInputContainerAmount(label, _recipientController),
+          SizedBox(
+            height: 20,
+          ),
+          StreamBuilder(
+              stream: Firestore.instance
+                  .collection("accounts/$uid/data")
+                  .where("service_name", isEqualTo: serviceLable)
+                  .snapshots(),
+              builder: (context, snapshot) {
+                if (!snapshot.hasData)
+                  return Container(
+                    child: Text("Loading ..."),
+                  );
+                return snapshot.data.documents.length > 0
+                    ? Column(
+                        children: <Widget>[
+                          Text("Saved $label"),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          Container(
+                            height: 40,
+                            child: ListView(
+                              scrollDirection: Axis.horizontal,
+                              children:
+                                  populateSavedAccount(snapshot.data.documents),
+                            ),
+                          ),
+                        ],
+                      )
+                    : Container();
+              }),
+        ],
+      ),
     );
   }
 
-  GestureDetector buildServiceListItem(String label, String imageName, String code, xrecipientLabel, requiresInput, xneedsContact
-      ) {
+  List<Widget> populateSavedAccount(accounts) {
+    List<Widget> tmp = [];
+    for (var account in accounts) {
+      tmp.add(recentRecipient(account['label'], account['number']));
+    }
+
+    return tmp;
+  }
+
+  GestureDetector buildServiceListItem(
+      list) {
     return GestureDetector(
       onTap: () {
         setState(() {
-          headTitle = label;
-          needsContact = xneedsContact;
-          codeToSend =  code;
-          recipientLabel = xrecipientLabel;
-          isOptionClicked = true;
+          headTitle = list['name'];
+          serviceLable = list['label'];
+          needsContact = list['needsContact'];
+          needsRecipient = list['needsRecipient'];
+          codeToSend = list['code'];
+          recipientLabel = list['recipientLabel'];
+          canSaveLabels = list['canSaveLabels'];
+          needsAmount = list['needsAmount'];
         });
-        if(!requiresInput){
-          sendCode(platform, codeToSend,_amountController.text, _recipientController.text
-              );
-        }
-        else{
-          _listViewController.animateTo(480,
-              duration: Duration(milliseconds: 500),
-              curve: Curves.linearToEaseOut);
+        if (!list['requiresInput']) {
+          sendCode(platform, codeToSend, _amountController.text,
+              _recipientController.text);
+        } else {
+          setState(() {
+            showActionSection = true;
+          });
+          _listViewController.animateTo(0,
+              duration: Duration(milliseconds: 10), curve: Curves.easeIn);
         }
       },
       child: Container(
@@ -416,14 +474,14 @@ class _ServicesState extends State<Services> {
                 height: 30,
                 width: 30,
                 child: CachedNetworkImage(
-                  imageUrl: imageName,
-                  placeholder: (context, url) => new Icon(Icons.error),
-                  errorWidget: (context, url, error) => new Icon(Icons.error),
+                  imageUrl: list['icon'],
+                  placeholder: (context, url) => new Icon(Icons.album),
+                  errorWidget: (context, url, error) => new Icon(Icons.album),
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.all(10.0),
-                child: Text(label),
+                child: Text(list['name']),
               )
             ],
           ),
@@ -451,15 +509,12 @@ class _ServicesState extends State<Services> {
     }
   }
 
-
-  displayServices(lists){
+  displayServices(lists) {
     List<Widget> tmp = [];
-    for(var list in lists){
-        tmp.add(
-
-            buildServiceListItem(
-                list['label'], list['icon'], list['code'], list['recipientLabel'], list['requiresInput'], list['needsContact']),
-        );
+    for (var list in lists) {
+      tmp.add(
+        buildServiceListItem(list),
+      );
     }
 
     return tmp;

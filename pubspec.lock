@@ -35,7 +35,7 @@ packages:
       name: cloud_firestore
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.8.2+3"
+    version: "0.12.9"
   collection:
     dependency: transitive
     description:
@@ -43,6 +43,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.14.11"
+  connectivity:
+    dependency: "direct main"
+    description:
+      name: connectivity
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.4.3+6"
   convert:
     dependency: transitive
     description:
@@ -50,6 +57,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.1"
+  country_code_picker:
+    dependency: "direct main"
+    description:
+      name: country_code_picker
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.1.7"
   crypto:
     dependency: transitive
     description:
@@ -77,14 +91,21 @@ packages:
       name: firebase_auth
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.6.6"
+    version: "0.14.0+1"
   firebase_core:
     dependency: transitive
     description:
       name: firebase_core
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.2.5+1"
+    version: "0.4.0+8"
+  flushbar:
+    dependency: "direct main"
+    description:
+      name: flushbar
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.8.1"
   flutter:
     dependency: "direct main"
     description: flutter

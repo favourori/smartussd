@@ -1,3 +1,4 @@
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:kene/control.dart';
@@ -19,6 +20,7 @@ class _PhoneVerifyState extends State<PhoneVerify> {
   GlobalKey<FormState> _formkey = GlobalKey();
   final FirebaseAuth _auth = FirebaseAuth.instance;
   String code;
+  bool isBtnClicked = false;
 
   @override
   Widget build(BuildContext context) {
@@ -58,6 +60,10 @@ class _PhoneVerifyState extends State<PhoneVerify> {
               GestureDetector(
                 onTap: (){
                   if(code != ""){
+                    print("$code");
+                    setState(() {
+                      isBtnClicked = true;
+                    });
                        FirebaseAuth.instance.currentUser().then((user) {
                     if (user != null) {
                       print("thanks for verifying your phone, welcome");
@@ -70,6 +76,7 @@ class _PhoneVerifyState extends State<PhoneVerify> {
                   }
                   else{
                     print("enter number");
+                    showFlushBar("Error", "Enter Pin");
                   }
                 },
                 child: Container(
@@ -78,7 +85,7 @@ class _PhoneVerifyState extends State<PhoneVerify> {
                   ),
                   width: MediaQuery.of(context).size.width,
                   height: 50,  
-                  child: Center(child: Text("Verify", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold,),)),
+                  child: Center(child: Text(!isBtnClicked ? "Verify" : "Verifying ...", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold,),)),
                 ),
               )
             ],
@@ -88,7 +95,13 @@ class _PhoneVerifyState extends State<PhoneVerify> {
   }
 
 
-
+  showFlushBar(String title, String message) {
+    Flushbar(
+      title: title,
+      message: message,
+      duration: Duration(seconds: 8),
+    )..show(context);
+  }
 
 
 }
