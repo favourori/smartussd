@@ -49,8 +49,8 @@ catch(e){
   sendCode(platform, code, aText, rText) async{
     String codeTosend = _computeCodeToSend(code, aText, rText);
     try{
-      print(codeTosend);
       await platform.invokeMethod("moMoDialNumber", {"code": codeTosend});
+      print(codeTosend);
     }on PlatformException catch(e){
       print("error check balance is $e");
     }
