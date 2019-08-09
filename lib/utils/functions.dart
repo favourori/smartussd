@@ -46,14 +46,16 @@ catch(e){
 
 
 
-  sendCode(platform, code, aText, rText) async{
+  Future sendCode(platform, code, aText, rText) async{
     String codeTosend = _computeCodeToSend(code, aText, rText);
     try{
       await platform.invokeMethod("moMoDialNumber", {"code": codeTosend});
       print(codeTosend);
     }on PlatformException catch(e){
+
       print("error check balance is $e");
     }
+
   }
 
 
@@ -65,6 +67,12 @@ String _computeCodeToSend(String rawCode, aText, rText){
       }
       else if(rawCode[x] == "A"){
           tmp += aText;
+      }
+      else if(rawCode[x] == " "){
+        continue;
+      }
+      else if(rawCode[x] == "  "){
+        continue;
       }
       else{
         tmp += rawCode[x];
