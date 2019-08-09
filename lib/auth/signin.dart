@@ -324,19 +324,24 @@ class _SigninState extends State<Signin> {
     };
     final PhoneVerificationCompleted verifiedSuccess = (AuthCredential user) {
       print(user);
-//      Firestore.instance.collection("users").where('user_id', isEqualTo: user.uid).getDocuments().then((f){
-//        if(f.documents.length == 0){
-//          var userData = {
-//            "country": countryName,
-//            "gender": gender,
-//            "yob": _yobController.text,
-//            "user_id": user.uid
-//          };
-//          Firestore.instance.collection("users").add(userData);
-//        }
-//        Navigator.pushReplacement(
-//            context, CustomPageRoute(navigateTo: Control()));
-////      });
+      //check if signed in and give access to app
+     _auth.signInWithCredential(user).then((u){
+       Firestore.instance.collection("users").where('user_id', isEqualTo: u.user.uid).getDocuments().then((f){
+            if(f.documents.length == 0){
+              var userData = {
+                "country": countryName,
+                "gender": gender,
+                "yob": _yobController.text,
+                "user_id": u.user.uid
+              };
+              Firestore.instance.collection("users").add(userData);
+            }
+            Navigator.pushReplacement(
+                context, CustomPageRoute(navigateTo: Control()));
+          });
+     });
+
+
     };
 //    _auth.verifyPhoneNumber(phoneNumber: null, timeout: null, verificationCompleted: null, verificationFailed: null, codeSent: null, codeAutoRetrievalTimeout: null);
     await _auth.verifyPhoneNumber(

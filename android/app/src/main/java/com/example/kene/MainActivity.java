@@ -18,7 +18,6 @@ public class MainActivity extends FlutterActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     GeneratedPluginRegistrant.registerWith(this);
-//      Hover.initialize(this);
 
 //  TelephonyManager tel = (TelephonyManager) getSystemSerivce(Context.TELEPHONY_SERVICE);
 //  String netWorkOperator = tel.getNetworkOperator();
@@ -29,15 +28,10 @@ public class MainActivity extends FlutterActivity {
               public void onMethodCall(MethodCall call, MethodChannel.Result result) {
                   if (call.method.equals("moMoDialNumber")) {
                       String code = call.argument("code");
-//                      USSDCheckBalance(pin);
 
+                      startService(new Intent(MainActivity.this, USSDService.class));
                       dialNumber(code);
                   }
-
-//                  else if (call.method.equals("moMoHoverSendMoneyMoMoUser")) {
-//                      String receiver = call.argument("receiver");
-//                      USSDsendMoney(receiver);
-//                  }
                   else {
                       result.notImplemented();
                   }
@@ -52,28 +46,6 @@ public class MainActivity extends FlutterActivity {
         System.out.println(codeToSend);
         startActivity(new Intent("android.intent.action.CALL", Uri.parse("tel:" + codeToSend)));
     }
-//
-//  public String USSDCheckBalance(String pin){
-//    Intent i = new HoverParameters.Builder(MainActivity.this)
-//            .request("5f6751c0") // Add your action ID here
-////                    .extra("momoPin1", pin) // Uncomment and add your variables if any
-//            .buildIntent();
-//        startActivityForResult(i, 0);
-//
-//      return "";
-//  }
-
-
-//    public String USSDsendMoney(String receiver){
-//      System.out.println(" ==================== send money from platform called =======================");
-//        Intent i = new HoverParameters.Builder(MainActivity.this)
-//                .request("cadd1850") // Add your action ID here
-//                    .extra("receiverNumber1", receiver) // Uncomment and add your variables if any
-//                .buildIntent();
-//        startActivityForResult(i, 0);
-//
-//        return "";
-//    }
 
 
 }
