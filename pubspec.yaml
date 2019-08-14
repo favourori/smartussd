@@ -26,7 +26,7 @@ dependencies:
   firebase_analytics: ^5.0.0
   sqflite: ^1.1.6
   # advanced_share: ^0.1.0
-  firebase_auth: ^0.14.0+1
+  firebase_auth: ^0.14.0+2
   # google_sign_in: 3.2.4
   cloud_firestore: ^0.12.9
   cached_network_image: ^1.1.1
