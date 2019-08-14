@@ -26,6 +26,7 @@ PODS:
     - Firebase/CoreOnly
     - FirebaseFirestore (~> 1.4.3)
   - firebase_analytics (0.0.1):
+    - Firebase/Analytics (~> 6.0)
     - Firebase/Core
     - Flutter
   - firebase_auth (0.0.1):
@@ -130,6 +131,8 @@ PODS:
     - nanopb (~> 0.3)
   - gRPC-Core/Interface (1.21.0)
   - GTMSessionFetcher/Core (1.2.2)
+  - image_picker (0.0.1):
+    - Flutter
   - leveldb-library (1.20)
   - nanopb (0.3.901):
     - nanopb/decode (= 0.3.901)
@@ -156,6 +159,7 @@ DEPENDENCIES:
   - firebase_auth (from `.symlinks/plugins/firebase_auth/ios`)
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - Flutter (from `.symlinks/flutter/ios`)
+  - image_picker (from `.symlinks/plugins/image_picker/ios`)
   - native_contact_picker (from `.symlinks/plugins/native_contact_picker/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
   - sqflite (from `.symlinks/plugins/sqflite/ios`)
@@ -203,6 +207,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/firebase_core/ios"
   Flutter:
     :path: ".symlinks/flutter/ios"
+  image_picker:
+    :path: ".symlinks/plugins/image_picker/ios"
   native_contact_picker:
     :path: ".symlinks/plugins/native_contact_picker/ios"
   path_provider:
@@ -217,7 +223,7 @@ SPEC CHECKSUMS:
   cloud_firestore: 41f84086d2e1a5c216a6af07ef050758de825ff0
   connectivity: c72716e202a1225ec4810740d5cb56b8ae3bf4cc
   Firebase: a2b5951f30ff38fd3b3bdae9c7d340f940fd3c51
-  firebase_analytics: bd50d8f5d3f42dcab6da67944a849062470b0a19
+  firebase_analytics: 7c660d7721c20a83c13b33361111c5dba94b1853
   firebase_auth: 0fed4be9a305986c406db1a34ecb1819e9e5415c
   firebase_core: b3b02d0b5e9d01aab5e50ba7cbcf84c73cb6883c
   FirebaseAnalytics: 48414ae5cbf6976d8a2f7177e0466540e5ab33ce
@@ -237,6 +243,7 @@ SPEC CHECKSUMS:
   "gRPC-C++": 9dfe7b44821e7b3e44aacad2af29d2c21f7cde83
   gRPC-Core: c9aef9a261a1247e881b18059b84d597293c9947
   GTMSessionFetcher: 61bb0f61a4cb560030f1222021178008a5727a23
+  image_picker: 16e5fec1fbc87fd3b297c53e4048521eaf17cd06
   leveldb-library: 08cba283675b7ed2d99629a4bc5fd052cd2bb6a5
   nanopb: 2901f78ea1b7b4015c860c2fdd1ea2fee1a18d48
   native_contact_picker: 8707c6a4f696bf9431ebcc389dd2a2c4c2fbbd71

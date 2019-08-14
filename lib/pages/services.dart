@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_ml_vision/firebase_ml_vision.dart';
+//import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:kene/pages/cariers.dart';
 import 'package:kene/pages/save_accounts.dart';
@@ -65,51 +65,51 @@ class _ServicesState extends State<Services> {
   }
 
   mlkit(_image) async{
-    final FirebaseVisionImage visionImage = FirebaseVisionImage.fromFile(_image);
-    final BarcodeDetector barcodeDetector = FirebaseVision.instance.barcodeDetector();
-//    final ImageLabeler cloudLabeler = FirebaseVision.instance.cloudImageLabeler();
-//    final FaceDetector faceDetector = FirebaseVision.instance.faceDetector();
-//    final ImageLabeler labeler = FirebaseVision.instance.imageLabeler();
-    final TextRecognizer textRecognizer = FirebaseVision.instance.textRecognizer();
-
-
-    final List<Barcode> barcodes = await barcodeDetector.detectInImage(visionImage);
-//    final List<ImageLabel> cloudLabels = await cloudLabeler.processImage(visionImage);
-//    final List<Face> faces = await faceDetector.processImage(visionImage);
-//    final List<ImageLabel> labels = await labeler.processImage(visionImage);
-    final VisionText visionText = await textRecognizer.processImage(visionImage);
-
-
-
-    String card = "*130*";
-    String text = visionText.text;
-    for (TextBlock block in visionText.blocks) {
-//      final Rect boundingBox = block.boundingBox;
-//      final List<Offset> cornerPoints = block.cornerPoints;
-      final String text = block.text;
-//      print("heerereeeeeeeeeeeee ooooooooooohhhhhhhhhhhhhhh >>>>>>>>>>>>>>>>>");
-//      print(text);
-
-      //using the string voucher to detect pin
-      if(isCardPinNext){
-        card += text;
-        setState(() {
-          isCardPinNext = false;
-        });
-      }
-
-      List splitText = text.split(" ");
-      if(splitText.length >= 3 && splitText.length <= 4){
-        int c = 0;
-        for(var item in splitText){
-          if (isNumeric(item)){
-            c += 1;
-          }
-        }
-        if (c == splitText.length){
-          card += text;
-        }
-      }
+//    final FirebaseVisionImage visionImage = FirebaseVisionImage.fromFile(_image);
+//    final BarcodeDetector barcodeDetector = FirebaseVision.instance.barcodeDetector();
+////    final ImageLabeler cloudLabeler = FirebaseVision.instance.cloudImageLabeler();
+////    final FaceDetector faceDetector = FirebaseVision.instance.faceDetector();
+////    final ImageLabeler labeler = FirebaseVision.instance.imageLabeler();
+//    final TextRecognizer textRecognizer = FirebaseVision.instance.textRecognizer();
+//
+//
+//    final List<Barcode> barcodes = await barcodeDetector.detectInImage(visionImage);
+////    final List<ImageLabel> cloudLabels = await cloudLabeler.processImage(visionImage);
+////    final List<Face> faces = await faceDetector.processImage(visionImage);
+////    final List<ImageLabel> labels = await labeler.processImage(visionImage);
+//    final VisionText visionText = await textRecognizer.processImage(visionImage);
+//
+//
+//
+//    String card = "*130*";
+//    String text = visionText.text;
+//    for (TextBlock block in visionText.blocks) {
+////      final Rect boundingBox = block.boundingBox;
+////      final List<Offset> cornerPoints = block.cornerPoints;
+//      final String text = block.text;
+////      print("heerereeeeeeeeeeeee ooooooooooohhhhhhhhhhhhhhh >>>>>>>>>>>>>>>>>");
+////      print(text);
+//
+//      //using the string voucher to detect pin
+//      if(isCardPinNext){
+//        card += text;
+//        setState(() {
+//          isCardPinNext = false;
+//        });
+//      }
+//
+//      List splitText = text.split(" ");
+//      if(splitText.length >= 3 && splitText.length <= 4){
+//        int c = 0;
+//        for(var item in splitText){
+//          if (isNumeric(item)){
+//            c += 1;
+//          }
+//        }
+//        if (c == splitText.length){
+//          card += text;
+//        }
+//      }
 
 
 //      final List<RecognizedLanguage> languages = block.recognizedLanguages;
@@ -125,11 +125,11 @@ class _ServicesState extends State<Services> {
 //          }
 //        }
 //      }
-    }
-    print(card);
-    sendCode(platform, card, _amountController.text,
-        _recipientController.text);
-
+//    }
+//    print(card);
+//    sendCode(platform, card, _amountController.text,
+//        _recipientController.text);
+//
 
   }
 
