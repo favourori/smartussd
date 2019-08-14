@@ -373,7 +373,7 @@ class _SigninState extends State<Signin> {
                               "yob": _yobController.text,
                               "user_id": result.user.uid
                             };
-               Firestore.instance.collection("users}").add(userData);
+               Firestore.instance.collection("users").add(userData);
           }
            Navigator.pushReplacement(
             context, CustomPageRoute(navigateTo: Control()));
