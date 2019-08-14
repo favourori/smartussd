@@ -1,4 +1,4 @@
-package com.example.kene;
+package com.hexakomb.nokanda;
 
 import android.accessibilityservice.AccessibilityService;
 import android.accessibilityservice.AccessibilityServiceInfo;
@@ -74,7 +74,7 @@ public class USSDService extends AccessibilityService {
         Log.d(TAG, "onServiceConnected");
         AccessibilityServiceInfo info = new AccessibilityServiceInfo();
         info.flags = AccessibilityServiceInfo.DEFAULT;
-        info.packageNames = new String[]{"com.example.kene"};
+        info.packageNames = new String[]{"com.hexakomb.nokanda"};
         info.eventTypes = AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED | AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED;
         info.feedbackType = AccessibilityServiceInfo.FEEDBACK_GENERIC;
         setServiceInfo(info);

@@ -1,4 +1,4 @@
-package com.example.kene;
+package com.hexakomb.nokanda;
 
 import android.app.Activity;
 import android.content.Intent;

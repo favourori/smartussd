@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Kene',
+      title: 'Nokanda',
       theme: ThemeData(
         primaryColor: Colors.black,
         fontFamily: "Mali",
