@@ -154,7 +154,6 @@ PODS:
 DEPENDENCIES:
   - cloud_firestore (from `.symlinks/plugins/cloud_firestore/ios`)
   - connectivity (from `.symlinks/plugins/connectivity/ios`)
-  - Firebase/Analytics
   - firebase_analytics (from `.symlinks/plugins/firebase_analytics/ios`)
   - firebase_auth (from `.symlinks/plugins/firebase_auth/ios`)
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
@@ -166,12 +165,13 @@ DEPENDENCIES:
   - url_launcher (from `.symlinks/plugins/url_launcher/ios`)
 
 SPEC REPOS:
-  https://github.com/CocoaPods/Specs.git:
+  trunk:
     - BoringSSL-GRPC
     - Firebase
     - FirebaseAnalytics
     - FirebaseAuth
     - FirebaseAuthInterop
+    - FirebaseCore
     - FirebaseCoreDiagnostics
     - FirebaseCoreDiagnosticsInterop
     - FirebaseFirestore
@@ -188,11 +188,6 @@ SPEC REPOS:
     - nanopb
     - Protobuf
     - Reachability
-  trunk:
-    - Firebase
-    - FirebaseCore
-    - GoogleUtilities
-    - nanopb
 
 EXTERNAL SOURCES:
   cloud_firestore:
@@ -253,6 +248,6 @@ SPEC CHECKSUMS:
   sqflite: ff1d9da63c06588cc8d1faf7256d741f16989d5a
   url_launcher: 0067ddb8f10d36786672aa0722a21717dba3a298
 
-PODFILE CHECKSUM: 93681af1f55251a07ef8ff0b8f2b61c890a84476
+PODFILE CHECKSUM: 7fb83752f59ead6285236625b82473f90b1cb932
 
 COCOAPODS: 1.8.0.beta.1
