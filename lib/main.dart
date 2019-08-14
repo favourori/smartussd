@@ -26,12 +26,6 @@ class MyApp extends StatelessWidget {
         observer,
       ],
       home: Control()
-      
-      // Signin(
-      //   analytics: analytics, observer:observer
-      //   )
-
-//      Homepage(analytics: analytics, observer:observer),
     );
   }
 }
