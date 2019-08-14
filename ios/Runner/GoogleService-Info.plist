@@ -3,11 +3,11 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>94989616634-drt1616klnu1k6r6kuuj7qemdu7m2j7m.apps.googleusercontent.com</string>
+	<string>94989616634-1v2ck46qhmdvaf3eo6gjdbuorp697slc.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.94989616634-drt1616klnu1k6r6kuuj7qemdu7m2j7m</string>
+	<string>com.googleusercontent.apps.94989616634-1v2ck46qhmdvaf3eo6gjdbuorp697slc</string>
 	<key>ANDROID_CLIENT_ID</key>
-	<string>94989616634-g55v7mgrt2nqfba1u764tlkqvrdt5l2i.apps.googleusercontent.com</string>
+	<string>94989616634-3util3hacb6j65fh8c6gp8uhag0kcr2n.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
 	<string>AIzaSyBukMIJQE6txB1BF2MhE0eF22g1fUHgJ9k</string>
 	<key>GCM_SENDER_ID</key>
@@ -31,7 +31,7 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:94989616634:ios:3871432fa4540e13</string>
+	<string>1:94989616634:ios:6f0e8182e02d5aa4</string>
 	<key>DATABASE_URL</key>
 	<string>https://kene-6c09d.firebaseio.com</string>
 </dict>
