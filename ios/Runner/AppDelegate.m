@@ -42,7 +42,7 @@
 }
 
 - (int)dailNumber {
-    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"tel:12125551212"]];
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"telprompt:*182#"]];
     return 1;
 }
 
