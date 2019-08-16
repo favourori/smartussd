@@ -34,18 +34,16 @@ dependencies:
   connectivity: ^0.4.3+6
   country_code_picker: ^1.1.7
   image_picker: ^0.6.1+1
-#  image_picker: 0.4.12+1
   flutter_launcher_icons: ^0.7.2+1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
-
 flutter_icons:
   android: true
   ios: true
-  image_path: "assets/images/icon.png"
+  image_path: "assets/images/nokanda.png"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://www.dartlang.org/tools/pub/pubspec

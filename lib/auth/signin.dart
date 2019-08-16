@@ -36,6 +36,7 @@ class _SigninState extends State<Signin> {
   String gender = "Select";
 
   GlobalKey _scaffoldKey = GlobalKey<ScaffoldState>();
+  bool isSignUp = false;
 
 
 @override
@@ -72,7 +73,7 @@ class _SigninState extends State<Signin> {
                         )),
                   ),
                   SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.18,
+                    height: MediaQuery.of(context).size.height * 0.1 ,
                   ),
                   Row(
                     children: <Widget>[
@@ -119,8 +120,8 @@ class _SigninState extends State<Signin> {
                           keyboardType: TextInputType.phone,
                           cursorColor: Colors.orangeAccent,
                           decoration: InputDecoration(
-                              hintText: "Phone number e.g +25078650456",
-                              hintStyle: TextStyle(fontSize: 14),
+                              labelText: "Phone number",
+                              labelStyle: TextStyle(fontSize: 14, color: Colors.black),
                               contentPadding: EdgeInsets.symmetric(
                                   horizontal: 0, vertical: 15),
 //                              icon: Icon(Icons.phone),
@@ -132,8 +133,8 @@ class _SigninState extends State<Signin> {
                     ],
                   ),
 
-                  //other infos
-                  Padding(
+                  //other info
+                isSignUp ?  Padding(
                     padding: const EdgeInsets.only(left:20.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -165,20 +166,21 @@ class _SigninState extends State<Signin> {
                       keyboardType: TextInputType.number,
                       controller: _yobController,
                       decoration: InputDecoration(
-                        hintText: "Year of birth",
+                        labelText: "Year of birth",
+                        labelStyle:  TextStyle(fontSize: 15, color: Colors.black),
                         border: InputBorder.none
                       ),
                       
                     ),
                         ],
                     ),
-                  ),
+                  ) : Container(),
                   SizedBox(
                     height: 40,
                   ),
                   GestureDetector(
                     onTap: () {
-                      if (phoneNo != "" && phoneNo != null && gender != "Select" && _yobController.text != "") {
+                      if ( (!isSignUp && phoneNo != "" && phoneNo != null) || (isSignUp && phoneNo != "" && phoneNo != null && gender != "Select" && _yobController.text != "")) {
                         setState(() {
                           isBtnClicked = true;
                         });
@@ -232,7 +234,7 @@ class _SigninState extends State<Signin> {
                       child: Center(
                           child: !isBtnClicked
                               ? Text(
-                                  "Sign in",
+                                  !isSignUp ? "Sign in" : "Sign up",
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontWeight: FontWeight.bold,
@@ -242,6 +244,28 @@ class _SigninState extends State<Signin> {
                                   backgroundColor: Colors.white,
                                 )),
                     ),
+                  ),
+
+                  Padding(
+                    padding: EdgeInsets.only(top:20),
+                    child: !isSignUp ? GestureDetector(
+                      onTap: (){
+                        setState(() {
+                          isSignUp = true;
+                        });
+                      },
+                      child: Text("Don't have an account? Signup", textAlign: TextAlign.center,),
+                    ):
+
+                    GestureDetector(
+                      onTap: (){
+                        setState(() {
+                          isSignUp = false;
+                        });
+                      },
+                      child: Text("Already have an account? Login", textAlign: TextAlign.center,),
+                    )
+                    ,
                   )
                 ],
               )

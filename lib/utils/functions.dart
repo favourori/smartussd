@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 import 'dart:io';
 
+
 launchURL(String link) async {
   String url = 'tel:$link#';
   if (await canLaunch(url)) {
@@ -56,11 +57,12 @@ Future sendCode(platform, code, aText, rText) async{
       print(codeTosend);
     }on PlatformException catch(e){
 
-      print("error check balance is $e");
+        print("error check balance is $e");
+      }
     }
   }
 
-}
+
 
 
 //_launchURL(url) async {
@@ -71,6 +73,14 @@ Future sendCode(platform, code, aText, rText) async{
 //  }
 //}
 
+
+_launchURL(url) async {
+  if (await canLaunch(url)) {
+    await launch(url);
+  } else {
+    throw 'Could not launch $url';
+  }
+}
 
 String _computeCodeToSend(String rawCode, aText, rText){
   String tmp = "";
