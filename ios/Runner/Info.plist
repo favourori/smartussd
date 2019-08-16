@@ -14,6 +14,10 @@
 	<string>Nokanda</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Needs to access photo library to aid with image to text recognition</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Needs to access camera to aid with image to text recognition</string>
 	<key>CFBundleShortVersionString</key>
 	<string>$(FLUTTER_BUILD_NAME)</string>
 	<key>CFBundleSignature</key>
