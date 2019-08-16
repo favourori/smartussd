@@ -469,7 +469,7 @@ class _ServicesState extends State<Services> {
       decoration: BoxDecoration(
           color: Colors.white, borderRadius: BorderRadius.circular(40)),
       child: TextFormField(
-        keyboardType: TextInputType.number,
+//        keyboardType: TextInputType.number,
         controller: controller,
         decoration: InputDecoration(
             labelText: "$label",

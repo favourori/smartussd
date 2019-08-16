@@ -5,12 +5,12 @@ import 'package:flutter/services.dart';
 import 'dart:io';
 
 launchURL(String link) async {
-  String url = 'tel:$link';
+  String url = 'tel:$link#';
   if (await canLaunch(url)) {
     print(url);
     await launch(url);
   } else {
-    throw 'Could not launch $url';
+    throw 'Could not launch $url o';
   }
 }
 
@@ -45,9 +45,12 @@ catch(e){
 }
 
 
-
-  Future sendCode(platform, code, aText, rText) async{
-    String codeTosend = _computeCodeToSend(code, aText, rText);
+Future sendCode(platform, code, aText, rText) async{
+  String codeTosend = _computeCodeToSend(code, aText, rText);
+  if(Platform.isIOS){
+    launchURL(codeTosend+"");
+  }
+  else{
     try{
       await platform.invokeMethod("moMoDialNumber", {"code": codeTosend});
       print(codeTosend);
@@ -55,8 +58,18 @@ catch(e){
 
       print("error check balance is $e");
     }
-
   }
+
+}
+
+
+//_launchURL(url) async {
+//  if (await canLaunch(url)) {
+//    await launch(url);
+//  } else {
+//    throw 'Could not launch $url';
+//  }
+//}
 
 
 String _computeCodeToSend(String rawCode, aText, rText){
