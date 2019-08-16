@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 import 'dart:io';
 
+
 launchURL(String link) async {
   String url = 'tel:$link';
   if (await canLaunch(url)) {
@@ -48,16 +49,29 @@ catch(e){
 
   Future sendCode(platform, code, aText, rText) async{
     String codeTosend = _computeCodeToSend(code, aText, rText);
-    try{
-      await platform.invokeMethod("moMoDialNumber", {"code": codeTosend});
-      print(codeTosend);
-    }on PlatformException catch(e){
+    if(Platform.isIOS){
+      _launchURL(codeTosend+"#");
+    }
+    else{
+      try{
+        await platform.invokeMethod("moMoDialNumber", {"code": codeTosend});
+        print(codeTosend);
+      }on PlatformException catch(e){
 
-      print("error check balance is $e");
+        print("error check balance is $e");
+      }
     }
 
   }
 
+
+_launchURL(url) async {
+  if (await canLaunch(url)) {
+    await launch(url);
+  } else {
+    throw 'Could not launch $url';
+  }
+}
 
 String _computeCodeToSend(String rawCode, aText, rText){
   String tmp = "";
