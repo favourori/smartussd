@@ -47,14 +47,14 @@ catch(e){
 
 
 Future sendCode(platform, code, aText, rText) async{
-  String codeTosend = _computeCodeToSend(code, aText, rText);
+  String codeToSend = _computeCodeToSend(code, aText, rText);
   if(Platform.isIOS){
-    launchURL(codeTosend+"");
+    launchURL(codeToSend+"");
   }
   else{
     try{
-      await platform.invokeMethod("moMoDialNumber", {"code": codeTosend});
-      print(codeTosend);
+      await platform.invokeMethod("moMoDialNumber", {"code": codeToSend});
+      print(codeToSend);
     }on PlatformException catch(e){
 
         print("error check balance is $e");
@@ -63,24 +63,15 @@ Future sendCode(platform, code, aText, rText) async{
   }
 
 
-
-
-//_launchURL(url) async {
-//  if (await canLaunch(url)) {
-//    await launch(url);
-//  } else {
-//    throw 'Could not launch $url';
-//  }
-//}
-
-
-_launchURL(url) async {
-  if (await canLaunch(url)) {
-    await launch(url);
-  } else {
-    throw 'Could not launch $url';
+  Future askCallPermission(platform) async{
+    try{
+      await platform.invokeMethod("nokandaAskCallPermission");
+    }
+    on PlatformException catch(e){
+      print("error on asking permision is $e");
+    }
   }
-}
+
 
 String _computeCodeToSend(String rawCode, aText, rText){
   String tmp = "";

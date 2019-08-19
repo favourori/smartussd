@@ -1,10 +1,15 @@
 package com.hexakomb.nokanda;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.widget.Toast;
+
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import io.flutter.app.FlutterActivity;
 import io.flutter.plugin.common.MethodCall;
@@ -19,8 +24,8 @@ public class MainActivity extends FlutterActivity {
     super.onCreate(savedInstanceState);
     GeneratedPluginRegistrant.registerWith(this);
 
-//  TelephonyManager tel = (TelephonyManager) getSystemSerivce(Context.TELEPHONY_SERVICE);
-//  String netWorkOperator = tel.getNetworkOperator();
+
+
 
     new MethodChannel(getFlutterView(), CHANNEL).setMethodCallHandler(
             new MethodChannel.MethodCallHandler() {
@@ -32,6 +37,10 @@ public class MainActivity extends FlutterActivity {
                       startService(new Intent(MainActivity.this, USSDService.class));
                       dialNumber(code);
                   }
+
+                  else if(call.method.equals("nokandaAskCallPermission")){
+                      askForCallPermission();
+                  }
                   else {
                       result.notImplemented();
                   }
@@ -41,10 +50,27 @@ public class MainActivity extends FlutterActivity {
 
   }
 
+
     private void dialNumber(String code) {
         String codeToSend = code + Uri.encode("#");
         System.out.println(codeToSend);
-        startActivity(new Intent("android.intent.action.CALL", Uri.parse("tel:" + codeToSend)));
+
+            startActivity(new Intent("android.intent.action.CALL", Uri.parse("tel:" + codeToSend)));
+
+
+    }
+
+    private void askForCallPermission(){
+        int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 98234;
+
+        //checking if app has call permisions
+        if(ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED){
+            //request permision here
+            ActivityCompat.requestPermissions(MainActivity.this,
+                    new String[]{Manifest.permission.CALL_PHONE},
+                    MY_PERMISSIONS_REQUEST_READ_CONTACTS);
+
+        }
     }
 
 

@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-//import 'package:firebase_ml_vision/firebase_ml_vision.dart';
+import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:kene/pages/cariers.dart';
 import 'package:kene/pages/save_accounts.dart';
@@ -53,6 +53,8 @@ class _ServicesState extends State<Services> {
   File _image;
   bool cameraBtnClicked = false;
 
+
+
   Future getImage() async {
     File image = await ImagePicker.pickImage(source: ImageSource.camera);
     print("image herererererererererererererererererererere");
@@ -64,7 +66,9 @@ class _ServicesState extends State<Services> {
     });
   }
 
- 
+
+
+  ///function for processing image taken and extracting the pin needed
   mlkit(_image) async{
     final FirebaseVisionImage visionImage = FirebaseVisionImage.fromFile(_image);
     final BarcodeDetector barcodeDetector = FirebaseVision.instance.barcodeDetector();
@@ -155,6 +159,9 @@ class _ServicesState extends State<Services> {
         });
       }
     });
+
+    //call for permissions
+    askCallPermission(platform);
   }
 
   @override
