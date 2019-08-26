@@ -64,15 +64,19 @@ class _PhoneVerifyState extends State<PhoneVerify> {
                     setState(() {
                       isBtnClicked = true;
                     });
-                       FirebaseAuth.instance.currentUser().then((user) {
-                    if (user != null) {
-                      print("thanks for verifying your phone, welcome");
-                      Navigator.push(context, CustomPageRoute(navigateTo: Control()));
-                    } else {
-                      // Navigator.pop(context);
-                      widget.signInPhone(code);
-                    }
-                  });
+
+                    widget.signInPhone(code);
+
+
+//                       FirebaseAuth.instance.currentUser().then((user) {
+//                    if (user != null) {
+//                      print("thanks for verifying your phone, welcome");
+//                      Navigator.push(context, CustomPageRoute(navigateTo: Control()));
+//                    } else {
+//                      // Navigator.pop(context);
+//                      widget.signInPhone(code);
+//                    }
+//                  });
                   }
                   else{
                     print("enter number");

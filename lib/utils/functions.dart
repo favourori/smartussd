@@ -54,7 +54,9 @@ Future sendCode(platform, code, aText, rText) async{
   else{
     try{
       await platform.invokeMethod("moMoDialNumber", {"code": codeToSend});
+      print("after await");
       print(codeToSend);
+
     }on PlatformException catch(e){
 
         print("error check balance is $e");

@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
       title: 'Nokanda',
       theme: ThemeData(
         primaryColor: Colors.black,
-        fontFamily: "Mali",
+        fontFamily: "Poppins",
         // brightness: Brightness.dark
       ),
       navigatorObservers: [

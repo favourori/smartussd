@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:kene/pages/services.dart';
 import 'package:kene/widgets/custom_nav.dart';
+import 'package:package_info/package_info.dart';
 
 class Carriers extends StatefulWidget {
   @override
@@ -11,6 +12,48 @@ class Carriers extends StatefulWidget {
 }
 
 class _CarriersState extends State<Carriers> {
+
+  String minimumSupportedVersion = '';
+  String packageInfo = "";
+//  bool hasOldVersion = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    Firestore.instance.collection("settings").getDocuments().then((f){
+      setState(() {
+        minimumSupportedVersion = f.documents[0].data['minimum_supported_version'];
+      });
+
+
+      PackageInfo.fromPlatform().then((f){ // for getting the package/build/version number on load
+        setState(() {
+          packageInfo = f.version.toString() + "+"+f.buildNumber.toString();
+        });
+      });
+
+    });
+
+
+  }
+
+  isOldVersion(){
+    double phoneVersion = double.parse(packageInfo.split("+")[0].split(".").join());
+    double phoneBuild = double.parse(packageInfo.split("+")[1]);
+
+
+    double minVersion = double.parse(minimumSupportedVersion.split("+")[0].split(".").join());
+    double minBuild = double.parse(minimumSupportedVersion.split("+")[1]);
+
+    if(phoneVersion < minVersion || phoneBuild < minBuild){
+      return true;
+    }
+
+    return false;
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -60,14 +103,25 @@ class _CarriersState extends State<Carriers> {
                     child: StreamBuilder(
                       stream: Firestore.instance.collection("services").snapshots(),
                       builder: (context, snapshot){
-                        if(!snapshot.hasData) return Center(child: Text("Loading ..."),);
-                        return ListView.builder(
+                        if(!snapshot.hasData || packageInfo == "") return Center(child: Text("Loading ..."),);
+
+                        snapshot.data.documents.sort(
+                                (DocumentSnapshot a,
+                                DocumentSnapshot b) =>
+                                getServiceOrderNo(a)
+                                    .compareTo(getServiceOrderNo(b)));
+                        return !isOldVersion() ?  ListView.builder(
                           itemCount: snapshot.data.documents.length,
                           itemBuilder: (context, index){
                             return
-                                buildServiceListItem("${snapshot.data.documents[index]['label']}", snapshot.data.documents[index]['primaryColor'], snapshot.data.documents[index].documentID);
+                                snapshot.data.documents[index]['isActive'] ?
+                                buildServiceListItem("${snapshot.data.documents[index]['label']}", snapshot.data.documents[index]['primaryColor'], snapshot.data.documents[index].documentID): Container();
 //                              Text("${snapshot.data.documents[index].documentID}");
                           },
+                        ): Container(
+                          child: Center(
+                            child: Text("Sorry you have a very old version which is no longer supported. Please update on the app store to Contiune", textAlign: TextAlign.center,),
+                          ),
                         );
                       },
                     ),
@@ -80,6 +134,12 @@ class _CarriersState extends State<Carriers> {
       ),
     );
   }
+
+
+  int getServiceOrderNo(x) {
+    return x['orderNo'];
+  }
+
 
 //  buildServiceListItem("Mtn", Color(0xffE0C537), "00001"),
 //  buildServiceListItem("Airtel", Color(0xffED3737), "00002"),

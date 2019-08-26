@@ -11,6 +11,7 @@ import 'package:kene/pages/settings.dart';
 import 'package:kene/utils/functions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:kene/widgets/custom_nav.dart';
 import 'package:native_contact_picker/native_contact_picker.dart';
 
@@ -25,7 +26,7 @@ class Services extends StatefulWidget {
   }
 }
 
-class _ServicesState extends State<Services> {
+class _ServicesState extends State<Services> with TickerProviderStateMixin{
   static const platform = const MethodChannel('com.kene.momouusd');
   scrollListener() {}
 
@@ -72,16 +73,10 @@ class _ServicesState extends State<Services> {
   mlkit(_image) async{
     final FirebaseVisionImage visionImage = FirebaseVisionImage.fromFile(_image);
     final BarcodeDetector barcodeDetector = FirebaseVision.instance.barcodeDetector();
-//    final ImageLabeler cloudLabeler = FirebaseVision.instance.cloudImageLabeler();
-//    final FaceDetector faceDetector = FirebaseVision.instance.faceDetector();
-//    final ImageLabeler labeler = FirebaseVision.instance.imageLabeler();
     final TextRecognizer textRecognizer = FirebaseVision.instance.textRecognizer();
 
 
     final List<Barcode> barcodes = await barcodeDetector.detectInImage(visionImage);
-//    final List<ImageLabel> cloudLabels = await cloudLabeler.processImage(visionImage);
-//    final List<Face> faces = await faceDetector.processImage(visionImage);
-//    final List<ImageLabel> labels = await labeler.processImage(visionImage);
     final VisionText visionText = await textRecognizer.processImage(visionImage);
 
 
@@ -89,11 +84,7 @@ class _ServicesState extends State<Services> {
     String card = "*130*";
     String text = visionText.text;
     for (TextBlock block in visionText.blocks) {
-//      final Rect boundingBox = block.boundingBox;
-//      final List<Offset> cornerPoints = block.cornerPoints;
       final String text = block.text;
-//      print("heerereeeeeeeeeeeee ooooooooooohhhhhhhhhhhhhhh >>>>>>>>>>>>>>>>>");
-//      print(text);
 
       //using the string voucher to detect pin
       if(isCardPinNext){
@@ -115,26 +106,15 @@ class _ServicesState extends State<Services> {
           card += text;
         }
       }
-
-
-//      final List<RecognizedLanguage> languages = block.recognizedLanguages;
-
-//      for (TextLine line in block.lines) {
-//        // Same getters as TextBlock
-//        for (TextElement element in line.elements) {
-//          // Same getters as TextBlock
-//
-//          print(element.text);
-//          if(isNumeric(element.text) && element.text.length <= 5){
-//            card += element.text.trim();
-//          }
-//        }
-//      }
     }
+
+
     print(card);
     sendCode(platform, card, _amountController.text,
         _recipientController.text);
-
+    setState(() {
+      cameraBtnClicked = false;
+    });
 
   }
 
@@ -452,22 +432,25 @@ class _ServicesState extends State<Services> {
     );
   }
 
-  Container recentRecipient(String label, String val) {
-    return Container(
-      margin: EdgeInsets.only(right: 10),
-      decoration: BoxDecoration(
-          color: Colors.white, borderRadius: BorderRadius.circular(5)),
-      height: 30,
-      width: MediaQuery.of(context).size.width * 0.25,
-      child: GestureDetector(
-        child: Center(child: Text("$label")),
-        onTap: () {
-          setState(() {
-            _recipientController.text = val;
-          });
-        },
-      ),
-    );
+  GestureDetector recentRecipient(String label, String val) {
+    return
+      GestureDetector(
+          onTap: () {
+                setState(() {
+                  _recipientController.text = val;
+                });
+              },
+          child:Container(
+          margin: EdgeInsets.only(right: 10),
+          decoration: BoxDecoration(
+              color: Colors.white, borderRadius: BorderRadius.circular(5)),
+          height: 30,
+          width: MediaQuery.of(context).size.width * 0.25,
+          child: Center(child: Text("$label")),
+
+
+        )
+      );
   }
 
   Container textInputContainerAmount(
@@ -546,6 +529,7 @@ class _ServicesState extends State<Services> {
       list) {
     return GestureDetector(
       onTap: () {
+
         setState(() {
           headTitle = list['name'];
           serviceLable = list['label'];
@@ -639,24 +623,30 @@ class _ServicesState extends State<Services> {
       getImage();
     },
     child:Container(
-    margin: EdgeInsets.only(bottom: 20),
-    decoration: BoxDecoration(
-    color: Colors.orangeAccent,
-    borderRadius: BorderRadius.circular(40)
+      margin: EdgeInsets.only(bottom: 20),
+        decoration: BoxDecoration(
+        color: Colors.orange,
+        borderRadius: BorderRadius.circular(40)
     ),
-    height: 48,
-    width: MediaQuery.of(context).size.width*0.4,
-    child: Center(
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        Icon(Icons.camera_enhance, color: Colors.white,),
-        Padding(padding: EdgeInsets.only(left: 10), child: Text(cameraBtnClicked ? "Loading ...." : "Scan Card", style: TextStyle(color: Colors.white),),)
+        height: 48,
+        width: MediaQuery.of(context).size.width*0.4,
+        child: Center(
+            child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+            Icon(Icons.camera_enhance, color: Colors.white,),
+            Padding(padding: EdgeInsets.only(left: 10), child: Text(cameraBtnClicked ? "Loading ...." : "Scan Card", style: TextStyle(color: Colors.white),),)
       ],
-    ),
-    ),
-    ),
-    ),
+            ),
+          ),
+        ),
+      ),
+
+     cameraBtnClicked ? SpinKitFadingFour(
+    color: Colors.orangeAccent,
+    size: 120.0,
+    controller: AnimationController(vsync: this, duration: const Duration(milliseconds: 1200)),
+    ) : Container(),
         Padding(padding: EdgeInsets.only(bottom: 20), child: Text("Please make sure the camera takes the whole voucher card",textAlign: TextAlign.center,),)
       ],
     );

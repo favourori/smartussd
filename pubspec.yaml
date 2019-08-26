@@ -11,7 +11,7 @@ description: A USSD UI app for Mobile Money services.
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.0.0+1
+version: 1.0.0+2
 
 environment:
   sdk: ">=2.1.0 <3.0.0"
@@ -24,18 +24,18 @@ dependencies:
   native_contact_picker: ^0.0.6
   # firebase_core: 0.2.5+1
   firebase_analytics: ^5.0.0
-  sqflite: ^1.1.6
-  # advanced_share: ^0.1.0
+  advanced_share: ^0.1.0
   firebase_auth: ^0.14.0+2
   # google_sign_in: 3.2.4
   cloud_firestore: ^0.12.9
   cached_network_image: ^1.1.1
   flushbar: ^1.8.1
-  connectivity: ^0.4.3+6
-  country_code_picker: ^1.1.7
   image_picker: ^0.6.1+1
   flutter_launcher_icons: ^0.7.2+1
   firebase_ml_vision: ^0.9.2 #for firebase machine learning kits
+  flutter_spinkit: "^4.0.0" # for custom spinners
+  flutter_datetime_picker: ^1.2.6 #date time picker for choosing date on signup
+  package_info: ^0.4.0+6 #for getting the build info of the application
 
 dev_dependencies:
   flutter_test:
@@ -58,18 +58,7 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  assets:
-   - assets/images/mtn.jpg
-   - assets/images/bg1.jpg
-   - assets/images/airtel.png
-   - assets/images/banner1.png
-   - assets/images/balance.png
-   - assets/images/send_money.png
-   - assets/images/buy.png
-   - assets/images/bank.ico
-   - assets/images/internet.png
-   - assets/images/bus.png
-   - assets/images/electricity.png
+#  assets:
 
 
   # An image asset can refer to one or more resolution-specific "variants", see
@@ -95,6 +84,19 @@ flutter:
     - family: Roboto-Mono
       fonts:
         - asset: assets/fonts/RobotoMono-Regular.ttf
+
+    - family: Livvic
+      fonts:
+        - asset: assets/fonts/Livvic-Regular.ttf
+
+    - family: Roboto
+      fonts:
+        - asset: assets/fonts/Roboto-Regular.ttf
+
+
+    - family: Poppins
+      fonts:
+        - asset: assets/fonts/Poppins-Regular.ttf
         # - asset: fonts/Schyler-Italic.ttf
           # style: italic
   #   - family: Trajan Pro
