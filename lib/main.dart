@@ -9,8 +9,8 @@ void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
 
-  static FirebaseAnalytics analytics = FirebaseAnalytics();
-  FirebaseAnalyticsObserver observer = FirebaseAnalyticsObserver(analytics: analytics);
+  static FirebaseAnalytics xanalytics = FirebaseAnalytics();
+  FirebaseAnalyticsObserver observer = FirebaseAnalyticsObserver(analytics: xanalytics);
 
   @override
   Widget build(BuildContext context) {
@@ -20,12 +20,12 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primaryColor: Colors.black,
         fontFamily: "Poppins",
-        // brightness: Brightness.dark
+        // brightness: Brightness.darkxs
       ),
       navigatorObservers: [
         observer,
       ],
-      home: Control(analytics: analytics,)
+      home: Control(analytics: xanalytics,)
     );
   }
 }

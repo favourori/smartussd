@@ -123,7 +123,7 @@ class _SettingsState extends State<Settings> {
                         ),
                       ),
                       SizedBox(height: MediaQuery.of(context).size.height * 0.25,),
-                      Padding(padding: EdgeInsets.only(left:20),child: Text("Version: ${packageInfo.version.toString() + "+" + packageInfo.buildNumber}", style: TextStyle(color: Colors.grey),),)
+                      Padding(padding: EdgeInsets.only(left:20),child: Text(packageInfo != null ? "Version: ${packageInfo.version.toString() + "+" + packageInfo.buildNumber}": "", style: TextStyle(color: Colors.grey),),)
                     ],
                   ),
                 ),
