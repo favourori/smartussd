@@ -4,6 +4,9 @@ import 'package:kene/auth/signin.dart';
 import 'package:kene/pages/cariers.dart';
 
 class Control extends StatefulWidget {
+  final analytics;
+
+  Control({this.analytics});
   @override
   State<StatefulWidget> createState() {
     return _ControlState();
@@ -27,6 +30,6 @@ class _ControlState extends State<Control> {
 
   @override
   Widget build(BuildContext context) {
-    return isLogedIn ? Carriers() : Signin();
+    return isLogedIn ? Carriers(analytics: widget.analytics,) : Signin();
   }
 }

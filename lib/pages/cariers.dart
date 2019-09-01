@@ -5,6 +5,9 @@ import 'package:kene/widgets/custom_nav.dart';
 import 'package:package_info/package_info.dart';
 
 class Carriers extends StatefulWidget {
+  final analytics;
+  Carriers({this.analytics});
+  
   @override
   State<StatefulWidget> createState() {
     return _CarriersState();
@@ -147,7 +150,7 @@ class _CarriersState extends State<Carriers> {
   GestureDetector buildServiceListItem(String label, var color, String carrierID) {
     return GestureDetector(
       onTap: (){
-        Navigator.push(context, CustomPageRoute(navigateTo:Services(carrierId: carrierID, primaryColor: Color(color), carrierTitle: label,)));
+        Navigator.push(context, CustomPageRoute(navigateTo:Services(carrierId: carrierID, primaryColor: Color(color), carrierTitle: label, analytics: widget.analytics,)));
       },
           child: Container(
         margin: EdgeInsets.only(bottom: 10),

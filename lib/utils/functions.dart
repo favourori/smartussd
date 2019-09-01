@@ -22,7 +22,7 @@ Future<Null> sendAnalytics(analytics, eventName, parameters) async{
   ).then((f) =>
       print("event logged")
   );
-}
+} 
 
 Future getServices(String carier) async{
  if(FirebaseAuth.instance.currentUser() != null ){

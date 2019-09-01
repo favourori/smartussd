@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
       navigatorObservers: [
         observer,
       ],
-      home: Control()
+      home: Control(analytics: analytics,)
     );
   }
 }

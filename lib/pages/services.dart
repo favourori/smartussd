@@ -14,12 +14,17 @@ import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:kene/widgets/custom_nav.dart';
 import 'package:native_contact_picker/native_contact_picker.dart';
+//import 'package:firebase_in_app_messaging/firebase_in_app_messaging.dart';
+
+
 
 class Services extends StatefulWidget {
   final carrierId;
   final primaryColor;
   final carrierTitle;
-  Services({this.carrierId, this.primaryColor, this.carrierTitle});
+  final analytics;
+
+  Services({this.carrierId, this.primaryColor, this.carrierTitle, this.analytics});
   @override
   State<StatefulWidget> createState() {
     return _ServicesState();
@@ -58,10 +63,6 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin{
 
   Future getImage() async {
     File image = await ImagePicker.pickImage(source: ImageSource.camera);
-    print("image herererererererererererererererererererere");
-    print(image);
-    mlkit(image);
-
     setState(() {
       _image = image;
     });
@@ -112,6 +113,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin{
     print(card);
     sendCode(platform, card, _amountController.text,
         _recipientController.text);
+    sendAnalytics(widget.analytics, serviceLable+"_sent", null);
     setState(() {
       cameraBtnClicked = false;
     });
@@ -142,6 +144,9 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin{
 
     //call for permissions
     askCallPermission(platform);
+
+
+//    FirebaseInAppMessaging.instance.triggerEvent("Draft campaign");
   }
 
   @override
@@ -362,6 +367,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin{
   GestureDetector sendButton() {
     return GestureDetector(
         onTap: () {
+          sendAnalytics(widget.analytics, serviceLable+"_submit", null);
           sendCode(platform, codeToSend, _amountController.text,
               _recipientController.text);
         },
@@ -551,6 +557,8 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin{
           _listViewController.animateTo(0,
               duration: Duration(milliseconds: 10), curve: Curves.easeIn);
         }
+
+        sendAnalytics(widget.analytics, serviceLable, null);
       },
       child: Container(
         margin: EdgeInsets.only(bottom: 10),
