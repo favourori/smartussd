@@ -89,8 +89,8 @@ class _SettingsState extends State<Settings> {
                       GestureDetector(
                         onTap: () {
 
-                          AdvancedShare.whatsapp(msg: "Hi!! \nHave you heard of Nokanda ? \nIt saves you alot of time using mobile money and USSD Services. \nTry it out )",
-                          url: "https://play.google.com/store/apps/details?id=com.hexakomb.nokanda",
+                          AdvancedShare.whatsapp(msg: "Hi!! \nHave you heard of Nokanda ? \nIt saves you alot of time using mobile money and USSD Services. \nTry it out ) \n https://play.google.com/store/apps/details?id=com.hexakomb.nokanda",
+                          url: "",
                           )
                               .then((response) {
 //                            handleResponse(response, appName: "Whatsapp");

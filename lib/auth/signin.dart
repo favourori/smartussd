@@ -44,7 +44,7 @@ class _SigninState extends State<Signin> {
   String yob = "Year of birth";
 
   GlobalKey _scaffoldKey = GlobalKey<ScaffoldState>();
-  bool isSignUp = false;
+  bool isSignUp = true;
 
 
 @override
@@ -68,26 +68,27 @@ class _SigninState extends State<Signin> {
               child: ListView(
                 children: <Widget>[
                   SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.20,
+                    height: MediaQuery.of(context).size.height * 0.12,
                   ),
-                  Align(
-                      alignment: Alignment.center,
-                      child: Text(
-                        "noKanda",
-                        style: TextStyle(fontSize: 18),
-                      )),
+            Container(
+              height: 80,
+              decoration: BoxDecoration(
+//                border: Border.all(),
+                  image: DecorationImage(image: AssetImage("assets/images/nokanda.png") )
+              ),),
+
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Align(
                         alignment: Alignment.center,
                         child: Text(
-                          "noKanda will send an SMS message to verify your phone number.",
+                          "Nokanda will send an SMS to verify your phone number.",
                           textAlign: TextAlign.center,
                           style: TextStyle(fontSize: 12),
                         )),
                   ),
                   SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.1 ,
+                    height: MediaQuery.of(context).size.height * 0.07 ,
                   ),
                   Row(
                     children: <Widget>[

@@ -66,6 +66,10 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin{
     setState(() {
       _image = image;
     });
+
+    if(_image != null){
+      mlkit(_image);
+    }
   }
 
 
@@ -643,7 +647,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin{
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
             Icon(Icons.camera_enhance, color: Colors.white,),
-            Padding(padding: EdgeInsets.only(left: 10), child: Text(cameraBtnClicked ? "Loading ...." : "Scan Card", style: TextStyle(color: Colors.white),),)
+            Padding(padding: EdgeInsets.only(left: 10), child: Text(cameraBtnClicked ? "Loading ...." : "Take a Picture", style: TextStyle(color: Colors.white),),)
       ],
             ),
           ),
@@ -655,7 +659,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin{
     size: 120.0,
     controller: AnimationController(vsync: this, duration: const Duration(milliseconds: 1200)),
     ) : Container(),
-        Padding(padding: EdgeInsets.only(bottom: 20), child: Text("Please make sure the camera takes the whole voucher card",textAlign: TextAlign.center,),)
+        Padding(padding: EdgeInsets.only(bottom: 20), child: Text("Simply take a picture of the entire voucher card to automatically load the airtime",textAlign: TextAlign.center,),)
       ],
     );
       
