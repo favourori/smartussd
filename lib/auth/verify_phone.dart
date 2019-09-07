@@ -48,6 +48,7 @@ class _PhoneVerifyState extends State<PhoneVerify>
         child: isAuthenticating
             ? Center(
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     SpinKitFadingFour(
                       color: Colors.orangeAccent,
@@ -59,7 +60,7 @@ class _PhoneVerifyState extends State<PhoneVerify>
                     Padding(
                       padding: EdgeInsets.all(20),
                       child: Text(
-                        "Signing in. \nPlease wait",
+                        "Almost there",
                         style: TextStyle(fontSize: 28),
                       ),
                     )
