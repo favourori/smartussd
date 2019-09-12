@@ -74,7 +74,7 @@ class _PhoneVerifyState extends State<PhoneVerify>
                     child: ListView(
                       children: <Widget>[
                         SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.25,
+                          height: MediaQuery.of(context).size.height * 0.2,
                         ),
                         Align(
                             alignment: Alignment.center,
