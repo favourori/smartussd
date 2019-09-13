@@ -14,9 +14,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:kene/widgets/custom_nav.dart';
 import 'package:native_contact_picker/native_contact_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 //import 'package:firebase_in_app_messaging/firebase_in_app_messaging.dart';
-
-
 
 class Services extends StatefulWidget {
   final carrierId;
@@ -24,14 +23,15 @@ class Services extends StatefulWidget {
   final carrierTitle;
   final analytics;
 
-  Services({this.carrierId, this.primaryColor, this.carrierTitle, this.analytics});
+  Services(
+      {this.carrierId, this.primaryColor, this.carrierTitle, this.analytics});
   @override
   State<StatefulWidget> createState() {
     return _ServicesState();
   }
 }
 
-class _ServicesState extends State<Services> with TickerProviderStateMixin{
+class _ServicesState extends State<Services> with TickerProviderStateMixin {
   static const platform = const MethodChannel('com.kene.momouusd');
   scrollListener() {}
 
@@ -59,32 +59,30 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin{
   File _image;
   bool cameraBtnClicked = false;
 
-
-
   Future getImage() async {
     File image = await ImagePicker.pickImage(source: ImageSource.camera);
     setState(() {
       _image = image;
     });
 
-    if(_image != null){
+    if (_image != null) {
       mlkit(_image);
     }
   }
 
-
-
   ///function for processing image taken and extracting the pin needed
-  mlkit(_image) async{
-    final FirebaseVisionImage visionImage = FirebaseVisionImage.fromFile(_image);
-    final BarcodeDetector barcodeDetector = FirebaseVision.instance.barcodeDetector();
-    final TextRecognizer textRecognizer = FirebaseVision.instance.textRecognizer();
+  mlkit(_image) async {
+    final FirebaseVisionImage visionImage =
+        FirebaseVisionImage.fromFile(_image);
+    final BarcodeDetector barcodeDetector =
+        FirebaseVision.instance.barcodeDetector();
+    final TextRecognizer textRecognizer =
+        FirebaseVision.instance.textRecognizer();
 
-
-    final List<Barcode> barcodes = await barcodeDetector.detectInImage(visionImage);
-    final VisionText visionText = await textRecognizer.processImage(visionImage);
-
-
+    final List<Barcode> barcodes =
+        await barcodeDetector.detectInImage(visionImage);
+    final VisionText visionText =
+        await textRecognizer.processImage(visionImage);
 
     String card = "*130*";
     String text = visionText.text;
@@ -92,7 +90,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin{
       final String text = block.text;
 
       //using the string voucher to detect pin
-      if(isCardPinNext){
+      if (isCardPinNext) {
         card += text;
         setState(() {
           isCardPinNext = false;
@@ -100,32 +98,29 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin{
       }
 
       List splitText = text.split(" ");
-      if(splitText.length >= 3 && splitText.length <= 4){
+      if (splitText.length >= 3 && splitText.length <= 4) {
         int c = 0;
-        for(var item in splitText){
-          if (isNumeric(item)){
+        for (var item in splitText) {
+          if (isNumeric(item)) {
             c += 1;
           }
         }
-        if (c == splitText.length){
+        if (c == splitText.length) {
           card += text;
         }
       }
     }
 
-
     print(card);
-    sendCode(platform, card, _amountController.text,
-        _recipientController.text);
-    sendAnalytics(widget.analytics, serviceLable+"_sent", null);
+    sendCode(platform, card, _amountController.text, _recipientController.text);
+    sendAnalytics(widget.analytics, serviceLable + "_sent", null);
     setState(() {
       cameraBtnClicked = false;
     });
-
   }
 
   bool isNumeric(String str) {
-    if(str == null) {
+    if (str == null) {
       return false;
     }
     return double.tryParse(str) != null;
@@ -134,6 +129,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin{
   @override
   void initState() {
     super.initState();
+
     setState(() {
       headTitle = widget.carrierTitle;
     });
@@ -148,7 +144,6 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin{
 
     //call for permissions
     askCallPermission(platform);
-
 
 //    FirebaseInAppMessaging.instance.triggerEvent("Draft campaign");
   }
@@ -183,17 +178,36 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin{
                       children: <Widget>[
                         Align(
                           alignment: Alignment.topLeft,
-                          child: IconButton(
-                            onPressed: () {
-                              Navigator.push(context,
-                                  CustomPageRoute(navigateTo: Carriers()));
-                            },
-                            icon: Icon(
-                              Icons.home,
-                              color: Colors.white,
-                              size: 30,
-                            ),
-                          ),
+                          child: !showActionSection
+                              ? IconButton(
+                                  onPressed: () {
+                                    Navigator.push(
+                                        context,
+                                        CustomPageRoute(
+                                            navigateTo: Carriers()));
+                                  },
+                                  icon: Icon(
+                                    Icons.home,
+                                    color: Colors.white,
+                                    size: 30,
+                                  ),
+                                )
+                              : IconButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      showActionSection = false;
+                                      headTitle = widget.carrierTitle;
+                                      _amountController.text = "";
+                                      _recipientController.text = "";
+                                      cameraBtnClicked = false;
+                                    });
+                                  },
+                                  icon: Icon(
+                                    Icons.arrow_back_ios,
+                                    color: Colors.white,
+                                    size: 30,
+                                  ),
+                                ),
                         ),
                         Expanded(
                           flex: 1,
@@ -297,9 +311,9 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin{
                               });
                             },
                             icon: Icon(
-                              Icons.keyboard_arrow_up,
+                              Icons.arrow_back,
                               color: Colors.white,
-                              size: 25,
+                              size: 20,
                             ),
                           ),
                         )
@@ -321,7 +335,9 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin{
         key: _formKey,
         child: Column(
           children: <Widget>[
-            needsAmount == null || needsAmount ? textInputContainerAmount("Amount", _amountController) : Container(),
+            needsAmount == null || needsAmount
+                ? textInputContainerAmount("Amount", _amountController)
+                : Container(),
             SizedBox(
               height: 20,
             ),
@@ -332,33 +348,37 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin{
             SizedBox(
               height: 20,
             ),
-            canSaveLabels != null && canSaveLabels ? GestureDetector(
-              onTap: () {
-                Navigator.push(
-                    context, CustomPageRoute(navigateTo: SaveAccount()));
-              },
-              child: Padding(
-                padding: const EdgeInsets.only(bottom:10.0),
-                child: Align(
-                  alignment: Alignment.centerRight,
-                  child: Text(
-                    "Click to save $serviceLable Number",
-                    style: TextStyle(fontSize: 14, color: Colors.orangeAccent, fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ),
-            ): Container(),
-             SizedBox(
+            canSaveLabels != null && canSaveLabels
+                ? GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                          context, CustomPageRoute(navigateTo: SaveAccount()));
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 10.0),
+                      child: Align(
+                        alignment: Alignment.centerRight,
+                        child: Text(
+                          "Click to save $serviceLable Number",
+                          style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.orangeAccent,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                  )
+                : Container(),
+            SizedBox(
               height: 10,
             ),
-
             serviceLable == "LoadAirtime" ? showCameraButton() : Container(),
-
-
-            serviceLable != "LoadAirtime" ? Align(
-              alignment: Alignment.centerLeft,
-              child: sendButton(),
-            ) : Container(),
+            serviceLable != "LoadAirtime"
+                ? Align(
+                    alignment: Alignment.centerLeft,
+                    child: sendButton(),
+                  )
+                : Container(),
             SizedBox(
               height: 100,
             ),
@@ -371,7 +391,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin{
   GestureDetector sendButton() {
     return GestureDetector(
         onTap: () {
-          sendAnalytics(widget.analytics, serviceLable+"_submit", null);
+          sendAnalytics(widget.analytics, serviceLable + "_submit", null);
           sendCode(platform, codeToSend, _amountController.text,
               _recipientController.text);
         },
@@ -389,37 +409,37 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin{
             )));
   }
 
-  Container chooseContactBtn(label) {
-    return Container(
-      // height: 58,
-      width: MediaQuery.of(context).size.width,
+  GestureDetector chooseContactBtn(label) {
+    return GestureDetector(
+      onTap: () {
+        getContact();
+      },
+      child: Container(
+        // height: 58,
+        width: MediaQuery.of(context).size.width,
 
-      child: Column(
-        children: <Widget>[
-          Center(
-            child: Text("OR"),
-          ),
-          SizedBox(
-            height: 20,
-          ),
-          Container(
-            height: 58,
-            decoration: BoxDecoration(
-                color: Color(0xffED7937),
-                borderRadius: BorderRadius.circular(40)),
-            child: GestureDetector(
-              onTap: () {
-                getContact();
-              },
+        child: Column(
+          children: <Widget>[
+            Center(
+              child: Text("OR"),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Container(
+              height: 58,
+              decoration: BoxDecoration(
+                  color: Color(0xffED7937),
+                  borderRadius: BorderRadius.circular(40)),
               child: Center(
                   child: Text(
                 "Choose Contact",
                 style:
                     TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
               )),
-            ),
-          )
-        ],
+            )
+          ],
+        ),
       ),
     );
   }
@@ -443,24 +463,20 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin{
   }
 
   GestureDetector recentRecipient(String label, String val) {
-    return
-      GestureDetector(
-          onTap: () {
-                setState(() {
-                  _recipientController.text = val;
-                });
-              },
-          child:Container(
+    return GestureDetector(
+        onTap: () {
+          setState(() {
+            _recipientController.text = val;
+          });
+        },
+        child: Container(
           margin: EdgeInsets.only(right: 10),
           decoration: BoxDecoration(
               color: Colors.white, borderRadius: BorderRadius.circular(5)),
           height: 30,
           width: MediaQuery.of(context).size.width * 0.25,
           child: Center(child: Text("$label")),
-
-
-        )
-      );
+        ));
   }
 
   Container textInputContainerAmount(
@@ -535,11 +551,9 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin{
     return tmp;
   }
 
-  GestureDetector buildServiceListItem(
-      list) {
+  GestureDetector buildServiceListItem(list) {
     return GestureDetector(
       onTap: () {
-
         setState(() {
           headTitle = list['name'];
           serviceLable = list['label'];
@@ -623,48 +637,58 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin{
     return tmp;
   }
 
-
-  showCameraButton(){
+  showCameraButton() {
     return Column(
       children: <Widget>[
         GestureDetector(
-        onTap: (){
-          setState(() {
-            cameraBtnClicked = true;
-          });
-      getImage();
-    },
-    child:Container(
-      margin: EdgeInsets.only(bottom: 20),
-        decoration: BoxDecoration(
-        color: Colors.orange,
-        borderRadius: BorderRadius.circular(40)
-    ),
-        height: 48,
-        width: MediaQuery.of(context).size.width*0.4,
-        child: Center(
-            child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-            Icon(Icons.camera_enhance, color: Colors.white,),
-            Padding(padding: EdgeInsets.only(left: 10), child: Text(cameraBtnClicked ? "Loading ...." : "Take a Picture", style: TextStyle(color: Colors.white),),)
-      ],
+          onTap: () {
+            setState(() {
+              cameraBtnClicked = true;
+            });
+            getImage();
+          },
+          child: Container(
+            margin: EdgeInsets.only(bottom: 20),
+            decoration: BoxDecoration(
+                color: Colors.orange, borderRadius: BorderRadius.circular(40)),
+            height: 48,
+            width: MediaQuery.of(context).size.width * 0.4,
+            child: Center(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Icon(
+                    Icons.camera_enhance,
+                    color: Colors.white,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(left: 10),
+                    child: Text(
+                      cameraBtnClicked ? "Loading ...." : "Take a Picture",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
         ),
-      ),
-
-     cameraBtnClicked ? SpinKitFadingFour(
-    color: Colors.orangeAccent,
-    size: 120.0,
-    controller: AnimationController(vsync: this, duration: const Duration(milliseconds: 1200)),
-    ) : Container(),
-        Padding(padding: EdgeInsets.only(bottom: 20), child: Text("Simply take a picture of the entire voucher card to automatically load the airtime",textAlign: TextAlign.center,),)
+        cameraBtnClicked
+            ? SpinKitFadingFour(
+                color: Colors.orangeAccent,
+                size: 120.0,
+                controller: AnimationController(
+                    vsync: this, duration: const Duration(milliseconds: 1200)),
+              )
+            : Container(),
+        Padding(
+          padding: EdgeInsets.only(bottom: 20),
+          child: Text(
+            "Simply take a picture of the entire voucher card to automatically load the airtime",
+            textAlign: TextAlign.center,
+          ),
+        )
       ],
     );
-      
-      
-
   }
-
 }

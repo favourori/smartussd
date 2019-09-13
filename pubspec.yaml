@@ -62,6 +62,8 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - "assets/images/nokanda.png"
+    - "assets/images/nokanda_full.png"
+    - "assets/images/sendmoney.png"
 
 
   # An image asset can refer to one or more resolution-specific "variants", see
