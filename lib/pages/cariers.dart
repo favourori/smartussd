@@ -65,7 +65,7 @@ class _CarriersState extends State<Carriers> {
             Container(
               height: MediaQuery.of(context).size.height * 0.55,
               decoration: BoxDecoration(
-                  color: Colors.orange,
+                  color:Color(0xffED7937),
                   borderRadius: BorderRadius.only(
                       bottomLeft: Radius.circular(40),
                       bottomRight: Radius.circular(40))),
@@ -73,39 +73,38 @@ class _CarriersState extends State<Carriers> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
                   SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.07,
+                    height: MediaQuery.of(context).size.height * 0.14,
                   ),
                   Container(
                     padding: EdgeInsets.only(right: 15),
-                    child: Align(
-                      alignment: Alignment.topRight,
-                      child: IconButton(
-                        onPressed: () {
-                          Navigator.push(
-                              context, CustomPageRoute(navigateTo: Settings()));
-                        },
-                        icon: Icon(
-                          Icons.settings,
-                          color: Colors.white,
-                          size: 30,
+                    child: Row(
+                      children: <Widget>[
+                        Expanded(
+                          flex: 1,
+                          child: Align(
+                            alignment: Alignment.center,
+                                                      child: Padding(
+                              padding: const EdgeInsets.only(left:20.0),
+                              child: Text("Nokanda", style: TextStyle(
+                                  color: Colors.white, fontSize: 24, fontWeight: FontWeight.w900,
+                                ),),
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
+                      ],
+                    ) 
                   ),
+
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.11,
+                  ),
+                   Text("Choose a service below", style: TextStyle(
+                                  color: Colors.white, fontSize: 14,
+                                ),)
+                                ,
                   SizedBox(
                     height: MediaQuery.of(context).size.height * 0.06,
                   ),
-                  Align(
-                    alignment: Alignment.center,
-                    child: Text(
-                      "Choose Service",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w900,
-                          fontSize: 18),
-                    ),
-                  )
                 ],
               ),
             ),
@@ -195,7 +194,8 @@ class _CarriersState extends State<Carriers> {
         margin: EdgeInsets.only(bottom: 10),
         height: 60,
         decoration: BoxDecoration(
-            color: Color(color), borderRadius: BorderRadius.circular(40)),
+          border: Border.all(color: Color(0xffED7937)),
+            color: Colors.white, borderRadius: BorderRadius.circular(40)),
         child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
             child: Center(
@@ -204,7 +204,7 @@ class _CarriersState extends State<Carriers> {
                 child: Text(
                   label,
                   style: TextStyle(
-                      color: Colors.white, fontWeight: FontWeight.w900),
+                      color: Color(0xffED7937), fontWeight: FontWeight.w900),
                 ),
               ),
             )),
