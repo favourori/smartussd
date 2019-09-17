@@ -65,7 +65,7 @@ class _CarriersState extends State<Carriers> {
             Container(
               height: MediaQuery.of(context).size.height * 0.55,
               decoration: BoxDecoration(
-                  color: Color(0xffC89191),
+                  color: Colors.orange,
                   borderRadius: BorderRadius.only(
                       bottomLeft: Radius.circular(40),
                       bottomRight: Radius.circular(40))),

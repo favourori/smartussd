@@ -10,6 +10,7 @@ import 'package:kene/widgets/custom_nav.dart';
 import 'dart:io';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:package_info/package_info.dart';
+import 'package:kene/actions/auth_actions.dart';
 
 
 class Signin extends StatefulWidget {
@@ -347,6 +348,12 @@ class _SigninState extends State<Signin> {
   /// FUNCTION FOR THE THE AUTHENTICATION FLOW
   authenticate() async{
   
+
+    // var code = generateVerificationCode();
+    // sendAuthSMS(phoneNo, code);
+
+
+
   if(!isSignUp){ //IF IT IS A LOGIN ACTION
     
     //check for number first
@@ -372,6 +379,7 @@ class _SigninState extends State<Signin> {
 
   if(canAuthenticate){
     // VERIFY PHONE NUMBER
+ 
     verifyPhone();
 
   }
