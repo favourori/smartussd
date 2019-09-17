@@ -56,7 +56,7 @@ class _ControlState extends State<Control> {
 
   @override
   Widget build(BuildContext context) {
-    return prefs != null && !prefs.getBool("isFirstLogin")  ? Welcome()  : isLogedIn ? Carriers(analytics: widget.analytics,) : Signin();
+    return prefs != null && prefs.getBool("isFirstLogin")  ? Welcome()  : isLogedIn ? Carriers(analytics: widget.analytics,) : Signin();
   }
 }
 

@@ -123,7 +123,7 @@ class _CarriersState extends State<Carriers> {
                 padding: const EdgeInsets.all(20.0),
                 child: Container(
                   width: MediaQuery.of(context).size.width - 40,
-                  height: MediaQuery.of(context).size.height * 0.75,
+                  height: MediaQuery.of(context).size.height * 0.72,
                   decoration: BoxDecoration(
                       color: Color(0xffE3E1E1),
                       borderRadius: BorderRadius.circular(40)),
