@@ -178,16 +178,6 @@ class _SigninState extends State<Signin> {
                       )
                       ],
                     ),
-//                    TextField(
-//                      keyboardType: TextInputType.number,
-//                      controller: _yobController,
-//                      decoration: InputDecoration(
-//                        labelText: "Year of birth",
-//                        labelStyle:  TextStyle(fontSize: 15, color: Colors.black),
-//                        border: InputBorder.none
-//                      ),
-//                      
-//                    ),
                         GestureDetector(
                           onTap: (){
                             DatePicker.showDatePicker(context,

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:kene/database/db.dart';
 import 'package:kene/utils/stylesguide.dart';
@@ -68,7 +70,7 @@ class _AddonsState extends State<Addons> {
                       padding: EdgeInsets.symmetric(horizontal: 20),
                       child: TextFormField(
                         controller: _meterController,
-                        keyboardType: TextInputType.number,
+                        keyboardType: Platform.isAndroid ? TextInputType.number: TextInputType.text,
                         decoration: InputDecoration(
                             labelText: "Enter meter number",
                             labelStyle: label
