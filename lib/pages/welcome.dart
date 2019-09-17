@@ -13,6 +13,7 @@ class Welcome extends StatefulWidget {
 class _WelcomState extends State<Welcome> {
   PageController _pageController = PageController(initialPage: 0);
 
+  int sizeOfPages = 0;
   int _currentPage = 0;
   @override
   Widget build(BuildContext context) {
@@ -65,26 +66,25 @@ class _WelcomState extends State<Welcome> {
               Container(
                   height: MediaQuery.of(context).size.height * 0.85,
                   child: StreamBuilder(
-                    stream: Firestore.instance.collection("settings/welcome/pages").snapshots(),
-                    builder: (context, snapshot){
-                        if(snapshot.hasData){
-                            return PageView(
-                    physics: ClampingScrollPhysics(),
-                    controller: _pageController,
-                    onPageChanged: (page) {
-                      setState(() {
-                        _currentPage = page;
-                      });
-                    },
-                    children: <Widget>[
-                      pageViewItem(context, snapshot.data.documents[0]),
-                      pageViewItem(context, snapshot.data.documents[1]),
-                      pageViewItem(context, snapshot.data.documents[2])
-                    ],
-                  );
-                        }
+                    stream: Firestore.instance
+                        .collection("settings/welcome/pages").orderBy("order")
+                        .snapshots(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                         sizeOfPages = snapshot.data.documents.length; //set size of page to len of document snapshots
+                        return PageView(
+                          physics: ClampingScrollPhysics(),
+                          controller: _pageController,
+                          onPageChanged: (page) {
+                            setState(() {
+                              _currentPage = page;
+                            });
+                          },
+                          children: populateWelcomePages(snapshot),
+                        );
+                      }
 
-                        return Container();
+                      return Container();
                     },
                   ))
             ],
@@ -92,11 +92,11 @@ class _WelcomState extends State<Welcome> {
         ),
       ),
       bottomSheet: GestureDetector(
-        onTap: (){
-              Navigator.pushReplacement(context, 
-                      MaterialPageRoute(builder: (context)=> Signin()));
-            },
-              child: _currentPage == 2
+        onTap: () {
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (context) => Signin()));
+        },
+        child: _currentPage == sizeOfPages-1
             ? Container(
                 height: 70,
                 width: double.infinity,
@@ -116,7 +116,7 @@ class _WelcomState extends State<Welcome> {
     return Column(
       children: <Widget>[
         SizedBox(
-          height: MediaQuery.of(context).size.height * 0.1,
+          height: MediaQuery.of(context).size.height * 0.06,
         ),
         SizedBox(
           height: 150,
@@ -131,8 +131,11 @@ class _WelcomState extends State<Welcome> {
         SizedBox(
           height: MediaQuery.of(context).size.height * 0.1,
         ),
-        Text(
-            "${content['text']}",
+        Text("${content['title']}",
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 24, color: Colors.white)),
+
+        Text("${content['text']}",
             textAlign: TextAlign.center,
             style: TextStyle(fontSize: 16, color: Colors.white)),
         SizedBox(
@@ -142,7 +145,7 @@ class _WelcomState extends State<Welcome> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: displayDots(_currentPage),
         ),
-        _currentPage != 2
+        _currentPage != sizeOfPages-1
             ? Expanded(
                 child: Align(
                   alignment: FractionalOffset.bottomRight,
@@ -176,7 +179,7 @@ class _WelcomState extends State<Welcome> {
   displayDots(activeIndex) {
     List<Widget> tmp = [];
 
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < sizeOfPages; i++) {
       tmp.add(AnimatedContainer(
         duration: Duration(milliseconds: 400),
         margin: EdgeInsets.only(right: 5),
@@ -188,6 +191,17 @@ class _WelcomState extends State<Welcome> {
               _currentPage == i ? 5 : 3,
             )),
       ));
+    }
+
+    return tmp;
+  }
+
+  List<Widget> populateWelcomePages(snapshot) {
+    List<Widget> tmp = [];
+    for (int i = 0; i < snapshot.data.documents.length; i++) {
+      tmp.add(
+        pageViewItem(context, snapshot.data.documents[i]),
+      );
     }
 
     return tmp;
