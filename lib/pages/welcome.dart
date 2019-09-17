@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:kene/auth/signin.dart';
@@ -63,7 +64,11 @@ class _WelcomState extends State<Welcome> {
               ),
               Container(
                   height: MediaQuery.of(context).size.height * 0.85,
-                  child: PageView(
+                  child: StreamBuilder(
+                    stream: Firestore.instance.collection("settings/welcome/pages").snapshots(),
+                    builder: (context, snapshot){
+                        if(snapshot.hasData){
+                            return PageView(
                     physics: ClampingScrollPhysics(),
                     controller: _pageController,
                     onPageChanged: (page) {
@@ -72,10 +77,15 @@ class _WelcomState extends State<Welcome> {
                       });
                     },
                     children: <Widget>[
-                      pageViewItem(context),
-                      pageViewItem(context),
-                      pageViewItem(context)
+                      pageViewItem(context, snapshot.data.documents[0]),
+                      pageViewItem(context, snapshot.data.documents[1]),
+                      pageViewItem(context, snapshot.data.documents[2])
                     ],
+                  );
+                        }
+
+                        return Container();
+                    },
                   ))
             ],
           ),
@@ -102,7 +112,7 @@ class _WelcomState extends State<Welcome> {
     );
   }
 
-  Column pageViewItem(BuildContext context) {
+  Column pageViewItem(BuildContext context, content) {
     return Column(
       children: <Widget>[
         SizedBox(
@@ -113,8 +123,8 @@ class _WelcomState extends State<Welcome> {
           width: 150,
           child:
               // Text("Nokanda", style: TextStyle(fontSize: 30, color: Colors.white),)
-              Image.asset(
-            "assets/images/sendmoney.png",
+              Image.network(
+            "${content['image']}",
             fit: BoxFit.cover,
           ),
         ),
@@ -122,7 +132,7 @@ class _WelcomState extends State<Welcome> {
           height: MediaQuery.of(context).size.height * 0.1,
         ),
         Text(
-            "Send mobile money to a number on your phone easily without typing it out",
+            "${content['text']}",
             textAlign: TextAlign.center,
             style: TextStyle(fontSize: 16, color: Colors.white)),
         SizedBox(

@@ -30,30 +30,41 @@ class _SettingsState extends State<Settings> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back_ios,
-            color: Colors.black,
-          ),
-          onPressed: () => Navigator.pop(context),
-        ),
-        backgroundColor: Colors.white,
-        title: Text(
-          "Settings",
-          
-          style: TextStyle(color: Colors.black),
-        ),
-      ),
       body: Container(
           height: MediaQuery.of(context).size.height,
           child: Column(
             children: <Widget>[
+              Container(
+                height: MediaQuery.of(context).size.height*0.3,
+                color: Colors.orange,
+                child: Row(
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.only(left:0),
+                      child: IconButton(
+                        icon: Icon(
+                          Icons.arrow_back_ios,
+                          color: Colors.white,
+                        ),
+                        onPressed: () => Navigator.pop(context),
+                      ),
+                    ),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width*0.1,
+                    ),
+
+                    Text("Settings", style:TextStyle(
+                      color:Colors.white,
+                      fontSize:28
+                    ))
+                  ],
+                ),
+              ),
               Padding(
-                padding: const EdgeInsets.only(left:3.0, top:10),
+                padding: const EdgeInsets.only(left: 3.0, top: 10),
                 child: Container(
                   width: MediaQuery.of(context).size.width - 40,
-                  height: MediaQuery.of(context).size.height * 0.75,
+                  height: MediaQuery.of(context).size.height * 0.68,
                   child: ListView(
                     children: <Widget>[
                       GestureDetector(
@@ -115,10 +126,10 @@ class _SettingsState extends State<Settings> {
                         ),
                       ),
                       SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.25,
+                        height: MediaQuery.of(context).size.height * 0.2,
                       ),
                       Padding(
-                        padding: EdgeInsets.only(left: 20),
+                        padding: EdgeInsets.only(left: 0),
                         child: Text(
                           packageInfo != null
                               ? "Version: ${packageInfo.version.toString() + "+" + packageInfo.buildNumber}"

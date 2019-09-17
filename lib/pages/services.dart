@@ -530,7 +530,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
               child: Padding(
                 padding: EdgeInsets.symmetric(vertical: 10),
                 child: TextFormField(
-//        keyboardType: TextInputType.number,
+                keyboardType: TextInputType.number,
                   controller: controller,
                   decoration: InputDecoration(
                       labelText: "$label",
@@ -668,6 +668,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
         margin: EdgeInsets.only(bottom: 10),
         height: 70,
         decoration: BoxDecoration(
+          // border: Border.all(color: widget.primaryColor),
             color: Colors.white, borderRadius: BorderRadius.circular(40)),
         child: Padding(
           padding: const EdgeInsets.only(left: 20.0, top: 10, bottom: 10),

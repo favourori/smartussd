@@ -246,14 +246,14 @@ class _SigninState extends State<Signin> {
                   ),
 
                   Padding(
-                    padding: EdgeInsets.only(top:20),
+                    padding: EdgeInsets.only(top:30),
                     child: !isSignUp ? GestureDetector(
                       onTap: (){
                         setState(() {
                           isSignUp = true;
                         });
                       },
-                      child: Text("Don't have an account? Signup", textAlign: TextAlign.center,),
+                      child: Text("Don't have an account? Click here to Signup", textAlign: TextAlign.center,),
                     ):
 
                     GestureDetector(
@@ -262,7 +262,7 @@ class _SigninState extends State<Signin> {
                           isSignUp = false;
                         });
                       },
-                      child: Text("Already have an account? Login", textAlign: TextAlign.center,),
+                      child: Text("Already have an account? Click here to Login", textAlign: TextAlign.center,),
                     )
                     ,
                   )
