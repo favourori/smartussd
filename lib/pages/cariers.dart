@@ -50,9 +50,10 @@ class _CarriersState extends State<Carriers> {
         double.parse(minimumSupportedVersion.split("+")[0].split(".").join());
     double minBuild = double.parse(minimumSupportedVersion.split("+")[1]);
 
-    if (phoneVersion < minVersion || phoneBuild < minBuild) {
+    if (phoneVersion < minVersion || (phoneVersion == minVersion && phoneBuild < minBuild)) {
       return true;
     }
+   
 
     return false;
   }
