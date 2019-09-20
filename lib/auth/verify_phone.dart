@@ -1,4 +1,5 @@
 import 'package:flushbar/flushbar.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -11,8 +12,10 @@ class PhoneVerify extends StatefulWidget {
   final analytics;
   final observer;
   final signInPhone;
-
-  PhoneVerify({this.analytics, this.observer, this.signInPhone});
+  final verificationId;
+  final pushUserDataToDB;
+  
+  PhoneVerify({this.analytics, this.observer, this.signInPhone, this.verificationId, this.pushUserDataToDB});
   @override
   _PhoneVerifyState createState() => _PhoneVerifyState();
 }
@@ -26,6 +29,48 @@ class _PhoneVerifyState extends State<PhoneVerify>
 
   bool isAuthenticating = true;
 
+
+  /// SIGN USER IN AFTER PHONE VERIFICATION
+  Future<AuthResult> signUserIn(AuthCredential user) async {
+    AuthResult signedInUser = await _auth.signInWithCredential(user);
+    return signedInUser;
+  }
+
+  signInPhone(code) async {
+    AuthCredential credential;
+    try {
+      credential = PhoneAuthProvider.getCredential(
+      verificationId: widget.verificationId,
+      smsCode: code,
+    );
+    } catch (e) {
+      print("error getting credentials");
+    }
+    // AuthResult res = await 
+    signUserIn(credential).then((res){
+        //call push to database from signin
+        widget.pushUserDataToDB(res);
+    }).catchError((err){
+        //reset back button click and reset text input
+        setState(() {
+          isBtnClicked = false;
+          code = "";
+        });
+
+        showDialog(
+          context: context,
+          builder: (context){
+            return AlertDialog(
+              content: Text("Error, please confirm code and try again!!"),
+            );
+          }
+        );
+    });
+
+    return 1;
+    
+  }
+
   durationCount() {
     var duration = Duration(seconds: 10);
     Future.delayed(duration).then((f) {
@@ -38,7 +83,6 @@ class _PhoneVerifyState extends State<PhoneVerify>
   @override
   void initState() {
     super.initState();
-
     durationCount();
   }
 
@@ -112,7 +156,7 @@ class _PhoneVerifyState extends State<PhoneVerify>
                                 isBtnClicked = true;
                               });
 
-                              widget.signInPhone(code);
+                              signInPhone(code);
 
 //                       FirebaseAuth.instance.currentUser().then((user) {
 //                    if (user != null) {
@@ -135,13 +179,19 @@ class _PhoneVerifyState extends State<PhoneVerify>
                             width: MediaQuery.of(context).size.width,
                             height: 50,
                             child: Center(
-                                child: Text(
-                              !isBtnClicked ? "Verify" : "Verifying ...",
+                                child: !isBtnClicked ?  Text(
+                              "Verify",
                               style: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
                               ),
-                            )),
+                            ):
+                            
+                            CupertinoActivityIndicator(
+                                // animating: true,
+                                radius: 15,
+                                  // backgroundColor: Colors.white,
+                                )),
                           ),
                         )
                       ],
