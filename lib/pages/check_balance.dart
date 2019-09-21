@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:kene/utils/functions.dart';
 import 'package:kene/utils/stylesguide.dart';
@@ -18,7 +20,7 @@ class CheckBalance extends StatelessWidget {
 
               TextFormField(
                 controller: _textController,
-                keyboardType: TextInputType.number,
+                keyboardType: Platform.isAndroid ? TextInputType.number: TextInputType.text,
                 decoration: InputDecoration(
                   
                 ),

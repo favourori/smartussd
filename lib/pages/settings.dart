@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:kene/control.dart';
 import 'package:kene/pages/save_accounts.dart';
 import 'package:kene/widgets/custom_nav.dart';
-// import 'package:advanced_share/advanced_share.dart';
+import 'package:advanced_share/advanced_share.dart';
 import 'package:package_info/package_info.dart';
 
 class Settings extends StatefulWidget {
@@ -86,14 +86,14 @@ class _SettingsState extends State<Settings> {
                       ),
                       GestureDetector(
                         onTap: () {
-//                           AdvancedShare.whatsapp(
-//                             msg:
-//                                 "Hi!! \nHave you heard of Nokanda ? \nIt saves you alot of time using mobile money and USSD Services. \nTry it out ) \n https://play.google.com/store/apps/details?id=com.hexakomb.nokanda",
-//                             url: "",
-//                           ).then((response) {
-// //                            handleResponse(response, appName: "Whatsapp");
-//                             print("Shared on whatsapp");
-//                           });
+                          AdvancedShare.whatsapp(
+                            msg:
+                                "Hi!! \nHave you heard of Nokanda ? \nIt saves you alot of time using mobile money and USSD Services. \nTry it out ) \n https://play.google.com/store/apps/details?id=com.hexakomb.nokanda",
+                            url: "",
+                          ).then((response) {
+//                            handleResponse(response, appName: "Whatsapp");
+                            print("Shared on whatsapp");
+                          });
                         },
                         child: ListTile(
                           leading: Icon(

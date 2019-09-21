@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flushbar/flushbar.dart';
@@ -79,7 +81,7 @@ class _SaveAccountState extends State<SaveAccount> {
                       Expanded(
                           flex: 8,
                           child: TextField(
-                            keyboardType: TextInputType.number,
+                            keyboardType: Platform.isAndroid ? TextInputType.number: TextInputType.text,
                             controller: _numberController,
                             decoration: InputDecoration(
                                 hintText: "Enter number",
