@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_ml_vision/firebase_ml_vision.dart';
+// import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:kene/pages/cariers.dart';
 import 'package:kene/pages/save_accounts.dart';
@@ -12,6 +12,7 @@ import 'package:kene/utils/functions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:kene/utils/stylesguide.dart';
 import 'package:kene/widgets/custom_nav.dart';
 import 'package:native_contact_picker/native_contact_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -35,11 +36,28 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
   static const platform = const MethodChannel('com.kene.momouusd');
   scrollListener() {}
 
+ 
   GlobalKey _formKey = GlobalKey<FormState>();
   ScrollController _listViewController = new ScrollController();
 
   TextEditingController _amountController = TextEditingController();
   TextEditingController _recipientController = TextEditingController();
+
+   bool showSubmit = false;
+  _recipientControllerListener(){
+    if(_recipientController.text == null ||_recipientController.text.isEmpty){
+        setState(() {
+          showSubmit = false;
+        });
+    }
+
+    else{
+
+      setState(() {
+          showSubmit = true;
+        });
+    }
+  }
 
   String uid = "";
 
@@ -66,58 +84,58 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
     });
 
     if (_image != null) {
-      mlkit(_image);
+      // mlkit(_image);
     }
   }
 
   ///function for processing image taken and extracting the pin needed
-  mlkit(_image) async {
-    final FirebaseVisionImage visionImage =
-        FirebaseVisionImage.fromFile(_image);
-    final BarcodeDetector barcodeDetector =
-        FirebaseVision.instance.barcodeDetector();
-    final TextRecognizer textRecognizer =
-        FirebaseVision.instance.textRecognizer();
+  // mlkit(_image) async {
+  //   final FirebaseVisionImage visionImage =
+  //       FirebaseVisionImage.fromFile(_image);
+  //   final BarcodeDetector barcodeDetector =
+  //       FirebaseVision.instance.barcodeDetector();
+  //   final TextRecognizer textRecognizer =
+  //       FirebaseVision.instance.textRecognizer();
 
-    final List<Barcode> barcodes =
-        await barcodeDetector.detectInImage(visionImage);
-    final VisionText visionText =
-        await textRecognizer.processImage(visionImage);
+  //   final List<Barcode> barcodes =
+  //       await barcodeDetector.detectInImage(visionImage);
+  //   final VisionText visionText =
+  //       await textRecognizer.processImage(visionImage);
 
-    String card = "*130*";
-    String text = visionText.text;
-    for (TextBlock block in visionText.blocks) {
-      final String text = block.text;
+  //   String card = "*130*";
+  //   String text = visionText.text;
+  //   for (TextBlock block in visionText.blocks) {
+  //     final String text = block.text;
 
-      //using the string voucher to detect pin
-      if (isCardPinNext) {
-        card += text;
-        setState(() {
-          isCardPinNext = false;
-        });
-      }
+  //     //using the string voucher to detect pin
+  //     if (isCardPinNext) {
+  //       card += text;
+  //       setState(() {
+  //         isCardPinNext = false;
+  //       });
+  //     }
 
-      List splitText = text.split(" ");
-      if (splitText.length >= 3 && splitText.length <= 4) {
-        int c = 0;
-        for (var item in splitText) {
-          if (isNumeric(item)) {
-            c += 1;
-          }
-        }
-        if (c == splitText.length) {
-          card += text;
-        }
-      }
-    }
+  //     List splitText = text.split(" ");
+  //     if (splitText.length >= 3 && splitText.length <= 4) {
+  //       int c = 0;
+  //       for (var item in splitText) {
+  //         if (isNumeric(item)) {
+  //           c += 1;
+  //         }
+  //       }
+  //       if (c == splitText.length) {
+  //         card += text;
+  //       }
+  //     }
+  //   }
 
-    print(card);
-    sendCode(platform, card, _amountController.text, _recipientController.text);
-    sendAnalytics(widget.analytics, serviceLable + "_sent", null);
-    setState(() {
-      cameraBtnClicked = false;
-    });
-  }
+  //   print(card);
+  //   sendCode(platform, card, _amountController.text, _recipientController.text);
+  //   sendAnalytics(widget.analytics, serviceLable + "_sent", null);
+  //   setState(() {
+  //     cameraBtnClicked = false;
+  //   });
+  // }
 
   bool isNumeric(String str) {
     if (str == null) {
@@ -130,6 +148,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
   void initState() {
     super.initState();
 
+    _recipientController.addListener(_recipientControllerListener);
     setState(() {
       headTitle = widget.carrierTitle;
     });
@@ -151,6 +170,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // resizeToAvoidBottomInset: true,
       body: Container(
         height: MediaQuery.of(context).size.height,
         child: Stack(
@@ -176,38 +196,55 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                     width: MediaQuery.of(context).size.width,
                     child: Row(
                       children: <Widget>[
-                        Align(
-                          alignment: Alignment.topLeft,
-                          child: !showActionSection
-                              ? IconButton(
-                                  onPressed: () {
-                                    Navigator.push(
-                                        context,
-                                        CustomPageRoute(
-                                            navigateTo: Carriers()));
-                                  },
-                                  icon: Icon(
-                                    Icons.home,
-                                    color: Colors.white,
-                                    size: 30,
+                        Expanded(
+                          flex: 1,
+                          child: Align(
+                            alignment: Alignment.topLeft,
+                            child: !showActionSection
+                                ? IconButton(
+                                    onPressed: () {
+                                      Navigator.push(
+                                          context,
+                                          CustomPageRoute(
+                                              navigateTo: Carriers()));
+                                    },
+                                    icon: Icon(
+                                      Icons.home,
+                                      color: Colors.white,
+                                      size: 30,
+                                    ),
+                                  )
+                                : IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        showActionSection = false;
+                                        headTitle = widget.carrierTitle;
+                                        _amountController.text = "";
+                                        _recipientController.text = "";
+                                        cameraBtnClicked = false;
+                                      });
+                                    },
+                                    icon: Icon(
+                                      Icons.arrow_back_ios,
+                                      color: Colors.white,
+                                      size: 30,
+                                    ),
                                   ),
-                                )
-                              : IconButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      showActionSection = false;
-                                      headTitle = widget.carrierTitle;
-                                      _amountController.text = "";
-                                      _recipientController.text = "";
-                                      cameraBtnClicked = false;
-                                    });
-                                  },
-                                  icon: Icon(
-                                    Icons.arrow_back_ios,
-                                    color: Colors.white,
-                                    size: 30,
-                                  ),
-                                ),
+                          ),
+                        ),
+                        Expanded(
+                          flex: 1,
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: Text(
+                              "Nokanda",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 24,
+                                fontWeight: FontWeight.w900,
+                              ),
+                            ),
+                          ),
                         ),
                         Expanded(
                           flex: 1,
@@ -219,7 +256,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                                     CustomPageRoute(navigateTo: Settings()));
                               },
                               icon: Icon(
-                                Icons.settings,
+                                Icons.more_vert,
                                 color: Colors.white,
                                 size: 30,
                               ),
@@ -229,14 +266,14 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                       ],
                     ),
                   ),
+                  SizedBox(
+                    height: 20,
+                  ),
                   Align(
                     alignment: Alignment.center,
                     child: Text(
                       "$headTitle",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w900,
-                          fontSize: 18),
+                      style: TextStyle(color: Colors.white, fontSize: 14),
                     ),
                   )
                 ],
@@ -287,38 +324,38 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                 ),
               ),
             ),
-            Positioned(
-                top: MediaQuery.of(context).size.height * 0.88,
-                left: MediaQuery.of(context).size.width * 0.75,
-                child: Material(
-                  color: Colors.transparent,
-                  elevation: 14,
-                  child: showActionSection
-                      ? Container(
-                          decoration: BoxDecoration(
-                              color: Color(0xffED7937),
-                              borderRadius: BorderRadius.circular(30)),
-                          height: 60,
-                          width: 60,
-                          child: IconButton(
-                            onPressed: () {
-                              setState(() {
-                                showActionSection = false;
-                                headTitle = widget.carrierTitle;
-                                _amountController.text = "";
-                                _recipientController.text = "";
-                                cameraBtnClicked = false;
-                              });
-                            },
-                            icon: Icon(
-                              Icons.arrow_back,
-                              color: Colors.white,
-                              size: 20,
-                            ),
-                          ),
-                        )
-                      : Container(),
-                )),
+            // Positioned(
+            //     top: MediaQuery.of(context).size.height * 0.88,
+            //     left: MediaQuery.of(context).size.width * 0.75,
+            //     child: Material(
+            //       color: Colors.transparent,
+            //       elevation: 14,
+            //       child: showActionSection
+            //           ? Container(
+            //               decoration: BoxDecoration(
+            //                   color: Color(0xffED7937),
+            //                   borderRadius: BorderRadius.circular(30)),
+            //               height: 60,
+            //               width: 60,
+            //               child: IconButton(
+            //                 onPressed: () {
+            //                   setState(() {
+            //                     showActionSection = false;
+            //                     headTitle = widget.carrierTitle;
+            //                     _amountController.text = "";
+            //                     _recipientController.text = "";
+            //                     cameraBtnClicked = false;
+            //                   });
+            //                 },
+            //                 icon: Icon(
+            //                   Icons.arrow_back,
+            //                   color: Colors.white,
+            //                   size: 20,
+            //                 ),
+            //               ),
+            //             )
+            //           : Container(),
+            //     )),
           ],
         ),
       ),
@@ -339,7 +376,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                 ? textInputContainerAmount("Amount", _amountController)
                 : Container(),
             SizedBox(
-              height: 20,
+              height: 10,
             ),
             needsRecipient
                 ? textInputContainerRecipient(recipientLabel)
@@ -357,7 +394,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                     child: Padding(
                       padding: const EdgeInsets.only(bottom: 10.0),
                       child: Align(
-                        alignment: Alignment.centerRight,
+                        alignment: Alignment.centerLeft,
                         child: Text(
                           "Click to save $serviceLable Number",
                           style: TextStyle(
@@ -373,12 +410,12 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
               height: 10,
             ),
             serviceLable == "LoadAirtime" ? showCameraButton() : Container(),
-            serviceLable != "LoadAirtime"
-                ? Align(
-                    alignment: Alignment.centerLeft,
-                    child: sendButton(),
-                  )
-                : Container(),
+            // serviceLable != "LoadAirtime"
+            //     ? Align(
+            //         alignment: Alignment.centerLeft,
+            //         child: sendButton(),
+            //       )
+            //     : Container(),
             SizedBox(
               height: 100,
             ),
@@ -429,7 +466,8 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
             Container(
               height: 58,
               decoration: BoxDecoration(
-                  color: Color(0xffED7937),
+                  color: widget.primaryColor,
+                  // Color(0xffED7937),
                   borderRadius: BorderRadius.circular(40)),
               child: Center(
                   child: Text(
@@ -482,18 +520,66 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
   Container textInputContainerAmount(
       String label, TextEditingController controller) {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 10),
-      decoration: BoxDecoration(
-          color: Colors.white, borderRadius: BorderRadius.circular(40)),
-      child: TextFormField(
-//        keyboardType: TextInputType.number,
-        controller: controller,
-        decoration: InputDecoration(
-            labelText: "$label",
-            border: InputBorder.none,
-            contentPadding: EdgeInsets.symmetric(horizontal: 20)),
-      ),
-    );
+        // padding: EdgeInsets.symmetric(vertical: 10),
+        decoration: BoxDecoration(
+            color: Colors.white, borderRadius: BorderRadius.circular(40)),
+        child: Row(
+          children: <Widget>[
+            Expanded(
+              flex: 4,
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: 10),
+                child: TextFormField(
+                keyboardType: TextInputType.number,
+                  controller: controller,
+                  decoration: InputDecoration(
+                      labelText: "$label",
+                      border: InputBorder.none,
+                      contentPadding: EdgeInsets.symmetric(horizontal: 20)),
+                ),
+              ),
+            ),
+            label != "Amount" && showSubmit
+                ? Expanded(
+                    flex: 2,
+                    child: GestureDetector(
+                      onTap: () {
+                        sendAnalytics(widget.analytics, serviceLable + "_submit", null);
+                        sendCode(platform, codeToSend, _amountController.text,
+                            _recipientController.text);
+                      },
+                      child: Container(
+                        height: 60,
+                        decoration: BoxDecoration(
+                          color: widget.primaryColor,
+                            // border: Border.all(),
+                            borderRadius: BorderRadius.only(
+                                topRight: Radius.circular(40),
+                                bottomRight: Radius.circular(40))),
+                        child: Row(
+                          children: <Widget>[
+                            Expanded(
+                              flex: 4,
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text("Submit", style: TextStyle(color: Colors.white),),
+                              ),
+                            ),
+                            Expanded(
+                              flex: 2,
+                              child: Padding(
+                                padding: const EdgeInsets.only(right:8.0),
+                                child: Icon(Icons.send, color: Colors.white,),
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  )
+                : Container()
+          ],
+        ));
   }
 
   Container textInputContainerRecipient(String label) {
@@ -582,23 +668,32 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
         margin: EdgeInsets.only(bottom: 10),
         height: 70,
         decoration: BoxDecoration(
+          // border: Border.all(color: widget.primaryColor),
             color: Colors.white, borderRadius: BorderRadius.circular(40)),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
+          padding: const EdgeInsets.only(left: 20.0, top: 10, bottom: 10),
           child: Row(
             children: <Widget>[
               Container(
-                height: 30,
-                width: 30,
+                height: 50,
+                width: 50,
                 child: CachedNetworkImage(
                   imageUrl: list['icon'],
-                  placeholder: (context, url) => new Icon(Icons.album),
-                  errorWidget: (context, url, error) => new Icon(Icons.album),
+                  placeholder: (context, url) => new Icon(
+                    Icons.album,
+                    size: 50,
+                  ),
+                  errorWidget: (context, url, error) => new Icon(
+                    Icons.album,
+                    size: 50,
+                  ),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Text(list['name']),
+              Expanded(
+                              child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Text(list['name']),
+                ),
               )
             ],
           ),

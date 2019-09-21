@@ -11,6 +11,7 @@
         android:name="io.flutter.app.FlutterApplication"
         android:label="Nokanda"
         android:icon="@mipmap/ic_launcher">
+        <!-- <meta-data android:name="firebase_analytics_collection_enabled" android:value="false" /> -->
         <meta-data
             android:name="com.hover.ApiKey"
             android:value="d74c4f2390008ceb9aea240e5f88d9ce"/>

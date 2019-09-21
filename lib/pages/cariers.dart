@@ -1,7 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:kene/pages/services.dart';
 import 'package:kene/pages/settings.dart';
+import 'package:kene/utils/stylesguide.dart';
 import 'package:kene/widgets/custom_nav.dart';
 import 'package:package_info/package_info.dart';
 
@@ -72,50 +74,56 @@ class _CarriersState extends State<Carriers> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
-                  SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.07,
-                  ),
-                  Container(
-                    padding: EdgeInsets.only(right: 15),
-                    child: Align(
-                      alignment: Alignment.topRight,
-                      child: IconButton(
-                        onPressed: () {
-                          Navigator.push(
-                              context, CustomPageRoute(navigateTo: Settings()));
-                        },
-                        icon: Icon(
-                          Icons.settings,
-                          color: Colors.white,
-                          size: 30,
-                        ),
+                  SizedBox(height: 40
+                      // MediaQuery.of(context).size.height * 0.14,
                       ),
+                  Container(
+                      padding: EdgeInsets.only(right: 15),
+                      child: Row(
+                        children: <Widget>[
+                          Expanded(
+                            flex: 1,
+                            child: Align(
+                              alignment: Alignment.center,
+                              child: Padding(
+                                padding: const EdgeInsets.only(left: 20.0),
+                                child: Text(
+                                  "Nokanda",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.w900,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      )),
+                  SizedBox(height: 20
+                      //  MediaQuery.of(context).size.height * 0.05,
+                      ),
+                  Text(
+                    "Choose a service below",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 14,
                     ),
                   ),
-                  SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.06,
-                  ),
-                  Align(
-                    alignment: Alignment.center,
-                    child: Text(
-                      "Choose Service",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w900,
-                          fontSize: 18),
-                    ),
-                  )
+                  // SizedBox(
+                  //   height: MediaQuery.of(context).size.height * 0.06,
+                  // ),
                 ],
               ),
             ),
             Positioned(
-              top: MediaQuery.of(context).size.height * 0.35,
+              top: 130,
+              // MediaQuery.of(context).size.height * 0.35,
               child: Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: Container(
                   width: MediaQuery.of(context).size.width - 40,
-                  height: MediaQuery.of(context).size.height * 0.55,
+                  height: MediaQuery.of(context).size.height * 0.72,
                   decoration: BoxDecoration(
                       color: Color(0xffE3E1E1),
                       borderRadius: BorderRadius.circular(40)),
@@ -145,7 +153,8 @@ class _CarriersState extends State<Carriers> {
                                           snapshot.data.documents[index]
                                               ['primaryColor'],
                                           snapshot
-                                              .data.documents[index].documentID)
+                                              .data.documents[index].documentID,
+                                          "${snapshot.data.documents[index]['icon']}")
                                       : Container();
 //                              Text("${snapshot.data.documents[index].documentID}");
                                 },
@@ -178,7 +187,8 @@ class _CarriersState extends State<Carriers> {
 //  buildServiceListItem("Airtel", Color(0xffED3737), "00002"),
 
   GestureDetector buildServiceListItem(
-      String label, var color, String carrierID) {
+      String label, var color, String carrierID, String icon) {
+    print(icon);
     return GestureDetector(
       onTap: () {
         Navigator.push(
@@ -195,18 +205,46 @@ class _CarriersState extends State<Carriers> {
         margin: EdgeInsets.only(bottom: 10),
         height: 60,
         decoration: BoxDecoration(
-            color: Color(color), borderRadius: BorderRadius.circular(40)),
+            // border: Border.all(color: mainColor),
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(40)),
         child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
-            child: Center(
-              child: Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Text(
-                  label,
-                  style: TextStyle(
-                      color: Colors.white, fontWeight: FontWeight.w900),
+            child: Row(
+              children: <Widget>[
+                SizedBox(
+                  height: 40,
+                  width: 40,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: CachedNetworkImage(
+                      fit: BoxFit.cover,
+                      imageUrl: icon,
+                      placeholder: (context, url) => new Icon(
+                        Icons.album,
+                        size: 40,
+                      ),
+                      errorWidget: (context, url, error) => new Icon(
+                        Icons.album,
+                        size: 40,
+                      ),
+                    ),
+                  ),
                 ),
-              ),
+                Expanded(
+                  flex: 1,
+                  child: Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Text(
+                      label,
+                      style: TextStyle(
+                          color: Colors.black54,
+                          // mainColor,
+                          fontWeight: FontWeight.w900),
+                    ),
+                  ),
+                )
+              ],
             )),
       ),
     );

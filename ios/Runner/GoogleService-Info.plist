@@ -7,7 +7,7 @@
 	<key>REVERSED_CLIENT_ID</key>
 	<string>com.googleusercontent.apps.94989616634-1v2ck46qhmdvaf3eo6gjdbuorp697slc</string>
 	<key>ANDROID_CLIENT_ID</key>
-	<string>94989616634-3util3hacb6j65fh8c6gp8uhag0kcr2n.apps.googleusercontent.com</string>
+	<string>94989616634-v2d24nr2q3uo7fsoc2nlb5o76eosgebl.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
 	<string>AIzaSyBukMIJQE6txB1BF2MhE0eF22g1fUHgJ9k</string>
 	<key>GCM_SENDER_ID</key>
@@ -21,15 +21,15 @@
 	<key>STORAGE_BUCKET</key>
 	<string>kene-6c09d.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
-	<false></false>
+	<false/>
 	<key>IS_ANALYTICS_ENABLED</key>
-	<false></false>
+	<false/>
 	<key>IS_APPINVITE_ENABLED</key>
-	<true></true>
+	<true/>
 	<key>IS_GCM_ENABLED</key>
-	<true></true>
+	<true/>
 	<key>IS_SIGNIN_ENABLED</key>
-	<true></true>
+	<true/>
 	<key>GOOGLE_APP_ID</key>
 	<string>1:94989616634:ios:6f0e8182e02d5aa4</string>
 	<key>DATABASE_URL</key>
