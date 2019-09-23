@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:kene/control.dart';
 import 'package:kene/pages/save_accounts.dart';
 import 'package:kene/widgets/custom_nav.dart';
-import 'package:advanced_share/advanced_share.dart';
+import 'package:advanced_share/advanced_share.dart' show AdvancedShare;
 import 'package:package_info/package_info.dart';
 
 class Settings extends StatefulWidget {
