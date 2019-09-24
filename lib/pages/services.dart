@@ -16,7 +16,9 @@ import 'package:kene/utils/stylesguide.dart';
 import 'package:kene/widgets/custom_nav.dart';
 import 'package:native_contact_picker/native_contact_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-//import 'package:firebase_in_app_messaging/firebase_in_app_messaging.dart';
+import 'package:auto_size_text/auto_size_text.dart';
+
+
 
 class Services extends StatefulWidget {
   final carrierId;
@@ -76,6 +78,10 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
   bool isCardPinNext = false;
   File _image;
   bool cameraBtnClicked = false;
+  bool hasChildren = false;
+
+  String childrenValue = "Select";
+  String parentID = "";
 
   Future getImage() async {
     File image = await ImagePicker.pickImage(source: ImageSource.camera);
@@ -129,7 +135,6 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
       }
     }
 
-    print(card);
     sendCode(platform, card, _amountController.text, _recipientController.text);
     sendAnalytics(widget.analytics, serviceLable + "_sent", null);
     setState(() {
@@ -164,7 +169,8 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
     //call for permissions
     askCallPermission(platform);
 
-//    FirebaseInAppMessaging.instance.triggerEvent("Draft campaign");
+
+//    print(Color(0xffffcc00).value);
   }
 
   @override
@@ -236,13 +242,14 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                           flex: 1,
                           child: Align(
                             alignment: Alignment.center,
-                            child: Text(
+                            child: AutoSizeText(
                               "Nokanda",
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 24,
                                 fontWeight: FontWeight.w900,
                               ),
+                              maxLines: 2,
                             ),
                           ),
                         ),
@@ -324,38 +331,6 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                 ),
               ),
             ),
-            // Positioned(
-            //     top: MediaQuery.of(context).size.height * 0.88,
-            //     left: MediaQuery.of(context).size.width * 0.75,
-            //     child: Material(
-            //       color: Colors.transparent,
-            //       elevation: 14,
-            //       child: showActionSection
-            //           ? Container(
-            //               decoration: BoxDecoration(
-            //                   color: Color(0xffED7937),
-            //                   borderRadius: BorderRadius.circular(30)),
-            //               height: 60,
-            //               width: 60,
-            //               child: IconButton(
-            //                 onPressed: () {
-            //                   setState(() {
-            //                     showActionSection = false;
-            //                     headTitle = widget.carrierTitle;
-            //                     _amountController.text = "";
-            //                     _recipientController.text = "";
-            //                     cameraBtnClicked = false;
-            //                   });
-            //                 },
-            //                 icon: Icon(
-            //                   Icons.arrow_back,
-            //                   color: Colors.white,
-            //                   size: 20,
-            //                 ),
-            //               ),
-            //             )
-            //           : Container(),
-            //     )),
           ],
         ),
       ),
@@ -410,12 +385,9 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
               height: 10,
             ),
             serviceLable == "LoadAirtime" ? showCameraButton() : Container(),
-            // serviceLable != "LoadAirtime"
-            //     ? Align(
-            //         alignment: Alignment.centerLeft,
-            //         child: sendButton(),
-            //       )
-            //     : Container(),
+
+            hasChildren  ? showChildren(parentID) : Container(),
+
             SizedBox(
               height: 100,
             ),
@@ -439,9 +411,11 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                 color: Color(0xffED7937),
                 borderRadius: BorderRadius.circular(40)),
             child: Center(
-              child: Text(
+              child: AutoSizeText(
                 "Submit",
-                style: TextStyle(color: Colors.white),
+                style: TextStyle(color: Colors.white,),
+                minFontSize: 11,
+                maxLines: 2,
               ),
             )));
   }
@@ -512,8 +486,10 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
           decoration: BoxDecoration(
               color: Colors.white, borderRadius: BorderRadius.circular(5)),
           height: 30,
-          width: MediaQuery.of(context).size.width * 0.25,
-          child: Center(child: Text("$label")),
+          child: Padding(
+            padding: const EdgeInsets.only(left:8.0, right: 8.0),
+            child: Center(child: AutoSizeText("$label", minFontSize: 11, maxLines: 3,)),
+          ),
         ));
   }
 
@@ -562,7 +538,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                               flex: 4,
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
-                                child: Text("Submit", style: TextStyle(color: Colors.white),),
+                                child: AutoSizeText("Submit", style: TextStyle(color: Colors.white,), minFontSize: 11, maxLines: 2,),
                               ),
                             ),
                             Expanded(
@@ -640,6 +616,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
   GestureDetector buildServiceListItem(list) {
     return GestureDetector(
       onTap: () {
+//        print(list.documentID);
         setState(() {
           headTitle = list['name'];
           serviceLable = list['label'];
@@ -650,6 +627,8 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
           canSaveLabels = list['canSaveLabels'];
           needsAmount = list['needsAmount'];
           requiresCamera = list["requiresCamera"];
+          hasChildren = list['hasChildren'] != null ? list['hasChildren'] : false;
+          parentID = list.documentID;
         });
         if (!list['requiresInput']) {
           sendCode(platform, codeToSend, _amountController.text,
@@ -785,5 +764,91 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
         )
       ],
     );
+  }
+
+
+  Widget showChildren(parent){
+
+    return StreamBuilder(
+      stream: Firestore.instance.collection("services/${widget.carrierId}/services/$parent/children").orderBy('orderNo').snapshots(),
+      builder: (context, snapshot){
+        return snapshot.hasData && snapshot.data.documents.length > 0 ? Container(
+          child:
+          Column(
+            children: <Widget>[
+              Text("Select below"),
+
+              Padding(
+                padding: EdgeInsets.all(20),
+                child: DropdownButton(
+                  underline: Container(),
+                  icon: Icon(Icons.arrow_drop_down, size: 24, color:widget.primaryColor,),
+                  isExpanded: true,
+                  value: childrenValue,
+                  onChanged: (v){
+                    setState(() {
+                      childrenValue = v;
+                    });
+                  },
+                  items: populateChildren(snapshot.data.documents),
+                ),
+              ),
+
+              SizedBox(height: 20,),
+              GestureDetector(
+                onTap: (){
+
+                  if(childrenValue != "Select"){
+                    sendCode(platform, childrenValue, "", "");
+                  }
+
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                      color: widget.primaryColor,
+                      borderRadius: BorderRadius.circular(40)
+                  ),
+                  height: 50,
+                  width: 150,
+                  child: Center(
+                    child: Text("Submit", style: TextStyle(color: Colors.white),),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ) :
+
+        Container(
+          child: Center(
+            child: Text("Loading ..."),
+          ),
+        );
+      },
+    );
+
+  }
+
+  List<DropdownMenuItem> populateChildren(childrenList){
+    print(childrenList.length);
+    List<DropdownMenuItem> tmp = [];
+
+    tmp.add(
+        DropdownMenuItem(
+        value: "Select",
+        child: Text("Select")
+    )
+    );
+
+    for(int i=0; i < childrenList.length; i++){
+      print(childrenList[i]['name']);
+      tmp.add(DropdownMenuItem(
+        value: "${childrenList[i]['code']}",
+          child: Text("${childrenList[i]['name']}",
+          )
+      ));
+    }
+
+    return tmp;
   }
 }

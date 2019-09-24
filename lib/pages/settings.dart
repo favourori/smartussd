@@ -5,6 +5,8 @@ import 'package:kene/pages/save_accounts.dart';
 import 'package:kene/widgets/custom_nav.dart';
 import 'package:advanced_share/advanced_share.dart';
 import 'package:package_info/package_info.dart';
+import 'package:auto_size_text/auto_size_text.dart';
+
 
 class Settings extends StatefulWidget {
   @override
@@ -53,10 +55,13 @@ class _SettingsState extends State<Settings> {
                       width: MediaQuery.of(context).size.width*0.1,
                     ),
 
-                    Text("Settings", style:TextStyle(
+                    AutoSizeText("Settings", style:TextStyle(
                       color:Colors.white,
-                      fontSize:28
-                    ))
+                      fontSize:28,
+                      
+                    ),
+                    
+                    maxLines: 2,)
                   ],
                 ),
               ),

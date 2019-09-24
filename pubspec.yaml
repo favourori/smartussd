@@ -11,7 +11,7 @@ description: A USSD UI app for Mobile Money services.
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.0.1+0
+version: 1.0.1+9
 
 environment:
   sdk: ">=2.1.0 <3.0.0"
@@ -38,6 +38,7 @@ dependencies:
   package_info: ^0.4.0+6 #for getting the build info of the application
 #  firebase_in_app_messaging: ^0.0.1+3 #for firebase in-app messaging
   shared_preferences: ^0.5.3+4
+  auto_size_text: ^2.1.0
 
 dev_dependencies:
   flutter_test:

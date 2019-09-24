@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flushbar/flushbar.dart';
@@ -61,8 +62,9 @@ class _SaveAccountState extends State<SaveAccount> {
                 SizedBox(
                   width: MediaQuery.of(context).size.width * 0.1,
                 ),
-                Text("Save Accounts",
-                    style: TextStyle(color: Colors.white, fontSize: 28))
+                AutoSizeText("Save Accounts",
+                    style: TextStyle(color: Colors.white, fontSize: 28),
+                    maxLines: 2,)
               ],
             ),
           ),
