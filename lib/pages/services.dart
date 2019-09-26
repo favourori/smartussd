@@ -18,8 +18,6 @@ import 'package:native_contact_picker/native_contact_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 
-
-
 class Services extends StatefulWidget {
   final carrierId;
   final primaryColor;
@@ -38,32 +36,31 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
   static const platform = const MethodChannel('com.kene.momouusd');
   scrollListener() {}
 
- 
   GlobalKey _formKey = GlobalKey<FormState>();
   ScrollController _listViewController = new ScrollController();
 
   TextEditingController _amountController = TextEditingController();
   TextEditingController _recipientController = TextEditingController();
 
-   bool showSubmit = false;
-  _recipientControllerListener(){
-    if(_recipientController.text == null ||_recipientController.text.isEmpty){
-        setState(() {
-          showSubmit = false;
-        });
-    }
-
-    else{
-
+  bool showSubmit = false;
+  _recipientControllerListener() {
+    if (_recipientController.text == null ||
+        _recipientController.text.isEmpty) {
       setState(() {
-          showSubmit = true;
-        });
+        showSubmit = false;
+      });
+    } else {
+      setState(() {
+        showSubmit = true;
+      });
     }
   }
 
   String uid = "";
 
   ///default values that are changed when option clicked
+
+  String collectionURL = "";
   String headTitle = "";
   String codeToSend = "";
   bool needsContact = false;
@@ -169,7 +166,9 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
     //call for permissions
     askCallPermission(platform);
 
-
+    setState(() {
+      collectionURL = "services/${widget.carrierId}/services";
+    });
 //    print(Color(0xffffcc00).value);
   }
 
@@ -177,163 +176,166 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Scaffold(
       // resizeToAvoidBottomInset: true,
-      body: Container(
-        height: MediaQuery.of(context).size.height,
-        child: Stack(
-          children: <Widget>[
-            Container(
-              height: MediaQuery.of(context).size.height * 0.35,
-              decoration: BoxDecoration(
-                  color: widget.primaryColor,
-                  borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(40),
-                      bottomRight: Radius.circular(40))),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  SizedBox(
-                    height: 40,
-                  ),
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 10),
-                    //  decoration: BoxDecoration(
-                    //    border: Border.all()
-                    //  ),
-                    width: MediaQuery.of(context).size.width,
-                    child: Row(
-                      children: <Widget>[
-                        Expanded(
-                          flex: 1,
-                          child: Align(
-                            alignment: Alignment.topLeft,
-                            child: !showActionSection
-                                ? IconButton(
-                                    onPressed: () {
-                                      Navigator.push(
-                                          context,
-                                          CustomPageRoute(
-                                              navigateTo: Carriers()));
-                                    },
-                                    icon: Icon(
-                                      Icons.home,
-                                      color: Colors.white,
-                                      size: 30,
-                                    ),
-                                  )
-                                : IconButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        showActionSection = false;
-                                        headTitle = widget.carrierTitle;
-                                        _amountController.text = "";
-                                        _recipientController.text = "";
-                                        cameraBtnClicked = false;
-                                      });
-                                    },
-                                    icon: Icon(
-                                      Icons.arrow_back_ios,
-                                      color: Colors.white,
-                                      size: 30,
-                                    ),
-                                  ),
-                          ),
-                        ),
-                        Expanded(
-                          flex: 1,
-                          child: Align(
-                            alignment: Alignment.center,
-                            child: AutoSizeText(
-                              "Nokanda",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 24,
-                                fontWeight: FontWeight.w900,
-                              ),
-                              maxLines: 2,
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          flex: 1,
-                          child: Align(
-                            alignment: Alignment.topRight,
-                            child: IconButton(
-                              onPressed: () {
-                                Navigator.push(context,
-                                    CustomPageRoute(navigateTo: Settings()));
-                              },
-                              icon: Icon(
-                                Icons.more_vert,
-                                color: Colors.white,
-                                size: 30,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Align(
-                    alignment: Alignment.center,
-                    child: Text(
-                      "$headTitle",
-                      style: TextStyle(color: Colors.white, fontSize: 14),
-                    ),
-                  )
-                ],
-              ),
-            ),
-            Positioned(
-              top: 130,
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Container(
-                  width: MediaQuery.of(context).size.width - 40,
-                  height: MediaQuery.of(context).size.height * 0.75,
-                  decoration: BoxDecoration(
-                      color: Color(0xffE3E1E1),
-                      borderRadius: BorderRadius.circular(40)),
-                  child: Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: ListView(
-                      controller: _listViewController,
-                      children: <Widget>[
-                        !showActionSection
-                            ? StreamBuilder(
-                                stream: Firestore.instance
-                                    .collection(
-                                        "services/${widget.carrierId}/services")
-                                    .where("isActive", isEqualTo: true)
-                                    .snapshots(),
-                                builder: (context, snapshot) {
-                                  if (!snapshot.hasData) {
-                                    return Center(
-                                        child: Text("Loading services"));
-                                  }
-                                  snapshot.data.documents.sort(
-                                      (DocumentSnapshot a,
-                                              DocumentSnapshot b) =>
-                                          getServiceOrderNo(a)
-                                              .compareTo(getServiceOrderNo(b)));
+      body: GestureDetector(
+        onTap: (){
+          FocusScope.of(context).unfocus();
+        },
+         child: Container(
+           height: MediaQuery.of(context).size.height,
+           child: Stack(
+             children: <Widget>[
+               Container(
+                 height: MediaQuery.of(context).size.height * 0.35,
+                 decoration: BoxDecoration(
+                     color: widget.primaryColor,
+                     borderRadius: BorderRadius.only(
+                         bottomLeft: Radius.circular(40),
+                         bottomRight: Radius.circular(40))),
+                 child: Column(
+                   mainAxisAlignment: MainAxisAlignment.start,
+                   children: <Widget>[
+                     SizedBox(
+                       height: 40,
+                     ),
+                     Container(
+                       padding: EdgeInsets.symmetric(horizontal: 10),
+                       //  decoration: BoxDecoration(
+                       //    border: Border.all()
+                       //  ),
+                       width: MediaQuery.of(context).size.width,
+                       child: Row(
+                         children: <Widget>[
+                           Expanded(
+                             flex: 1,
+                             child: Align(
+                               alignment: Alignment.topLeft,
+                               child: !showActionSection
+                                   ? IconButton(
+                                 onPressed: () {
+                                   Navigator.push(
+                                       context,
+                                       CustomPageRoute(
+                                           navigateTo: Carriers()));
+                                 },
+                                 icon: Icon(
+                                   Icons.home,
+                                   color: Colors.white,
+                                   size: 30,
+                                 ),
+                               )
+                                   : IconButton(
+                                 onPressed: () {
+                                   setState(() {
+                                     showActionSection = false;
+                                     headTitle = widget.carrierTitle;
+                                     _amountController.text = "";
+                                     _recipientController.text = "";
+                                     cameraBtnClicked = false;
+                                   });
+                                 },
+                                 icon: Icon(
+                                   Icons.arrow_back_ios,
+                                   color: Colors.white,
+                                   size: 30,
+                                 ),
+                               ),
+                             ),
+                           ),
+                           Expanded(
+                             flex: 1,
+                             child: Align(
+                               alignment: Alignment.center,
+                               child: AutoSizeText(
+                                 "Nokanda",
+                                 style: TextStyle(
+                                   color: Colors.white,
+                                   fontSize: 24,
+                                   fontWeight: FontWeight.w900,
+                                 ),
+                                 maxLines: 2,
+                               ),
+                             ),
+                           ),
+                           Expanded(
+                             flex: 1,
+                             child: Align(
+                               alignment: Alignment.topRight,
+                               child: IconButton(
+                                 onPressed: () {
+                                   Navigator.push(context,
+                                       CustomPageRoute(navigateTo: Settings()));
+                                 },
+                                 icon: Icon(
+                                   Icons.more_vert,
+                                   color: Colors.white,
+                                   size: 30,
+                                 ),
+                               ),
+                             ),
+                           ),
+                         ],
+                       ),
+                     ),
+                     SizedBox(
+                       height: 20,
+                     ),
+                     Align(
+                       alignment: Alignment.center,
+                       child: Text(
+                         "$headTitle",
+                         style: TextStyle(color: Colors.white, fontSize: 14),
+                       ),
+                     )
+                   ],
+                 ),
+               ),
+               Positioned(
+                 top: 130,
+                 child: Padding(
+                   padding: const EdgeInsets.all(20.0),
+                   child: Container(
+                     width: MediaQuery.of(context).size.width - 40,
+                     height: MediaQuery.of(context).size.height * 0.75,
+                     decoration: BoxDecoration(
+                         color: Color(0xffE3E1E1),
+                         borderRadius: BorderRadius.circular(40)),
+                     child: Padding(
+                       padding: const EdgeInsets.all(10.0),
+                       child: ListView(
+                         controller: _listViewController,
+                         children: <Widget>[
+                           !showActionSection
+                               ? showServices("$collectionURL")
+                               : actionContainer(),
+                         ],
+                       ),
+                     ),
+                   ),
+                 ),
+               ),
+             ],
+           ),
+         ),
+      )
+    );
+  }
 
-                                  return Column(
-                                      children: displayServices(
-                                          snapshot.data.documents));
-                                },
-                              )
-                            : actionContainer(),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
+  StreamBuilder showServices(String collectionLink) {
+    print(collectionLink);
+    return StreamBuilder(
+      stream: Firestore.instance
+          .collection("$collectionLink")
+          .where("isActive", isEqualTo: true)
+          .snapshots(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return Center(child: Text("Loading services"));
+        }
+        snapshot.data.documents.sort((DocumentSnapshot a, DocumentSnapshot b) =>
+            getServiceOrderNo(a).compareTo(getServiceOrderNo(b)));
+
+        return Column(children: displayServices(snapshot.data.documents));
+      },
     );
   }
 
@@ -385,9 +387,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
               height: 10,
             ),
             serviceLable == "LoadAirtime" ? showCameraButton() : Container(),
-
-            hasChildren  ? showChildren(parentID) : Container(),
-
+            hasChildren ? showChildren(parentID) : Container(),
             SizedBox(
               height: 100,
             ),
@@ -413,7 +413,9 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
             child: Center(
               child: AutoSizeText(
                 "Submit",
-                style: TextStyle(color: Colors.white,),
+                style: TextStyle(
+                  color: Colors.white,
+                ),
                 minFontSize: 11,
                 maxLines: 2,
               ),
@@ -487,8 +489,13 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
               color: Colors.white, borderRadius: BorderRadius.circular(5)),
           height: 30,
           child: Padding(
-            padding: const EdgeInsets.only(left:8.0, right: 8.0),
-            child: Center(child: AutoSizeText("$label", minFontSize: 11, maxLines: 3,)),
+            padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+            child: Center(
+                child: AutoSizeText(
+              "$label",
+              minFontSize: 11,
+              maxLines: 3,
+            )),
           ),
         ));
   }
@@ -506,7 +513,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
               child: Padding(
                 padding: EdgeInsets.symmetric(vertical: 10),
                 child: TextFormField(
-                keyboardType: TextInputType.number,
+                  keyboardType: TextInputType.number,
                   controller: controller,
                   decoration: InputDecoration(
                       labelText: "$label",
@@ -520,14 +527,15 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                     flex: 2,
                     child: GestureDetector(
                       onTap: () {
-                        sendAnalytics(widget.analytics, serviceLable + "_submit", null);
+                        sendAnalytics(
+                            widget.analytics, serviceLable + "_submit", null);
                         sendCode(platform, codeToSend, _amountController.text,
                             _recipientController.text);
                       },
                       child: Container(
                         height: 60,
                         decoration: BoxDecoration(
-                          color: widget.primaryColor,
+                            color: widget.primaryColor,
                             // border: Border.all(),
                             borderRadius: BorderRadius.only(
                                 topRight: Radius.circular(40),
@@ -538,14 +546,24 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                               flex: 4,
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
-                                child: AutoSizeText("Submit", style: TextStyle(color: Colors.white,), minFontSize: 11, maxLines: 2,),
+                                child: AutoSizeText(
+                                  "Submit",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                  ),
+                                  minFontSize: 11,
+                                  maxLines: 2,
+                                ),
                               ),
                             ),
                             Expanded(
                               flex: 2,
                               child: Padding(
-                                padding: const EdgeInsets.only(right:8.0),
-                                child: Icon(Icons.send, color: Colors.white,),
+                                padding: const EdgeInsets.only(right: 8.0),
+                                child: Icon(
+                                  Icons.send,
+                                  color: Colors.white,
+                                ),
                               ),
                             )
                           ],
@@ -627,10 +645,16 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
           canSaveLabels = list['canSaveLabels'];
           needsAmount = list['needsAmount'];
           requiresCamera = list["requiresCamera"];
-          hasChildren = list['hasChildren'] != null ? list['hasChildren'] : false;
+          hasChildren =
+              list['hasChildren'] != null ? list['hasChildren'] : false;
           parentID = list.documentID;
         });
-        if (!list['requiresInput']) {
+
+        if (list['hasChildren'] != null && list['hasChildren']) {
+          setState(() {
+            collectionURL = collectionURL + "/" + parentID + "/children";
+          });
+        } else if (!list['requiresInput']) {
           sendCode(platform, codeToSend, _amountController.text,
               _recipientController.text);
         } else {
@@ -647,8 +671,9 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
         margin: EdgeInsets.only(bottom: 10),
         height: 70,
         decoration: BoxDecoration(
-          // border: Border.all(color: widget.primaryColor),
-            color: Colors.white, borderRadius: BorderRadius.circular(40)),
+            // border: Border.all(color: widget.primaryColor),
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(40)),
         child: Padding(
           padding: const EdgeInsets.only(left: 20.0, top: 10, bottom: 10),
           child: Row(
@@ -669,11 +694,13 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                 ),
               ),
               Expanded(
-                              child: Padding(
+                child: Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: Text(list['name']),
                 ),
-              )
+              ),
+
+//              list['hasChildren'] != null && list['hasChildren'] ? Padding(padding: EdgeInsets.all(3), child:  Icon(Icons.arrow_forward_ios, size: 11,),) : Text(""),
             ],
           ),
         ),
@@ -766,87 +793,85 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
     );
   }
 
-
-  Widget showChildren(parent){
-
+  Widget showChildren(parent) {
     return StreamBuilder(
-      stream: Firestore.instance.collection("services/${widget.carrierId}/services/$parent/children").orderBy('orderNo').snapshots(),
-      builder: (context, snapshot){
-        return snapshot.hasData && snapshot.data.documents.length > 0 ? Container(
-          child:
-          Column(
-            children: <Widget>[
-              Text("Select below"),
-
-              Padding(
-                padding: EdgeInsets.all(20),
-                child: DropdownButton(
-                  underline: Container(),
-                  icon: Icon(Icons.arrow_drop_down, size: 24, color:widget.primaryColor,),
-                  isExpanded: true,
-                  value: childrenValue,
-                  onChanged: (v){
-                    setState(() {
-                      childrenValue = v;
-                    });
-                  },
-                  items: populateChildren(snapshot.data.documents),
+      stream: Firestore.instance
+          .collection("services/${widget.carrierId}/services/$parent/children")
+          .orderBy('orderNo')
+          .snapshots(),
+      builder: (context, snapshot) {
+        return snapshot.hasData && snapshot.data.documents.length > 0
+            ? Container(
+                child: Column(
+                  children: <Widget>[
+                    Text("Select below"),
+                    Padding(
+                      padding: EdgeInsets.all(20),
+                      child: DropdownButton(
+                        underline: Container(),
+                        icon: Icon(
+                          Icons.arrow_drop_down,
+                          size: 24,
+                          color: widget.primaryColor,
+                        ),
+                        isExpanded: true,
+                        value: childrenValue,
+                        onChanged: (v) {
+                          setState(() {
+                            childrenValue = v;
+                          });
+                        },
+                        items: populateChildren(snapshot.data.documents),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        if (childrenValue != "Select") {
+                          sendCode(platform, childrenValue, "", "");
+                        }
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                            color: widget.primaryColor,
+                            borderRadius: BorderRadius.circular(40)),
+                        height: 50,
+                        width: 150,
+                        child: Center(
+                          child: Text(
+                            "Submit",
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-
-              SizedBox(height: 20,),
-              GestureDetector(
-                onTap: (){
-
-                  if(childrenValue != "Select"){
-                    sendCode(platform, childrenValue, "", "");
-                  }
-
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                      color: widget.primaryColor,
-                      borderRadius: BorderRadius.circular(40)
-                  ),
-                  height: 50,
-                  width: 150,
-                  child: Center(
-                    child: Text("Submit", style: TextStyle(color: Colors.white),),
-                  ),
+              )
+            : Container(
+                child: Center(
+                  child: Text("Loading ..."),
                 ),
-              ),
-            ],
-          ),
-        ) :
-
-        Container(
-          child: Center(
-            child: Text("Loading ..."),
-          ),
-        );
+              );
       },
     );
-
   }
 
-  List<DropdownMenuItem> populateChildren(childrenList){
+  List<DropdownMenuItem> populateChildren(childrenList) {
     print(childrenList.length);
     List<DropdownMenuItem> tmp = [];
 
-    tmp.add(
-        DropdownMenuItem(
-        value: "Select",
-        child: Text("Select")
-    )
-    );
+    tmp.add(DropdownMenuItem(value: "Select", child: Text("Select")));
 
-    for(int i=0; i < childrenList.length; i++){
+    for (int i = 0; i < childrenList.length; i++) {
       print(childrenList[i]['name']);
       tmp.add(DropdownMenuItem(
-        value: "${childrenList[i]['code']}",
-          child: Text("${childrenList[i]['name']}",
-          )
-      ));
+          value: "${childrenList[i]['code']}",
+          child: Text(
+            "${childrenList[i]['name']}",
+          )));
     }
 
     return tmp;
