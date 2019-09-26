@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-// import 'package:firebase_ml_vision/firebase_ml_vision.dart';
+import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:kene/pages/cariers.dart';
 import 'package:kene/pages/save_accounts.dart';
@@ -90,51 +90,51 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
 
   ///function for processing image taken and extracting the pin needed
   mlkit(_image) async {
-    // final FirebaseVisionImage visionImage =
-    //     FirebaseVisionImage.fromFile(_image);
-    // final BarcodeDetector barcodeDetector =
-    //     FirebaseVision.instance.barcodeDetector();
-    // final TextRecognizer textRecognizer =
-    //     FirebaseVision.instance.textRecognizer();
+    final FirebaseVisionImage visionImage =
+        FirebaseVisionImage.fromFile(_image);
+    final BarcodeDetector barcodeDetector =
+        FirebaseVision.instance.barcodeDetector();
+    final TextRecognizer textRecognizer =
+        FirebaseVision.instance.textRecognizer();
 
-    // final List<Barcode> barcodes =
-    //     await barcodeDetector.detectInImage(visionImage);
-    // final VisionText visionText =
-    //     await textRecognizer.processImage(visionImage);
+    final List<Barcode> barcodes =
+        await barcodeDetector.detectInImage(visionImage);
+    final VisionText visionText =
+        await textRecognizer.processImage(visionImage);
 
-    // String card = "*130*";
-    // String text = visionText.text;
-    // for (TextBlock block in visionText.blocks) {
-    //   final String text = block.text;
+    String card = "*130*";
+    String text = visionText.text;
+    for (TextBlock block in visionText.blocks) {
+      final String text = block.text;
 
-    //   //using the string voucher to detect pin
-    //   if (isCardPinNext) {
-    //     card += text;
-    //     setState(() {
-    //       isCardPinNext = false;
-    //     });
-    //   }
+      //using the string voucher to detect pin
+      if (isCardPinNext) {
+        card += text;
+        setState(() {
+          isCardPinNext = false;
+        });
+      }
 
-    //   List splitText = text.split(" ");
-    //   if (splitText.length >= 3 && splitText.length <= 4) {
-    //     int c = 0;
-    //     for (var item in splitText) {
-    //       if (isNumeric(item)) {
-    //         c += 1;
-    //       }
-    //     }
-    //     if (c == splitText.length) {
-    //       card += text;
-    //     }
-    //   }
-    // }
+      List splitText = text.split(" ");
+      if (splitText.length >= 3 && splitText.length <= 4) {
+        int c = 0;
+        for (var item in splitText) {
+          if (isNumeric(item)) {
+            c += 1;
+          }
+        }
+        if (c == splitText.length) {
+          card += text;
+        }
+      }
+    }
 
-    // print(card);
-    // sendCode(platform, card, _amountController.text, _recipientController.text);
-    // sendAnalytics(widget.analytics, serviceLable + "_sent", null);
-    // setState(() {
-    //   cameraBtnClicked = false;
-    // });
+    print(card);
+    sendCode(platform, card, _amountController.text, _recipientController.text);
+    sendAnalytics(widget.analytics, serviceLable + "_sent", null);
+    setState(() {
+      cameraBtnClicked = false;
+    });
   }
 
   bool isNumeric(String str) {
@@ -724,14 +724,10 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
   displayServices(lists) {
     List<Widget> tmp = [];
     for (var list in lists) {
-      if(list['label'] == "LoadAirtime" && Platform.isIOS){
-        continue;
-      }
-      else{
-        tmp.add(
+              tmp.add(
         buildServiceListItem(list),
       );
-      }
+
     }
 
     return tmp;
