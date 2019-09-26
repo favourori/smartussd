@@ -111,7 +111,13 @@ class _PhoneVerifyState extends State<PhoneVerify>
                   ],
                 ),
               )
-            : Form(
+            :
+
+            GestureDetector(
+              onTap: (){
+                FocusScope.of(context).unfocus();
+              },
+              child: Form(
                 key: _formkey,
                 child: Padding(
                     padding: EdgeInsets.symmetric(horizontal: 20),
@@ -158,15 +164,6 @@ class _PhoneVerifyState extends State<PhoneVerify>
 
                               signInPhone(code);
 
-//                       FirebaseAuth.instance.currentUser().then((user) {
-//                    if (user != null) {
-//                      print("thanks for verifying your phone, welcome");
-//                      Navigator.push(context, CustomPageRoute(navigateTo: Control()));
-//                    } else {
-//                      // Navigator.pop(context);
-//                      widget.signInPhone(code);
-//                    }
-//                  });
                             } else {
                               print("enter number");
                               showFlushBar("Error", "Enter Pin");
@@ -180,23 +177,25 @@ class _PhoneVerifyState extends State<PhoneVerify>
                             height: 50,
                             child: Center(
                                 child: !isBtnClicked ?  Text(
-                              "Verify",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ):
-                            
-                            CupertinoActivityIndicator(
-                                // animating: true,
-                                radius: 15,
+                                  "Verify",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ):
+
+                                CupertinoActivityIndicator(
+                                  // animating: true,
+                                  radius: 15,
                                   // backgroundColor: Colors.white,
                                 )),
                           ),
                         )
                       ],
                     )),
-              ));
+              ),
+            )
+    );
   }
 
   showFlushBar(String title, String message) {
