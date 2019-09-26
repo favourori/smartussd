@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:kene/control.dart';
 import 'package:kene/pages/save_accounts.dart';
 import 'package:kene/widgets/custom_nav.dart';
-// import 'package:advanced_share/advanced_share.dart';
+import 'package:advanced_share/advanced_share.dart';
 import 'package:package_info/package_info.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 
 
 class Settings extends StatefulWidget {
@@ -15,70 +16,72 @@ class Settings extends StatefulWidget {
 }
 
 class _SettingsState extends State<Settings> {
-
   PackageInfo packageInfo;
   @override
   void initState() {
     super.initState();
 
-    PackageInfo.fromPlatform().then((f){ // for getting the package/build/version number on load
+    PackageInfo.fromPlatform().then((f) {
+      // for getting the package/build/version number on load
       setState(() {
         packageInfo = f;
       });
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        height: MediaQuery.of(context).size.height,
-        child: Stack(
-          children: <Widget>[
-            Container(
-              height: MediaQuery.of(context).size.height * 0.25,
-              decoration: BoxDecoration(
-                color: Color(0xffC89191),
-                // borderRadius: BorderRadius.only(
-                // bottomLeft: Radius.circular(40),
-                // bottomRight: Radius.circular(40))
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Align(
-                    alignment: Alignment.center,
-                    child: Text(
-                      "Settings",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
+          height: MediaQuery.of(context).size.height,
+          child: Column(
+            children: <Widget>[
+              Container(
+                height: MediaQuery.of(context).size.height*0.3,
+                color: Colors.orange,
+                child: Row(
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.only(left:0),
+                      child: IconButton(
+                        icon: Icon(
+                          Icons.arrow_back_ios,
                           color: Colors.white,
-                          
-                          fontWeight: FontWeight.w900,
-                          fontSize: 36),
+                        ),
+                        onPressed: () => Navigator.pop(context),
+                      ),
                     ),
-                  )
-                ],
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width*0.1,
+                    ),
+
+                    AutoSizeText("Settings", style:TextStyle(
+                      color:Colors.white,
+                      fontSize:28,
+                      
+                    ),
+                    
+                    maxLines: 2,)
+                  ],
+                ),
               ),
-            ),
-            Positioned(
-              top: MediaQuery.of(context).size.height * 0.25,
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
+              Padding(
+                padding: const EdgeInsets.only(left: 3.0, top: 10),
                 child: Container(
                   width: MediaQuery.of(context).size.width - 40,
-                  height: MediaQuery.of(context).size.height * 0.75,
+                  height: MediaQuery.of(context).size.height * 0.68,
                   child: ListView(
                     children: <Widget>[
                       GestureDetector(
                         onTap: () {
-                           Navigator.push(context, CustomPageRoute(
-                              navigateTo: SaveAccount()
-                            ));
+                          Navigator.push(context,
+                              CustomPageRoute(navigateTo: SaveAccount()));
                         },
                         child: ListTile(
-                          leading: Icon(Icons.add_circle),
+                          leading: Icon(
+                            Icons.add_circle,
+                            color: Colors.orangeAccent,
+                          ),
                           title: Text("Save accounts"),
                           subtitle: Text(
                             "Save your meter numbers etc",
@@ -88,17 +91,20 @@ class _SettingsState extends State<Settings> {
                       ),
                       GestureDetector(
                         onTap: () {
-
-//                           AdvancedShare.whatsapp(msg: "Hi!! \nHave you heard of Nokanda ? \nIt saves you alot of time using mobile money and USSD Services. \nTry it out ) \n https://play.google.com/store/apps/details?id=com.hexakomb.nokanda",
-//                           url: "",
-//                           )
-//                               .then((response) {
-// //                            handleResponse(response, appName: "Whatsapp");
-//                             print("Shared on whatsapp");
-//                           });
+                          AdvancedShare.whatsapp(
+                            msg:
+                                "Hi!! \nHave you heard of Nokanda ? \nIt saves you alot of time using mobile money and USSD Services. \nTry it out ) \n https://play.google.com/store/apps/details?id=com.hexakomb.nokanda",
+                            url: "",
+                          ).then((response) {
+//                            handleResponse(response, appName: "Whatsapp");
+                            print("Shared on whatsapp");
+                          });
                         },
                         child: ListTile(
-                          leading: Icon(Icons.share),
+                          leading: Icon(
+                            Icons.share,
+                            color: Colors.orangeAccent,
+                          ),
                           title: Text("Share on WhatsApp"),
                           subtitle: Text(
                             "Share app with friends",
@@ -108,30 +114,40 @@ class _SettingsState extends State<Settings> {
                       ),
                       GestureDetector(
                         onTap: () {
-                          FirebaseAuth.instance.signOut().then((_){
-                            Navigator.pushReplacement(context, CustomPageRoute(
-                              navigateTo: Control()
-                            ));
+                          FirebaseAuth.instance.signOut().then((_) {
+                            Navigator.pushReplacement(context,
+                                CustomPageRoute(navigateTo: Control()));
                           });
                         },
                         child: ListTile(
-                          leading: Icon(Icons.security),
+                          leading: Icon(
+                            Icons.security,
+                            color: Colors.orangeAccent,
+                          ),
                           title: Text("Logout"),
                           // subtitle: Text("Save your meter numbers etc", style: TextStyle(
                           //   fontSize: 13
                           // ),),
                         ),
                       ),
-                      SizedBox(height: MediaQuery.of(context).size.height * 0.25,),
-                      Padding(padding: EdgeInsets.only(left:20),child: Text(packageInfo != null ? "Version: ${packageInfo.version.toString() + "+" + packageInfo.buildNumber}": "", style: TextStyle(color: Colors.grey),),)
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.2,
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(left: 0),
+                        child: Text(
+                          packageInfo != null
+                              ? "Version: ${packageInfo.version.toString() + "+" + packageInfo.buildNumber}"
+                              : "",
+                          style: TextStyle(color: Colors.grey),
+                        ),
+                      )
                     ],
                   ),
                 ),
-              ),
-            )
-          ],
-        ),
-      ),
+              )
+            ],
+          )),
     );
   }
 }

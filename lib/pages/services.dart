@@ -12,10 +12,11 @@ import 'package:kene/utils/functions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:kene/utils/stylesguide.dart';
 import 'package:kene/widgets/custom_nav.dart';
 import 'package:native_contact_picker/native_contact_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-//import 'package:firebase_in_app_messaging/firebase_in_app_messaging.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 
 class Services extends StatefulWidget {
   final carrierId;
@@ -41,9 +42,25 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
   TextEditingController _amountController = TextEditingController();
   TextEditingController _recipientController = TextEditingController();
 
+  bool showSubmit = false;
+  _recipientControllerListener() {
+    if (_recipientController.text == null ||
+        _recipientController.text.isEmpty) {
+      setState(() {
+        showSubmit = false;
+      });
+    } else {
+      setState(() {
+        showSubmit = true;
+      });
+    }
+  }
+
   String uid = "";
 
   ///default values that are changed when option clicked
+
+  String collectionURL = "";
   String headTitle = "";
   String codeToSend = "";
   bool needsContact = false;
@@ -58,6 +75,10 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
   bool isCardPinNext = false;
   File _image;
   bool cameraBtnClicked = false;
+  bool hasChildren = false;
+
+  String childrenValue = "Select";
+  String parentID = "";
 
   Future getImage() async {
     File image = await ImagePicker.pickImage(source: ImageSource.camera);
@@ -111,7 +132,6 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
       }
     }
 
-    print(card);
     sendCode(platform, card, _amountController.text, _recipientController.text);
     sendAnalytics(widget.analytics, serviceLable + "_sent", null);
     setState(() {
@@ -130,6 +150,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
   void initState() {
     super.initState();
 
+    _recipientController.addListener(_recipientControllerListener);
     setState(() {
       headTitle = widget.carrierTitle;
     });
@@ -145,183 +166,176 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
     //call for permissions
     askCallPermission(platform);
 
-//    FirebaseInAppMessaging.instance.triggerEvent("Draft campaign");
+    setState(() {
+      collectionURL = "services/${widget.carrierId}/services";
+    });
+//    print(Color(0xffffcc00).value);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        height: MediaQuery.of(context).size.height,
-        child: Stack(
-          children: <Widget>[
-            Container(
-              height: MediaQuery.of(context).size.height * 0.35,
-              decoration: BoxDecoration(
-                  color: widget.primaryColor,
-                  borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(40),
-                      bottomRight: Radius.circular(40))),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  SizedBox(
-                    height: 40,
-                  ),
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 10),
-                    //  decoration: BoxDecoration(
-                    //    border: Border.all()
-                    //  ),
-                    width: MediaQuery.of(context).size.width,
-                    child: Row(
-                      children: <Widget>[
-                        Align(
-                          alignment: Alignment.topLeft,
-                          child: !showActionSection
-                              ? IconButton(
-                                  onPressed: () {
-                                    Navigator.push(
-                                        context,
-                                        CustomPageRoute(
-                                            navigateTo: Carriers()));
-                                  },
-                                  icon: Icon(
-                                    Icons.home,
-                                    color: Colors.white,
-                                    size: 30,
-                                  ),
-                                )
-                              : IconButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      showActionSection = false;
-                                      headTitle = widget.carrierTitle;
-                                      _amountController.text = "";
-                                      _recipientController.text = "";
-                                      cameraBtnClicked = false;
-                                    });
-                                  },
-                                  icon: Icon(
-                                    Icons.arrow_back_ios,
-                                    color: Colors.white,
-                                    size: 30,
-                                  ),
-                                ),
-                        ),
-                        Expanded(
-                          flex: 1,
-                          child: Align(
-                            alignment: Alignment.topRight,
-                            child: IconButton(
-                              onPressed: () {
-                                Navigator.push(context,
-                                    CustomPageRoute(navigateTo: Settings()));
-                              },
-                              icon: Icon(
-                                Icons.settings,
-                                color: Colors.white,
-                                size: 30,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Align(
-                    alignment: Alignment.center,
-                    child: Text(
-                      "$headTitle",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w900,
-                          fontSize: 18),
-                    ),
-                  )
-                ],
-              ),
-            ),
-            Positioned(
-              top: 130,
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Container(
-                  width: MediaQuery.of(context).size.width - 40,
-                  height: MediaQuery.of(context).size.height * 0.75,
-                  decoration: BoxDecoration(
-                      color: Color(0xffE3E1E1),
-                      borderRadius: BorderRadius.circular(40)),
-                  child: Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: ListView(
-                      controller: _listViewController,
-                      children: <Widget>[
-                        !showActionSection
-                            ? StreamBuilder(
-                                stream: Firestore.instance
-                                    .collection(
-                                        "services/${widget.carrierId}/services")
-                                    .where("isActive", isEqualTo: true)
-                                    .snapshots(),
-                                builder: (context, snapshot) {
-                                  if (!snapshot.hasData) {
-                                    return Center(
-                                        child: Text("Loading services"));
-                                  }
-                                  snapshot.data.documents.sort(
-                                      (DocumentSnapshot a,
-                                              DocumentSnapshot b) =>
-                                          getServiceOrderNo(a)
-                                              .compareTo(getServiceOrderNo(b)));
+      // resizeToAvoidBottomInset: true,
+      body: GestureDetector(
+        onTap: (){
+          FocusScope.of(context).unfocus();
+        },
+         child: Container(
+           height: MediaQuery.of(context).size.height,
+           child: Stack(
+             children: <Widget>[
+               Container(
+                 height: MediaQuery.of(context).size.height * 0.35,
+                 decoration: BoxDecoration(
+                     color: widget.primaryColor,
+                     borderRadius: BorderRadius.only(
+                         bottomLeft: Radius.circular(40),
+                         bottomRight: Radius.circular(40))),
+                 child: Column(
+                   mainAxisAlignment: MainAxisAlignment.start,
+                   children: <Widget>[
+                     SizedBox(
+                       height: 40,
+                     ),
+                     Container(
+                       padding: EdgeInsets.symmetric(horizontal: 10),
+                       //  decoration: BoxDecoration(
+                       //    border: Border.all()
+                       //  ),
+                       width: MediaQuery.of(context).size.width,
+                       child: Row(
+                         children: <Widget>[
+                           Expanded(
+                             flex: 1,
+                             child: Align(
+                               alignment: Alignment.topLeft,
+                               child: !showActionSection
+                                   ? IconButton(
+                                 onPressed: () {
+                                   Navigator.push(
+                                       context,
+                                       CustomPageRoute(
+                                           navigateTo: Carriers()));
+                                 },
+                                 icon: Icon(
+                                   Icons.home,
+                                   color: Colors.white,
+                                   size: 30,
+                                 ),
+                               )
+                                   : IconButton(
+                                 onPressed: () {
+                                   setState(() {
+                                     showActionSection = false;
+                                     headTitle = widget.carrierTitle;
+                                     _amountController.text = "";
+                                     _recipientController.text = "";
+                                     cameraBtnClicked = false;
+                                   });
+                                 },
+                                 icon: Icon(
+                                   Icons.arrow_back_ios,
+                                   color: Colors.white,
+                                   size: 30,
+                                 ),
+                               ),
+                             ),
+                           ),
+                           Expanded(
+                             flex: 1,
+                             child: Align(
+                               alignment: Alignment.center,
+                               child: AutoSizeText(
+                                 "Nokanda",
+                                 style: TextStyle(
+                                   color: Colors.white,
+                                   fontSize: 24,
+                                   fontWeight: FontWeight.w900,
+                                 ),
+                                 maxLines: 2,
+                               ),
+                             ),
+                           ),
+                           Expanded(
+                             flex: 1,
+                             child: Align(
+                               alignment: Alignment.topRight,
+                               child: IconButton(
+                                 onPressed: () {
+                                   Navigator.push(context,
+                                       CustomPageRoute(navigateTo: Settings()));
+                                 },
+                                 icon: Icon(
+                                   Icons.more_vert,
+                                   color: Colors.white,
+                                   size: 30,
+                                 ),
+                               ),
+                             ),
+                           ),
+                         ],
+                       ),
+                     ),
+                     SizedBox(
+                       height: 20,
+                     ),
+                     Align(
+                       alignment: Alignment.center,
+                       child: Text(
+                         "$headTitle",
+                         style: TextStyle(color: Colors.white, fontSize: 14),
+                       ),
+                     )
+                   ],
+                 ),
+               ),
+               Positioned(
+                 top: 130,
+                 child: Padding(
+                   padding: const EdgeInsets.all(20.0),
+                   child: Container(
+                     width: MediaQuery.of(context).size.width - 40,
+                     height: MediaQuery.of(context).size.height * 0.75,
+                     decoration: BoxDecoration(
+                         color: Color(0xffE3E1E1),
+                         borderRadius: BorderRadius.circular(40)),
+                     child: Padding(
+                       padding: const EdgeInsets.all(10.0),
+                       child: ListView(
+                         controller: _listViewController,
+                         children: <Widget>[
+                           !showActionSection
+                               ? showServices("$collectionURL")
+                               : actionContainer(),
+                         ],
+                       ),
+                     ),
+                   ),
+                 ),
+               ),
+             ],
+           ),
+         ),
+      )
+    );
+  }
 
-                                  return Column(
-                                      children: displayServices(
-                                          snapshot.data.documents));
-                                },
-                              )
-                            : actionContainer(),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            Positioned(
-                top: MediaQuery.of(context).size.height * 0.88,
-                left: MediaQuery.of(context).size.width * 0.75,
-                child: Material(
-                  color: Colors.transparent,
-                  elevation: 14,
-                  child: showActionSection
-                      ? Container(
-                          decoration: BoxDecoration(
-                              color: Color(0xffED7937),
-                              borderRadius: BorderRadius.circular(30)),
-                          height: 60,
-                          width: 60,
-                          child: IconButton(
-                            onPressed: () {
-                              setState(() {
-                                showActionSection = false;
-                                headTitle = widget.carrierTitle;
-                                _amountController.text = "";
-                                _recipientController.text = "";
-                                cameraBtnClicked = false;
-                              });
-                            },
-                            icon: Icon(
-                              Icons.arrow_back,
-                              color: Colors.white,
-                              size: 20,
-                            ),
-                          ),
-                        )
-                      : Container(),
-                )),
-          ],
-        ),
-      ),
+  StreamBuilder showServices(String collectionLink) {
+    print(collectionLink);
+    return StreamBuilder(
+      stream: Firestore.instance
+          .collection("$collectionLink")
+          .where("isActive", isEqualTo: true)
+          .snapshots(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return Center(child: Text("Loading services"));
+        }
+        snapshot.data.documents.sort((DocumentSnapshot a, DocumentSnapshot b) =>
+            getServiceOrderNo(a).compareTo(getServiceOrderNo(b)));
+
+        return Column(children: displayServices(snapshot.data.documents));
+      },
     );
   }
 
@@ -339,7 +353,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                 ? textInputContainerAmount("Amount", _amountController)
                 : Container(),
             SizedBox(
-              height: 20,
+              height: 10,
             ),
             needsRecipient
                 ? textInputContainerRecipient(recipientLabel)
@@ -357,7 +371,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                     child: Padding(
                       padding: const EdgeInsets.only(bottom: 10.0),
                       child: Align(
-                        alignment: Alignment.centerRight,
+                        alignment: Alignment.centerLeft,
                         child: Text(
                           "Click to save $serviceLable Number",
                           style: TextStyle(
@@ -373,12 +387,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
               height: 10,
             ),
             serviceLable == "LoadAirtime" ? showCameraButton() : Container(),
-            serviceLable != "LoadAirtime"
-                ? Align(
-                    alignment: Alignment.centerLeft,
-                    child: sendButton(),
-                  )
-                : Container(),
+            hasChildren ? showChildren(parentID) : Container(),
             SizedBox(
               height: 100,
             ),
@@ -402,9 +411,13 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                 color: Color(0xffED7937),
                 borderRadius: BorderRadius.circular(40)),
             child: Center(
-              child: Text(
+              child: AutoSizeText(
                 "Submit",
-                style: TextStyle(color: Colors.white),
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+                minFontSize: 11,
+                maxLines: 2,
               ),
             )));
   }
@@ -429,7 +442,8 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
             Container(
               height: 58,
               decoration: BoxDecoration(
-                  color: Color(0xffED7937),
+                  color: widget.primaryColor,
+                  // Color(0xffED7937),
                   borderRadius: BorderRadius.circular(40)),
               child: Center(
                   child: Text(
@@ -474,26 +488,92 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
           decoration: BoxDecoration(
               color: Colors.white, borderRadius: BorderRadius.circular(5)),
           height: 30,
-          width: MediaQuery.of(context).size.width * 0.25,
-          child: Center(child: Text("$label")),
+          child: Padding(
+            padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+            child: Center(
+                child: AutoSizeText(
+              "$label",
+              minFontSize: 11,
+              maxLines: 3,
+            )),
+          ),
         ));
   }
 
   Container textInputContainerAmount(
       String label, TextEditingController controller) {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 10),
-      decoration: BoxDecoration(
-          color: Colors.white, borderRadius: BorderRadius.circular(40)),
-      child: TextFormField(
-//        keyboardType: TextInputType.number,
-        controller: controller,
-        decoration: InputDecoration(
-            labelText: "$label",
-            border: InputBorder.none,
-            contentPadding: EdgeInsets.symmetric(horizontal: 20)),
-      ),
-    );
+        // padding: EdgeInsets.symmetric(vertical: 10),
+        decoration: BoxDecoration(
+            color: Colors.white, borderRadius: BorderRadius.circular(40)),
+        child: Row(
+          children: <Widget>[
+            Expanded(
+              flex: 4,
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: 10),
+                child: TextFormField(
+                  keyboardType: TextInputType.number,
+                  controller: controller,
+                  decoration: InputDecoration(
+                      labelText: "$label",
+                      border: InputBorder.none,
+                      contentPadding: EdgeInsets.symmetric(horizontal: 20)),
+                ),
+              ),
+            ),
+            label != "Amount" && showSubmit
+                ? Expanded(
+                    flex: 2,
+                    child: GestureDetector(
+                      onTap: () {
+                        sendAnalytics(
+                            widget.analytics, serviceLable + "_submit", null);
+                        sendCode(platform, codeToSend, _amountController.text,
+                            _recipientController.text);
+                      },
+                      child: Container(
+                        height: 60,
+                        decoration: BoxDecoration(
+                            color: widget.primaryColor,
+                            // border: Border.all(),
+                            borderRadius: BorderRadius.only(
+                                topRight: Radius.circular(40),
+                                bottomRight: Radius.circular(40))),
+                        child: Row(
+                          children: <Widget>[
+                            Expanded(
+                              flex: 4,
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: AutoSizeText(
+                                  "Submit",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                  ),
+                                  minFontSize: 11,
+                                  maxLines: 2,
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              flex: 2,
+                              child: Padding(
+                                padding: const EdgeInsets.only(right: 8.0),
+                                child: Icon(
+                                  Icons.send,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  )
+                : Container()
+          ],
+        ));
   }
 
   Container textInputContainerRecipient(String label) {
@@ -554,6 +634,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
   GestureDetector buildServiceListItem(list) {
     return GestureDetector(
       onTap: () {
+//        print(list.documentID);
         setState(() {
           headTitle = list['name'];
           serviceLable = list['label'];
@@ -564,8 +645,16 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
           canSaveLabels = list['canSaveLabels'];
           needsAmount = list['needsAmount'];
           requiresCamera = list["requiresCamera"];
+          hasChildren =
+              list['hasChildren'] != null ? list['hasChildren'] : false;
+          parentID = list.documentID;
         });
-        if (!list['requiresInput']) {
+
+        if (list['hasChildren'] != null && list['hasChildren']) {
+          setState(() {
+            collectionURL = collectionURL + "/" + parentID + "/children";
+          });
+        } else if (!list['requiresInput']) {
           sendCode(platform, codeToSend, _amountController.text,
               _recipientController.text);
         } else {
@@ -582,24 +671,36 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
         margin: EdgeInsets.only(bottom: 10),
         height: 70,
         decoration: BoxDecoration(
-            color: Colors.white, borderRadius: BorderRadius.circular(40)),
+            // border: Border.all(color: widget.primaryColor),
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(40)),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
+          padding: const EdgeInsets.only(left: 20.0, top: 10, bottom: 10),
           child: Row(
             children: <Widget>[
               Container(
-                height: 30,
-                width: 30,
+                height: 50,
+                width: 50,
                 child: CachedNetworkImage(
                   imageUrl: list['icon'],
-                  placeholder: (context, url) => new Icon(Icons.album),
-                  errorWidget: (context, url, error) => new Icon(Icons.album),
+                  placeholder: (context, url) => new Icon(
+                    Icons.album,
+                    size: 50,
+                  ),
+                  errorWidget: (context, url, error) => new Icon(
+                    Icons.album,
+                    size: 50,
+                  ),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Text(list['name']),
-              )
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Text(list['name']),
+                ),
+              ),
+
+//              list['hasChildren'] != null && list['hasChildren'] ? Padding(padding: EdgeInsets.all(3), child:  Icon(Icons.arrow_forward_ios, size: 11,),) : Text(""),
             ],
           ),
         ),
@@ -690,5 +791,89 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
         )
       ],
     );
+  }
+
+  Widget showChildren(parent) {
+    return StreamBuilder(
+      stream: Firestore.instance
+          .collection("services/${widget.carrierId}/services/$parent/children")
+          .orderBy('orderNo')
+          .snapshots(),
+      builder: (context, snapshot) {
+        return snapshot.hasData && snapshot.data.documents.length > 0
+            ? Container(
+                child: Column(
+                  children: <Widget>[
+                    Text("Select below"),
+                    Padding(
+                      padding: EdgeInsets.all(20),
+                      child: DropdownButton(
+                        underline: Container(),
+                        icon: Icon(
+                          Icons.arrow_drop_down,
+                          size: 24,
+                          color: widget.primaryColor,
+                        ),
+                        isExpanded: true,
+                        value: childrenValue,
+                        onChanged: (v) {
+                          setState(() {
+                            childrenValue = v;
+                          });
+                        },
+                        items: populateChildren(snapshot.data.documents),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        if (childrenValue != "Select") {
+                          sendCode(platform, childrenValue, "", "");
+                        }
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                            color: widget.primaryColor,
+                            borderRadius: BorderRadius.circular(40)),
+                        height: 50,
+                        width: 150,
+                        child: Center(
+                          child: Text(
+                            "Submit",
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              )
+            : Container(
+                child: Center(
+                  child: Text("Loading ..."),
+                ),
+              );
+      },
+    );
+  }
+
+  List<DropdownMenuItem> populateChildren(childrenList) {
+    print(childrenList.length);
+    List<DropdownMenuItem> tmp = [];
+
+    tmp.add(DropdownMenuItem(value: "Select", child: Text("Select")));
+
+    for (int i = 0; i < childrenList.length; i++) {
+      print(childrenList[i]['name']);
+      tmp.add(DropdownMenuItem(
+          value: "${childrenList[i]['code']}",
+          child: Text(
+            "${childrenList[i]['name']}",
+          )));
+    }
+
+    return tmp;
   }
 }

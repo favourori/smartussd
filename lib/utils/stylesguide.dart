@@ -7,6 +7,7 @@ Color primaryColorDark = Colors.black;
 Color secondaryCOlor = Colors.red;
 Color accentCOlor = Colors.red;
 Color pageBackground = Colors.grey[300];
+Color mainColor = Color(0xffED7937);
 
 
 
