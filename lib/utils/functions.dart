@@ -40,7 +40,7 @@ catch(e){
 }
  }
  else{
-   print("not loged in");
+   print("not logged in");
  }
 
 }

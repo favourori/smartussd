@@ -4,6 +4,8 @@
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
+	<key>CFBundleDisplayName</key>
+	<string>Nokanda</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -14,18 +16,29 @@
 	<string>Nokanda</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Needs to access photo library to aid with image to text recognition</string>
-	<key>NSCameraUsageDescription</key>
-	<string>Needs to access camera to aid with image to text recognition</string>
 	<key>CFBundleShortVersionString</key>
 	<string>$(FLUTTER_BUILD_NAME)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.94989616634-hau0r8h34jrlaeq05mblq05s68tqvr3k</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>Needs to access camera to aid with image to text recognition</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Needs to access photo library to aid with image to text recognition</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
@@ -36,22 +49,6 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-
-        <!-- for fireBase auth to work -->
-	 <key>CFBundleURLTypes</key>
-        <array>
-            <dict>
-                <key>CFBundleTypeRole</key>
-                <string>Editor</string>
-                <key>CFBundleURLSchemes</key>
-                <array>
-                    <!-- Insert your reversed client ID here -->
-                    <string>com.googleusercontent.apps.94989616634-1v2ck46qhmdvaf3eo6gjdbuorp697slc</string>
-                </array>
-            </dict>
-        </array>
-        <!-- for fireBase auth to work -->
-
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>

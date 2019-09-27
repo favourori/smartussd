@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:kene/control.dart';
 import 'package:kene/pages/save_accounts.dart';
 import 'package:kene/widgets/custom_nav.dart';
-import 'package:advanced_share/advanced_share.dart';
+import 'package:advanced_share/advanced_share.dart' show AdvancedShare; 
 import 'package:package_info/package_info.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 
@@ -93,7 +93,7 @@ class _SettingsState extends State<Settings> {
                         onTap: () {
                           AdvancedShare.whatsapp(
                             msg:
-                                "Hi!! \nHave you heard of Nokanda ? \nIt saves you alot of time using mobile money and USSD Services. \nTry it out ) \n https://play.google.com/store/apps/details?id=com.hexakomb.nokanda",
+                                "Hi!! \nHave you heard of the new Nokanda app ? \nIt saves you alot of time using mobile money and USSD Services. \nTry it out ) \n https://play.google.com/store/apps/details?id=com.hexakomb.nokanda",
                             url: "",
                           ).then((response) {
 //                            handleResponse(response, appName: "Whatsapp");

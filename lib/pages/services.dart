@@ -93,6 +93,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
 
   ///function for processing image taken and extracting the pin needed
   mlkit(_image) async {
+    print("called");
     final FirebaseVisionImage visionImage =
         FirebaseVisionImage.fromFile(_image);
     final BarcodeDetector barcodeDetector =
@@ -107,9 +108,12 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
 
     String card = "*130*";
     String text = visionText.text;
+    print("text is ");
+    print(text);
+    print(visionText.blocks);
     for (TextBlock block in visionText.blocks) {
       final String text = block.text;
-
+        print("reached");
       //using the string voucher to detect pin
       if (isCardPinNext) {
         card += text;
@@ -133,7 +137,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
     }
 
     sendCode(platform, card, _amountController.text, _recipientController.text);
-    sendAnalytics(widget.analytics, serviceLable + "_sent", null);
+    // sendAnalytics(widget.analytics, serviceLable + "_sent", null);
     setState(() {
       cameraBtnClicked = false;
     });
@@ -242,14 +246,14 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                              ),
                            ),
                            Expanded(
-                             flex: 1,
+                             flex: 2,
                              child: Align(
                                alignment: Alignment.center,
                                child: AutoSizeText(
                                  "Nokanda",
                                  style: TextStyle(
                                    color: Colors.white,
-                                   fontSize: 24,
+                                   fontSize: 20,
                                    fontWeight: FontWeight.w900,
                                  ),
                                  maxLines: 2,
@@ -276,15 +280,19 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                          ],
                        ),
                      ),
-                     SizedBox(
-                       height: 20,
-                     ),
+
                      Align(
                        alignment: Alignment.center,
-                       child: Text(
-                         "$headTitle",
-                         style: TextStyle(color: Colors.white, fontSize: 14),
-                       ),
+                       child: AutoSizeText(
+                                 "$headTitle",
+                                 style: TextStyle(
+                                   color: Colors.white,
+                                   fontSize: 14,
+                                   fontWeight: FontWeight.w500,
+                                 ),
+                                 maxLines: 2,
+                               ),
+
                      )
                    ],
                  ),
@@ -355,10 +363,11 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
             SizedBox(
               height: 10,
             ),
+            needsContact ? chooseContactBtn(recipientLabel) : Container(),
             needsRecipient
                 ? textInputContainerRecipient(recipientLabel)
                 : Container(),
-            needsContact ? chooseContactBtn(recipientLabel) : Container(),
+
             SizedBox(
               height: 20,
             ),
@@ -433,12 +442,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
 
         child: Column(
           children: <Widget>[
-            Center(
-              child: Text("OR"),
-            ),
-            SizedBox(
-              height: 20,
-            ),
+
             Container(
               height: 58,
               decoration: BoxDecoration(
@@ -451,7 +455,14 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                 style:
                     TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
               )),
-            )
+            ),
+            SizedBox(height: 20,),
+            Center(
+              child: Text("Or enter number"),
+            ),
+            SizedBox(
+              height: 10,
+            ),
           ],
         ),
       ),
