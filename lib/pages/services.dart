@@ -17,6 +17,9 @@ import 'package:kene/widgets/custom_nav.dart';
 import 'package:native_contact_picker/native_contact_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+//import 'package:keyboard_visibility/keyboard_visibility.dart';
+
+
 
 class Services extends StatefulWidget {
   final carrierId;
@@ -82,6 +85,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
 
   String childrenValue = "Select";
   String parentID = "";
+
 
   Future getImage() async {
     File image = await ImagePicker.pickImage(source: ImageSource.camera);
@@ -149,6 +153,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
     return double.tryParse(str) != null;
   }
 
+
   @override
   void initState() {
     super.initState();
@@ -175,13 +180,21 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
     setState(() {
       collectionURL = initialCollection;
     });
+
+
+//    KeyboardVisibilityNotification().addNewListener(
+//      onChange: (bool isVisible){
+//          print("keyboard status is $isVisible");
+//      }
+//    );
+
 //    print(Color(0xffffcc00).value);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // resizeToAvoidBottomInset: true,
+//       resizeToAvoidBottomInset: true,
       body: GestureDetector(
         onTap: (){
           FocusScope.of(context).unfocus();
@@ -330,6 +343,10 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                            !showActionSection
                                ? showServices("$collectionURL")
                                : actionContainer(),
+
+                           SizedBox(
+                             height: 100,
+                           ),
                          ],
                        ),
                      ),
@@ -552,7 +569,12 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
               flex: 4,
               child: Padding(
                 padding: EdgeInsets.symmetric(vertical: 10),
-                child: TextFormField(
+                child: TextField(
+                  onTap: (){
+                    if(needsContact){
+                      _listViewController.animateTo(101.5, duration: Duration(microseconds: 1000), curve: Curves.easeIn);
+                    }
+                  },
                   keyboardType: TextInputType.number,
                   controller: controller,
                   decoration: InputDecoration(
@@ -564,56 +586,57 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
             ),
             label != "Amount" && showSubmit
                 ? Expanded(
-                    flex: 2,
-                    child: GestureDetector(
-                      onTap: () {
-                        sendAnalytics(
-                            widget.analytics, serviceLable + "_submit", null);
-                        sendCode(platform, codeToSend, _amountController.text,
-                            _recipientController.text);
-                      },
-                      child: Container(
-                        height: 60,
-                        decoration: BoxDecoration(
-                            color: widget.primaryColor,
-                            // border: Border.all(),
-                            borderRadius: BorderRadius.only(
-                                topRight: Radius.circular(40),
-                                bottomRight: Radius.circular(40))),
-                        child: Row(
-                          children: <Widget>[
-                            Expanded(
-                              flex: 4,
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: AutoSizeText(
-                                  "Submit",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                  ),
-                                  minFontSize: 11,
-                                  maxLines: 2,
-                                ),
-                              ),
+              flex: 2,
+              child: GestureDetector(
+                onTap: () {
+                  sendAnalytics(
+                      widget.analytics, serviceLable + "_submit", null);
+                  sendCode(platform, codeToSend, _amountController.text,
+                      _recipientController.text);
+                },
+                child: Container(
+                  height: 60,
+                  decoration: BoxDecoration(
+                      color: widget.primaryColor,
+                      // border: Border.all(),
+                      borderRadius: BorderRadius.only(
+                          topRight: Radius.circular(40),
+                          bottomRight: Radius.circular(40))),
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(
+                        flex: 4,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: AutoSizeText(
+                            "Submit",
+                            style: TextStyle(
+                              color: Colors.white,
                             ),
-                            Expanded(
-                              flex: 2,
-                              child: Padding(
-                                padding: const EdgeInsets.only(right: 8.0),
-                                child: Icon(
-                                  Icons.send,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            )
-                          ],
+                            minFontSize: 11,
+                            maxLines: 2,
+                          ),
                         ),
                       ),
-                    ),
-                  )
+                      Expanded(
+                        flex: 2,
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 8.0),
+                          child: Icon(
+                            Icons.send,
+                            color: Colors.white,
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            )
                 : Container()
           ],
-        ));
+        ),
+    );
   }
 
   Container textInputContainerRecipient(String label) {

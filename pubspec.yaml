@@ -40,6 +40,7 @@ dependencies:
   shared_preferences: ^0.5.3+4
   firebase_messaging: ^5.1.6
   auto_size_text: ^2.1.0
+#  keyboard_visibility: ^0.5.6 #knowing when the keyboard is up
 
 dev_dependencies:
   flutter_test:
