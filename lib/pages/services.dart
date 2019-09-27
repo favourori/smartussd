@@ -676,7 +676,10 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
       onTap: () {
 
         var hT = headTitleStack;
-        hT.add(list['name']);
+        if(list['requiresInput'] != null && list['requiresInput']){
+          hT.add(list['name']);
+        }
+
         setState(() {
           headTitleStack = hT;
           serviceLable = list['label'];
