@@ -236,13 +236,19 @@ class _CarriersState extends State<Carriers> {
                   flex: 1,
                   child: Padding(
                     padding: const EdgeInsets.all(10.0),
-                    child: Text(
-                      label,
-                      style: TextStyle(
-                          color: Colors.black54,
-                          // mainColor,
-                          fontWeight: FontWeight.w900),
-                    ),
+                    child: ListView(
+                      shrinkWrap: true,
+                      scrollDirection: Axis.horizontal,
+                      children: <Widget>[
+                        Text(
+                          label,
+                          style: TextStyle(
+                              color: Colors.black54,
+                              // mainColor,
+                              fontWeight: FontWeight.w900),
+                        ),
+                      ],
+                    )
                   ),
                 )
               ],
