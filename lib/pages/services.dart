@@ -788,9 +788,18 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
   displayServices(lists) {
     List<Widget> tmp = [];
     for (var list in lists) {
-      tmp.add(
-        buildServiceListItem(list),
-      );
+//      tmp.add(
+//        buildServiceListItem(list),
+//      );
+
+      if(list['label'] == "LoadAirtime" && Platform.isIOS){
+        continue;
+      }
+      else{
+        tmp.add(
+          buildServiceListItem(list),
+        );
+      }
     }
 
     return tmp;
