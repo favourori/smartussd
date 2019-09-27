@@ -573,7 +573,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                 padding: EdgeInsets.symmetric(vertical: 10),
                 child: TextField(
                   onTap: (){
-                    if(needsContact && _listViewController.offset < 101.5){
+                    if(needsContact){
                       _listViewController.animateTo(101.5, duration: Duration(milliseconds: 500), curve: Curves.easeIn);
                     }
                   },
