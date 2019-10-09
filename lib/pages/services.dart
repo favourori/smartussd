@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:kene/database/db.dart';
 import 'package:kene/pages/cariers.dart';
 import 'package:kene/pages/save_accounts.dart';
 import 'package:kene/pages/settings.dart';
@@ -53,6 +54,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
         _recipientController.text.isEmpty) {
       setState(() {
         showSubmit = false;
+        _recipientContactName = "";
       });
     } else {
       setState(() {
@@ -68,7 +70,6 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
 
   List navigationStack = [];
   String collectionURL = "";
-//  String headTitle = "";
   List headTitleStack = [];
   String codeToSend = "";
   bool needsContact = false;
@@ -85,9 +86,15 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
   bool cameraBtnClicked = false;
   bool hasChildren = false;
 
+  String _recipientContactName = "";
+  String pinFound = "";
   String childrenValue = "Select";
   String parentID = "";
+  List<dynamic> savedAccounts = [];
 
+  var _labelFormKey = GlobalKey<FormState>();
+  TextEditingController _labelController = TextEditingController();
+  KDB db = KDB();
 
   Future getImage() async {
     File image = await ImagePicker.pickImage(source: ImageSource.camera);
@@ -141,10 +148,13 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
       }
     }
 
+
+
     sendCode(platform, card, _amountController.text, _recipientController.text);
     sendAnalytics(widget.analytics, serviceLable + "_sent", null);
     setState(() {
       cameraBtnClicked = false;
+      pinFound = card.substring(5,);
     });
   }
 
@@ -400,9 +410,6 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
 
             needsContact ? chooseContactBtn(recipientLabel) : Container(),
 
-//            SizedBox(
-//              height: 10,
-//            ),
 
             needsRecipient
                 ? textInputContainerRecipient(recipientLabel)
@@ -415,7 +422,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                 ? GestureDetector(
                     onTap: () {
                       Navigator.push(
-                          context, CustomPageRoute(navigateTo: SaveAccount()));
+                          context, CustomPageRoute(navigateTo: SaveAccount(label: serviceLable,)));
                     },
                     child: Padding(
                       padding: const EdgeInsets.only(bottom: 10.0),
@@ -446,12 +453,53 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
     );
   }
 
+
+  bool numberNotInSavedAccounts(number){
+      for(int i=0; i < savedAccounts.length; i++){
+        if(number == savedAccounts[i]['number']){
+          return false;
+        }
+      }
+      return true;
+  }
+
   GestureDetector sendButton() {
     return GestureDetector(
         onTap: () {
-          sendAnalytics(widget.analytics, serviceLable + "_submit", null);
-          sendCode(platform, codeToSend, _amountController.text,
-              _recipientController.text);
+          if(canSaveLabels && numberNotInSavedAccounts(_recipientController.text)){
+            showDialog(
+              context: context,
+              builder: (context){
+                return AlertDialog(
+                  title: Text("Would you like to save ${_recipientController.text} for future use ?"),
+                  content: Row(
+                    children: <Widget>[
+                      IconButton(icon: Icon(Icons.cancel, size: 18,), onPressed: (){
+                        print("Cancel");
+                        Navigator.pop(context);
+
+                        //if response is NO, remove dialog box and submit request
+                        sendAnalytics(widget.analytics, serviceLable + "_submit", null);
+                        sendCode(platform, codeToSend, _amountController.text,
+                            _recipientController.text);
+                      }),
+                      IconButton(icon: Icon(Icons.check_box,color: Colors.orangeAccent, size: 18), onPressed: (){}),
+                    ],
+                  ),
+                );
+              }
+            );
+            bool response = false;
+            if (response){
+//              show label field save and send
+            }
+
+          }
+          else{
+            sendAnalytics(widget.analytics, serviceLable + "_submit", null);
+            sendCode(platform, codeToSend, _amountController.text,
+                _recipientController.text);
+          }
         },
         child: Container(
             height: 58,
@@ -506,6 +554,13 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
               ),
                   ]),
             ),
+             Padding(
+               padding:EdgeInsets.only(top:5,
+
+               ), child:Text( _recipientContactName.isNotEmpty ? "Sending to:  $_recipientContactName":"", style: TextStyle(
+                 fontSize: 12
+             ),)
+             ),
 
             SizedBox(
               height: 20,
@@ -591,10 +646,144 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
               flex: 2,
               child: GestureDetector(
                 onTap: () {
-                  sendAnalytics(
-                      widget.analytics, serviceLable + "_submit", null);
-                  sendCode(platform, codeToSend, _amountController.text,
-                      _recipientController.text);
+
+                  if(canSaveLabels && numberNotInSavedAccounts(_recipientController.text)){
+                    bool response = false;
+                    showDialog(
+                        context: context,
+                        builder: (context){
+                          return !response ? AlertDialog(
+                            title: Text("Would you like to save ${_recipientController.text} for future use ?", style: TextStyle(
+                              fontSize: 14
+                            ),),
+                            content: Row(
+                              children: <Widget>[
+                                Expanded(
+                                  flex: 1,
+                                  child: IconButton(icon: Icon(Icons.cancel, color:  Colors.grey, size: 48,), onPressed: (){
+
+                                   //IF RESPONSE IS NO, POP NAVIGATION AND SUBMIT REQUEST
+                                    Navigator.pop(context);
+                                    sendAnalytics(
+                                        widget.analytics, serviceLable + "_submit", null);
+                                    sendCode(platform, codeToSend, _amountController.text,
+                                        _recipientController.text);
+                                  }),
+                                ),
+                                Expanded(
+                                  flex: 1,
+                                  child: IconButton(icon: Icon(Icons.check_box,color: Colors.orangeAccent, size: 48), onPressed: (){
+
+                                    // POP NAVIGATION, AND OPEN DIALOG TO ENTER LABEL. AFTER SAVE, SEND REQUEST
+
+                                    Navigator.pop(context);
+
+                                    showDialog(
+//                                        barrierDismissible: false,
+                                        context: context, builder: (context){
+                                      return AlertDialog(
+                                        content: Form(
+                                            key: _labelFormKey,
+                                            child: Container(
+                                          height: 160,
+                                          child: Column(
+                                            children: <Widget>[
+                                              TextFormField(
+                                                decoration: InputDecoration(
+                                                    labelText: "Enter label e.g home"
+                                                ),
+                                                controller: _labelController,
+                                                validator: (v) => v.isEmpty ? "Label can't be empty" : null,
+
+                                              ),
+                                              SizedBox(height: 10,),
+
+                                              Container(
+                                                height: 48,
+                                                width: double.infinity,
+                                                child: RaisedButton(
+                                                  color: Colors.orangeAccent,
+                                                  // ignore: missing_return
+                                                  onPressed: (){
+                                                    // ignore: missing_return
+                                                    if(_labelFormKey.currentState.validate()){
+                                                      print("save and submit");
+                                                      Map<String, dynamic> data = {
+                                                        "label": _labelController.text,
+                                                        "number": _recipientController.text,
+                                                        "service_name": serviceLable
+                                                      };
+                                                      print(data);
+                                                      var res = db.firestoreAdd("accounts/$uid/data", data);
+                                                      setState(() {
+                                                        _labelController.text = "";
+                                                      });
+
+                                                      Navigator.pop(context);
+                                                      if (res == 1) {
+                                                        return showDialog(
+                                                            barrierDismissible: false,
+                                                            context: context,
+                                                            builder: (context) {
+                                                              return AlertDialog(
+                                                                content: Text("Account saved"),
+                                                                actions: <Widget>[
+                                                                  FlatButton(
+                                                                    onPressed: () {
+                                                                      Navigator.pop(context);
+
+                                                                      sendAnalytics(
+                                                                          widget.analytics, serviceLable + "_submit", null);
+                                                                      sendCode(platform, codeToSend, _amountController.text,
+                                                                          _recipientController.text);
+                                                                    },
+                                                                    child: Text("Okay"),
+                                                                  ),
+                                                                ],
+                                                              );
+                                                            });
+                                                      }
+                                                    }
+                                                  },
+                                                  child: Text("Save", style: TextStyle(color: Colors.white),),
+                                                ),
+                                              )
+                                            ],
+
+                                          ),
+                                        )),
+
+                                      );
+                                    });
+
+
+
+
+
+                                  }),
+                                )
+                              ],
+                            ),
+                          ): Text("yes here");
+                        }
+                    );
+                    
+                    if (response){
+//              show label field save and send
+                    }
+
+                  }
+
+                  else{
+                    sendAnalytics(
+                        widget.analytics, serviceLable + "_submit", null);
+                    sendCode(platform, codeToSend, _amountController.text,
+                        _recipientController.text);
+
+                  }
+
+
+
                 },
                 child: Container(
                   height: 60,
@@ -663,6 +852,8 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                   return Container(
                     child: Text("Loading ..."),
                   );
+
+                savedAccounts = snapshot.data.documents;
                 return snapshot.data.documents.length > 0
                     ? Column(
                         children: <Widget>[
@@ -806,6 +997,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
           number.contains("+250") ? number.substring(3) : number;
       setState(() {
         _recipientController.text = numberToStore;
+        _recipientContactName = contact.fullName;
       });
     }
   }
@@ -866,6 +1058,12 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
             ),
           ),
         ),
+
+        Text(pinFound.isNotEmpty ? "pin: $pinFound":"", style: TextStyle(
+          fontSize: 18,
+          color: Colors.orangeAccent,
+
+        ),),
         cameraBtnClicked
             ? SpinKitFadingFour(
                 color: Colors.orangeAccent,

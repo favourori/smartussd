@@ -8,6 +8,9 @@ import 'package:kene/database/db.dart';
 import 'package:kene/widgets/custom_nav.dart';
 
 class SaveAccount extends StatefulWidget {
+  final String label;
+
+  SaveAccount({this.label});
   @override
   State<StatefulWidget> createState() {
     return _SaveAccountState();
@@ -34,8 +37,14 @@ class _SaveAccountState extends State<SaveAccount> {
         }
       });
     });
-    print(uid);
+
+    if(widget.label != null && widget.label.isNotEmpty){
+      setState(() {
+        category = widget.label;
+      });
+    }
   }
+
 
   @override
   Widget build(BuildContext context) {
