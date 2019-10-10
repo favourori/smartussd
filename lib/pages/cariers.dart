@@ -6,6 +6,9 @@ import 'package:kene/pages/settings.dart';
 import 'package:kene/utils/stylesguide.dart';
 import 'package:kene/widgets/custom_nav.dart';
 import 'package:package_info/package_info.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+
+
 
 class Carriers extends StatefulWidget {
   final analytics;
@@ -20,11 +23,36 @@ class Carriers extends StatefulWidget {
 class _CarriersState extends State<Carriers> {
   String minimumSupportedVersion = '';
   String packageInfo = "";
-//  bool hasOldVersion = false;
+
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+
 
   @override
   void initState() {
     super.initState();
+
+    _firebaseMessaging.requestNotificationPermissions();
+    _firebaseMessaging.configure(
+        onMessage: (Map<String, dynamic> message) async{
+      print("on message: $message");
+      return ;
+    },
+
+    onResume: (Map<String, dynamic> message) async{
+      print("on resume: $message");
+      return ;
+    },
+
+      onLaunch: (Map<String, dynamic> message) async{
+        print("on launch: $message");
+        return ;
+      },
+
+    );
+
+    _firebaseMessaging.getToken().then((token){
+      print("notificaion token is $token");
+    });
 
     Firestore.instance.collection("settings").getDocuments().then((f) {
       setState(() {
