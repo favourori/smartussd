@@ -37,7 +37,9 @@ class Services extends StatefulWidget {
 
 class _ServicesState extends State<Services> with TickerProviderStateMixin {
   static const platform = const MethodChannel('com.kene.momouusd');
-  scrollListener() {}
+  scrollListener() {
+    print(_listViewController.offset);
+  }
 
   GlobalKey _formKey = GlobalKey<FormState>();
   ScrollController _listViewController = new ScrollController();
@@ -572,7 +574,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                 child: TextField(
                   onTap: (){
                     if(needsContact){
-                      _listViewController.animateTo(101.5, duration: Duration(microseconds: 1000), curve: Curves.easeIn);
+                      _listViewController.animateTo(101.5, duration: Duration(milliseconds: 500), curve: Curves.easeIn);
                     }
                   },
                   keyboardType: TextInputType.number,

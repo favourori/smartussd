@@ -39,6 +39,8 @@
 	<string>Needs to access camera to aid with image to text recognition</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Needs to access photo library to aid with image to text recognition</string>
+	<key>LSApplicationCategoryType</key>
+	<string></string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
@@ -58,5 +60,18 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>UIRequiredDeviceCapabilities</key>
+	<array>
+		<dict>
+			<key>telephony</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.94989616634-hau0r8h34jrlaeq05mblq05s68tqvr3k</string>
+			</array>
+		</dict>
+	</array>
+	<key>UIRequiredDeviceCapabilities</key>
+	<string>telephony</string>
 </dict>
 </plist>
