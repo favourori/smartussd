@@ -106,6 +106,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
 
   ///function for processing image taken and extracting the pin needed
   mlkit(_image) async {
+    print("ml kit called");
     final FirebaseVisionImage visionImage =
         FirebaseVisionImage.fromFile(_image);
     final BarcodeDetector barcodeDetector =
@@ -120,6 +121,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
 
     String card = "*130*";
     String text = visionText.text;
+    print("text is $text");
     for (TextBlock block in visionText.blocks) {
       final String text = block.text;
 
@@ -1050,7 +1052,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
 //        buildServiceListItem(list),
 //      );
 
-      if (list['label'] == "LoadAirtime" && Platform.isIOS) {
+      if (list['label'] == "LoadAirtime" && Platform.isIOS && false) {
         continue;
       } else {
         tmp.add(

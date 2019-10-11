@@ -6,6 +6,8 @@ import 'package:kene/widgets/custom_nav.dart';
 import 'package:advanced_share/advanced_share.dart';
 import 'package:package_info/package_info.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:flutter_share_me/flutter_share_me.dart';
+
 
 
 class Settings extends StatefulWidget {
@@ -91,14 +93,18 @@ class _SettingsState extends State<Settings> {
                       ),
                       GestureDetector(
                         onTap: () {
-                          AdvancedShare.whatsapp(
-                            msg:
-                                "Hi!! \nHave you heard of Nokanda ? \nIt saves you alot of time using mobile money and USSD Services. \nTry it out ) \n https://play.google.com/store/apps/details?id=com.hexakomb.nokanda",
-                            url: "",
-                          ).then((response) {
-//                            handleResponse(response, appName: "Whatsapp");
-                            print("Shared on whatsapp");
-                          });
+
+                          print("clicked share on whataspp");
+                          FlutterShareMe()
+                              .shareToWhatsApp(msg: "Hi!! \nHave you heard of Nokanda ? \nIt saves you alot of time using mobile money and USSD Services. \nTry it out ) \n https://play.google.com/store/apps/details?id=com.hexakomb.nokanda", base64Image: "");
+//                          AdvancedShare.whatsapp(
+//                            msg:
+//                                "Hi!! \nHave you heard of Nokanda ? \nIt saves you alot of time using mobile money and USSD Services. \nTry it out ) \n https://play.google.com/store/apps/details?id=com.hexakomb.nokanda",
+//                            url: "",
+//                          ).then((response) {
+////                            handleResponse(response, appName: "Whatsapp");
+//                            print("Shared on whatsapp");
+//                          });
                         },
                         child: ListTile(
                           leading: Icon(
