@@ -519,9 +519,33 @@ class _SigninState extends State<Signin> {
         });
       }
     } else {
-      setState(() {
-        canAuthenticate = true;
-      });
+
+      /// FOR SIGN UP USERS
+      ///check for number and ask to login
+
+      var res = await _firestore
+          .collection("users")
+          .where("phone", isEqualTo: phoneNo)
+          .getDocuments();
+      if (res.documents.length >= 1) {
+
+        showFlushBar("Hey Awesome !!",
+            "This number is already registered, please login");
+        setState(() {
+          isBtnClicked = false;
+          canAuthenticate = false;
+        });
+
+//        setState(() {
+//          canAuthenticate = true;
+//        });
+      } else {
+
+        setState(() {
+          canAuthenticate = true;
+        });
+
+      }
     }
 
 //0781802412

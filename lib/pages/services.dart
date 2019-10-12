@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:kene/database/db.dart';
 import 'package:kene/pages/cariers.dart';
 import 'package:kene/pages/save_accounts.dart';
 import 'package:kene/pages/settings.dart';
@@ -18,8 +19,6 @@ import 'package:native_contact_picker/native_contact_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 //import 'package:keyboard_visibility/keyboard_visibility.dart';
-
-
 
 class Services extends StatefulWidget {
   final carrierId;
@@ -53,6 +52,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
         _recipientController.text.isEmpty) {
       setState(() {
         showSubmit = false;
+        _recipientContactName = "";
       });
     } else {
       setState(() {
@@ -65,10 +65,8 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
 
   ///default values that are changed when option clicked
 
-
   List navigationStack = [];
   String collectionURL = "";
-//  String headTitle = "";
   List headTitleStack = [];
   String codeToSend = "";
   bool needsContact = false;
@@ -85,9 +83,15 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
   bool cameraBtnClicked = false;
   bool hasChildren = false;
 
+  String _recipientContactName = "";
+  String pinFound = "";
   String childrenValue = "Select";
   String parentID = "";
+  List<dynamic> savedAccounts = [];
 
+  var _labelFormKey = GlobalKey<FormState>();
+  TextEditingController _labelController = TextEditingController();
+  KDB db = KDB();
 
   Future getImage() async {
     File image = await ImagePicker.pickImage(source: ImageSource.camera);
@@ -145,6 +149,9 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
     sendAnalytics(widget.analytics, serviceLable + "_sent", null);
     setState(() {
       cameraBtnClicked = false;
+      pinFound = card.substring(
+        5,
+      );
     });
   }
 
@@ -154,7 +161,6 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
     }
     return double.tryParse(str) != null;
   }
-
 
   @override
   void initState() {
@@ -183,7 +189,6 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
       collectionURL = initialCollection;
     });
 
-
 //    KeyboardVisibilityNotification().addNewListener(
 //      onChange: (bool isVisible){
 //          print("keyboard status is $isVisible");
@@ -197,169 +202,160 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Scaffold(
 //       resizeToAvoidBottomInset: true,
-      body: GestureDetector(
-        onTap: (){
-          FocusScope.of(context).unfocus();
-        },
-         child: Container(
-           height: MediaQuery.of(context).size.height,
-           child: Stack(
-             children: <Widget>[
-               Container(
-                 height: MediaQuery.of(context).size.height * 0.35,
-                 decoration: BoxDecoration(
-                     color: widget.primaryColor,
-                     borderRadius: BorderRadius.only(
-                         bottomLeft: Radius.circular(40),
-                         bottomRight: Radius.circular(40))),
-                 child: Column(
-                   mainAxisAlignment: MainAxisAlignment.start,
-                   children: <Widget>[
-                     SizedBox(
-                       height: 40,
-                     ),
-                     Container(
-                       padding: EdgeInsets.symmetric(horizontal: 10),
-                       //  decoration: BoxDecoration(
-                       //    border: Border.all()
-                       //  ),
-                       width: MediaQuery.of(context).size.width,
-                       child: Row(
-                         children: <Widget>[
-                           Expanded(
-                             flex: 2,
-                             child: Align(
-                               alignment: Alignment.topLeft,
-                               child: navigationStack.length > 1 || showActionSection
-                                   ?
+        body: GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+      },
+      child: Container(
+        height: MediaQuery.of(context).size.height,
+        child: Stack(
+          children: <Widget>[
+            Container(
+              height: MediaQuery.of(context).size.height * 0.35,
+              decoration: BoxDecoration(
+                  color: widget.primaryColor,
+                  borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(40),
+                      bottomRight: Radius.circular(40))),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  SizedBox(
+                    height: 40,
+                  ),
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    //  decoration: BoxDecoration(
+                    //    border: Border.all()
+                    //  ),
+                    width: MediaQuery.of(context).size.width,
+                    child: Row(
+                      children: <Widget>[
+                        Expanded(
+                          flex: 2,
+                          child: Align(
+                              alignment: Alignment.topLeft,
+                              child: navigationStack.length > 1 ||
+                                      showActionSection
+                                  ? IconButton(
+                                      onPressed: () {
+                                        if (!showActionSection) {
+                                          navigationStack.removeLast();
 
-                               IconButton(
-                                 onPressed: () {
-
-                                   if(!showActionSection){
-                                     navigationStack.removeLast();
-
-                                     setState(() {
-                                       collectionURL = navigationStack[navigationStack.length - 1];
-
-                                     });
-                                   }
-                                   headTitleStack.removeLast();
-                                   var ht2 = headTitleStack;
-                                   setState(() {
-                                     headTitleStack = ht2;
-                                     showActionSection = false;
-                                     _amountController.text = "";
-                                     _recipientController.text = "";
-                                     cameraBtnClicked = false;
-                                   });
-                                 },
-                                 icon: Icon(
-                                   Icons.arrow_back_ios,
-                                   color: Colors.white,
-                                   size: 30,
-                                 ),
-                               )
-
-                                 :
-
-                                 IconButton(
-                                 onPressed: () {
-                                   Navigator.push(
-                                       context,
-                                       CustomPageRoute(
-                                           navigateTo: Carriers()));
-                                 },
-                                 icon: Icon(
-                                   Icons.home,
-                                   color: Colors.white,
-                                   size: 30,
-                                 ),
-                               )
-
-                             ),
-                           ),
-                           Expanded(
-                             flex: 3,
-                             child: Align(
-                               alignment: Alignment.center,
-                               child: AutoSizeText(
-                                 "Nokanda",
-                                 style: TextStyle(
-                                   color: Colors.white,
-                                   fontSize: 24,
-                                   fontWeight: FontWeight.w900,
-                                 ),
-                                 maxLines: 2,
-                               ),
-                             ),
-                           ),
-                           Expanded(
-                             flex: 2,
-                             child: Align(
-                               alignment: Alignment.topRight,
-                               child: IconButton(
-                                 onPressed: () {
-                                   Navigator.push(context,
-                                       CustomPageRoute(navigateTo: Settings()));
-                                 },
-                                 icon: Icon(
-                                   Icons.more_vert,
-                                   color: Colors.white,
-                                   size: 30,
-                                 ),
-                               ),
-                             ),
-                           ),
-                         ],
-                       ),
-                     ),
-                     SizedBox(
-                       height: 20,
-                     ),
-                     Align(
-                       alignment: Alignment.center,
-                       child: Text(
-                         "${headTitleStack[headTitleStack.length-1]}",
-                         style: TextStyle(color: Colors.white, fontSize: 14),
-                       ),
-                     )
-                   ],
-                 ),
-               ),
-               Positioned(
-                 top: 130,
-                 child: Padding(
-                   padding: const EdgeInsets.all(20.0),
-                   child: Container(
-                     width: MediaQuery.of(context).size.width - 40,
-                     height: MediaQuery.of(context).size.height * 0.75,
-                     decoration: BoxDecoration(
-                         color: Color(0xffE3E1E1),
-                         borderRadius: BorderRadius.circular(40)),
-                     child: Padding(
-                       padding: const EdgeInsets.all(10.0),
-                       child: ListView(
-                         controller: _listViewController,
-                         children: <Widget>[
-                           !showActionSection
-                               ? showServices("$collectionURL")
-                               : actionContainer(),
-
-                           SizedBox(
-                             height: 100,
-                           ),
-                         ],
-                       ),
-                     ),
-                   ),
-                 ),
-               ),
-             ],
-           ),
-         ),
-      )
-    );
+                                          setState(() {
+                                            collectionURL = navigationStack[
+                                                navigationStack.length - 1];
+                                          });
+                                        }
+                                        headTitleStack.removeLast();
+                                        var ht2 = headTitleStack;
+                                        setState(() {
+                                          headTitleStack = ht2;
+                                          showActionSection = false;
+                                          _amountController.text = "";
+                                          _recipientController.text = "";
+                                          cameraBtnClicked = false;
+                                        });
+                                      },
+                                      icon: Icon(
+                                        Icons.arrow_back_ios,
+                                        color: Colors.white,
+                                        size: 30,
+                                      ),
+                                    )
+                                  : IconButton(
+                                      onPressed: () {
+                                        Navigator.push(
+                                            context,
+                                            CustomPageRoute(
+                                                navigateTo: Carriers()));
+                                      },
+                                      icon: Icon(
+                                        Icons.home,
+                                        color: Colors.white,
+                                        size: 30,
+                                      ),
+                                    )),
+                        ),
+                        Expanded(
+                          flex: 3,
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: AutoSizeText(
+                              "Nokanda",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 24,
+                                fontWeight: FontWeight.w900,
+                              ),
+                              maxLines: 2,
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          flex: 2,
+                          child: Align(
+                            alignment: Alignment.topRight,
+                            child: IconButton(
+                              onPressed: () {
+                                Navigator.push(context,
+                                    CustomPageRoute(navigateTo: Settings()));
+                              },
+                              icon: Icon(
+                                Icons.more_vert,
+                                color: Colors.white,
+                                size: 30,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Align(
+                    alignment: Alignment.center,
+                    child: Text(
+                      "${headTitleStack[headTitleStack.length - 1]}",
+                      style: TextStyle(color: Colors.white, fontSize: 14),
+                    ),
+                  )
+                ],
+              ),
+            ),
+            Positioned(
+              top: 130,
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Container(
+                  width: MediaQuery.of(context).size.width - 40,
+                  height: MediaQuery.of(context).size.height * 0.75,
+                  decoration: BoxDecoration(
+                      color: Color(0xffE3E1E1),
+                      borderRadius: BorderRadius.circular(40)),
+                  child: Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: ListView(
+                      controller: _listViewController,
+                      children: <Widget>[
+                        !showActionSection
+                            ? showServices("$collectionURL")
+                            : actionContainer(),
+                        SizedBox(
+                          height: 100,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    ));
   }
 
   StreamBuilder showServices(String collectionLink) {
@@ -397,17 +393,10 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
             SizedBox(
               height: 10,
             ),
-
             needsContact ? chooseContactBtn(recipientLabel) : Container(),
-
-//            SizedBox(
-//              height: 10,
-//            ),
-
             needsRecipient
                 ? textInputContainerRecipient(recipientLabel)
                 : Container(),
-
             SizedBox(
               height: 20,
             ),
@@ -415,7 +404,11 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                 ? GestureDetector(
                     onTap: () {
                       Navigator.push(
-                          context, CustomPageRoute(navigateTo: SaveAccount()));
+                          context,
+                          CustomPageRoute(
+                              navigateTo: SaveAccount(
+                            label: serviceLable,
+                          )));
                     },
                     child: Padding(
                       padding: const EdgeInsets.only(bottom: 10.0),
@@ -446,12 +439,63 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
     );
   }
 
+  bool numberNotInSavedAccounts(number) {
+    for (int i = 0; i < savedAccounts.length; i++) {
+      if (number == savedAccounts[i]['number']) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   GestureDetector sendButton() {
     return GestureDetector(
         onTap: () {
-          sendAnalytics(widget.analytics, serviceLable + "_submit", null);
-          sendCode(platform, codeToSend, _amountController.text,
-              _recipientController.text);
+          if (canSaveLabels &&
+              numberNotInSavedAccounts(_recipientController.text)) {
+            showDialog(
+                context: context,
+                builder: (context) {
+                  return AlertDialog(
+                    title: Text(
+                        "Would you like to save ${_recipientController.text} for future use ?"),
+                    content: Row(
+                      children: <Widget>[
+                        IconButton(
+                            icon: Icon(
+                              Icons.cancel,
+                              size: 18,
+                            ),
+                            onPressed: () {
+                              print("Cancel");
+                              Navigator.pop(context);
+
+                              //if response is NO, remove dialog box and submit request
+                              sendAnalytics(widget.analytics,
+                                  serviceLable + "_submit", null);
+                              sendCode(
+                                  platform,
+                                  codeToSend,
+                                  _amountController.text,
+                                  _recipientController.text);
+                            }),
+                        IconButton(
+                            icon: Icon(Icons.check_box,
+                                color: Colors.orangeAccent, size: 18),
+                            onPressed: () {}),
+                      ],
+                    ),
+                  );
+                });
+            bool response = false;
+            if (response) {
+//              show label field save and send
+            }
+          } else {
+            sendAnalytics(widget.analytics, serviceLable + "_submit", null);
+            sendCode(platform, codeToSend, _amountController.text,
+                _recipientController.text);
+          }
         },
         child: Container(
             height: 58,
@@ -495,15 +539,20 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                   // Color(0xffED7937),
                   borderRadius: BorderRadius.circular(40)),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Icon(Icons.perm_identity, color: Colors.white,),
-                    SizedBox(width: 10,),
+                    Icon(
+                      Icons.perm_identity,
+                      color: Colors.white,
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
                     Text(
-                "Choose Contact",
-                style:
-                    TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-              ),
+                      "Choose Contact",
+                      style: TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.bold),
+                    ),
                   ]),
             ),
 
@@ -559,85 +608,261 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
         ));
   }
 
-  Container textInputContainerAmount(
+  Column textInputContainerAmount(
       String label, TextEditingController controller) {
-    return Container(
-        // padding: EdgeInsets.symmetric(vertical: 10),
-        decoration: BoxDecoration(
-            color: Colors.white, borderRadius: BorderRadius.circular(40)),
-        child: Row(
-          children: <Widget>[
-            Expanded(
-              flex: 4,
-              child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 10),
-                child: TextField(
-                  onTap: (){
-                    if(needsContact){
-                      _listViewController.animateTo(101.5, duration: Duration(milliseconds: 500), curve: Curves.easeIn);
-                    }
-                  },
-                  keyboardType: TextInputType.number,
-                  controller: controller,
-                  decoration: InputDecoration(
-                      labelText: "Enter $label",
-                      border: InputBorder.none,
-                      contentPadding: EdgeInsets.symmetric(horizontal: 20)),
-                ),
-              ),
-            ),
-            label != "Amount" && showSubmit
-                ? Expanded(
-              flex: 2,
-              child: GestureDetector(
-                onTap: () {
-                  sendAnalytics(
-                      widget.analytics, serviceLable + "_submit", null);
-                  sendCode(platform, codeToSend, _amountController.text,
-                      _recipientController.text);
-                },
-                child: Container(
-                  height: 60,
-                  decoration: BoxDecoration(
-                      color: widget.primaryColor,
-                      // border: Border.all(),
-                      borderRadius: BorderRadius.only(
-                          topRight: Radius.circular(40),
-                          bottomRight: Radius.circular(40))),
-                  child: Row(
-                    children: <Widget>[
-                      Expanded(
-                        flex: 4,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: AutoSizeText(
-                            "Submit",
-                            style: TextStyle(
-                              color: Colors.white,
-                            ),
-                            minFontSize: 11,
-                            maxLines: 2,
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        flex: 2,
-                        child: Padding(
-                          padding: const EdgeInsets.only(right: 8.0),
-                          child: Icon(
-                            Icons.send,
-                            color: Colors.white,
-                          ),
-                        ),
-                      )
-                    ],
+    return Column(
+      children: <Widget>[
+        Container(
+          // padding: EdgeInsets.symmetric(vertical: 10),
+          decoration: BoxDecoration(
+              color: Colors.white, borderRadius: BorderRadius.circular(40)),
+          child: Row(
+            children: <Widget>[
+              Expanded(
+                flex: 4,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 10),
+                  child: TextField(
+                    onTap: () {
+                      if (needsContact) {
+                        _listViewController.animateTo(101.5,
+                            duration: Duration(milliseconds: 500),
+                            curve: Curves.easeIn);
+                      }
+                    },
+                    keyboardType: TextInputType.number,
+                    controller: controller,
+                    decoration: InputDecoration(
+                        labelText: "Enter $label",
+                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.symmetric(horizontal: 20)),
                   ),
                 ),
               ),
-            )
-                : Container()
-          ],
+              label != "Amount" && showSubmit
+                  ? Expanded(
+                      flex: 2,
+                      child: GestureDetector(
+                        onTap: () {
+                          if (canSaveLabels &&
+                              numberNotInSavedAccounts(
+                                  _recipientController.text)) {
+                            bool response = false;
+                            showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return !response
+                                      ? AlertDialog(
+                                          title: Text(
+                                            "Would you like to save ${_recipientController.text} for future use ?",
+                                            style: TextStyle(fontSize: 14),
+                                          ),
+                                          content: Row(
+                                            children: <Widget>[
+                                              Expanded(
+                                                flex: 1,
+                                                child: IconButton(
+                                                    icon: Icon(
+                                                      Icons.cancel,
+                                                      color: Colors.grey,
+                                                      size: 48,
+                                                    ),
+                                                    onPressed: () {
+                                                      //IF RESPONSE IS NO, POP NAVIGATION AND SUBMIT REQUEST
+                                                      Navigator.pop(context);
+                                                      sendAnalytics(
+                                                          widget.analytics,
+                                                          serviceLable +
+                                                              "_submit",
+                                                          null);
+                                                      sendCode(
+                                                          platform,
+                                                          codeToSend,
+                                                          _amountController
+                                                              .text,
+                                                          _recipientController
+                                                              .text);
+                                                    }),
+                                              ),
+                                              Expanded(
+                                                flex: 1,
+                                                child: IconButton(
+                                                    icon: Icon(Icons.check_box,
+                                                        color:
+                                                            Colors.orangeAccent,
+                                                        size: 48),
+                                                    onPressed: () {
+                                                      // POP NAVIGATION, AND OPEN DIALOG TO ENTER LABEL. AFTER SAVE, SEND REQUEST
+
+                                                      Navigator.pop(context);
+
+                                                      showDialog(
+//                                        barrierDismissible: false,
+                                                          context: context,
+                                                          builder: (context) {
+                                                            return AlertDialog(
+                                                              content: Form(
+                                                                  key:
+                                                                      _labelFormKey,
+                                                                  child:
+                                                                      Container(
+                                                                    height: 160,
+                                                                    child:
+                                                                        Column(
+                                                                      children: <
+                                                                          Widget>[
+                                                                        TextFormField(
+                                                                          decoration:
+                                                                              InputDecoration(labelText: "Enter label e.g home"),
+                                                                          controller:
+                                                                              _labelController,
+                                                                          validator: (v) => v.isEmpty
+                                                                              ? "Label can't be empty"
+                                                                              : null,
+                                                                        ),
+                                                                        SizedBox(
+                                                                          height:
+                                                                              10,
+                                                                        ),
+                                                                        Container(
+                                                                          height:
+                                                                              48,
+                                                                          width:
+                                                                              double.infinity,
+                                                                          child:
+                                                                              RaisedButton(
+                                                                            color:
+                                                                                Colors.orangeAccent,
+                                                                            // ignore: missing_return
+                                                                            onPressed:
+                                                                                (){ // ignore: missing_return
+                                                                              // ignore: missing_return
+                                                                              if (_labelFormKey.currentState.validate()) {
+                                                                                print("save and submit");
+                                                                                Map<String, dynamic> data = {
+                                                                                  "label": _labelController.text,
+                                                                                  "number": _recipientController.text,
+                                                                                  "service_name": serviceLable
+                                                                                };
+                                                                                print(data);
+                                                                                var res = db.firestoreAdd("accounts/$uid/data", data);
+                                                                                setState(() {
+                                                                                  _labelController.text = "";
+                                                                                });
+
+                                                                                Navigator.pop(context);
+                                                                                if (res == 1) {
+                                                                                  return showDialog(
+                                                                                      barrierDismissible: false,
+                                                                                      context: context,
+                                                                                      builder: (context) {
+                                                                                        return AlertDialog(
+                                                                                          content: Text("Account saved"),
+                                                                                          actions: <Widget>[
+                                                                                            FlatButton(
+                                                                                              onPressed: () {
+                                                                                                Navigator.pop(context);
+
+                                                                                                sendAnalytics(widget.analytics, serviceLable + "_submit", null);
+                                                                                                sendCode(platform, codeToSend, _amountController.text, _recipientController.text);
+                                                                                              },
+                                                                                              child: Text("Okay"),
+                                                                                            ),
+                                                                                          ],
+                                                                                        );
+                                                                                      });
+                                                                                }
+                                                                              }
+                                                                            },
+                                                                            child:
+                                                                                Text(
+                                                                              "Save",
+                                                                              style: TextStyle(color: Colors.white),
+                                                                            ),
+                                                                          ),
+                                                                        )
+                                                                      ],
+                                                                    ),
+                                                                  )),
+                                                            );
+                                                          });
+                                                    }),
+                                              )
+                                            ],
+                                          ),
+                                        )
+                                      : Text("yes here");
+                                });
+
+                            if (response) {
+//              show label field save and send
+                            }
+                          } else {
+                            sendAnalytics(widget.analytics,
+                                serviceLable + "_submit", null);
+                            sendCode(
+                                platform,
+                                codeToSend,
+                                _amountController.text,
+                                _recipientController.text);
+                          }
+                        },
+                        child: Container(
+                          height: 60,
+                          decoration: BoxDecoration(
+                              color: widget.primaryColor,
+                              // border: Border.all(),
+                              borderRadius: BorderRadius.only(
+                                  topRight: Radius.circular(40),
+                                  bottomRight: Radius.circular(40))),
+                          child: Row(
+                            children: <Widget>[
+                              Expanded(
+                                flex: 4,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: AutoSizeText(
+                                    "Submit",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                    ),
+                                    minFontSize: 11,
+                                    maxLines: 2,
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                flex: 2,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(right: 8.0),
+                                  child: Icon(
+                                    Icons.send,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    )
+                  : Container()
+            ],
+          ),
         ),
+        label != "Amount" && showSubmit
+            ? Padding(
+                padding: EdgeInsets.only(
+                  top: 5,
+                ),
+                child: Text(
+                  _recipientContactName.isNotEmpty
+                      ? "Sending to:  $_recipientContactName"
+                      : "",
+                  style: TextStyle(fontSize: 12),
+                ))
+            : Container(),
+      ],
     );
   }
 
@@ -663,6 +888,8 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                   return Container(
                     child: Text("Loading ..."),
                   );
+
+                savedAccounts = snapshot.data.documents;
                 return snapshot.data.documents.length > 0
                     ? Column(
                         children: <Widget>[
@@ -699,9 +926,8 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
   GestureDetector buildServiceListItem(list) {
     return GestureDetector(
       onTap: () {
-
         var hT = headTitleStack;
-        if(list['requiresInput'] != null && list['requiresInput']){
+        if (list['requiresInput'] != null && list['requiresInput']) {
           hT.add(list['name']);
         }
 
@@ -776,14 +1002,20 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                   child: ListView(
                     shrinkWrap: true,
                     scrollDirection: Axis.horizontal,
-                    children: <Widget>[
-                      Text(list['name'])
-                    ],
+                    children: <Widget>[Text(list['name'])],
                   ),
                 ),
               ),
-
-//              list['hasChildren'] != null && list['hasChildren'] ? Padding(padding: EdgeInsets.all(3), child:  Icon(Icons.arrow_forward_ios, size: 11,),) : Text(""),
+              list['hasChildren'] != null && list['hasChildren']
+                  ? Padding(
+                      padding: EdgeInsets.only(left: 3, right: 15),
+                      child: Icon(
+                        Icons.arrow_forward_ios,
+                        size: 25,
+                        color: Colors.grey,
+                      ),
+                    )
+                  : Text(""),
             ],
           ),
         ),
@@ -806,6 +1038,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
           number.contains("+250") ? number.substring(3) : number;
       setState(() {
         _recipientController.text = numberToStore;
+        _recipientContactName = contact.fullName;
       });
     }
   }
@@ -817,10 +1050,9 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
 //        buildServiceListItem(list),
 //      );
 
-      if(list['label'] == "LoadAirtime" && Platform.isIOS){
+      if (list['label'] == "LoadAirtime" && Platform.isIOS) {
         continue;
-      }
-      else{
+      } else {
         tmp.add(
           buildServiceListItem(list),
         );
@@ -864,6 +1096,13 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                 ],
               ),
             ),
+          ),
+        ),
+        Text(
+          pinFound.isNotEmpty ? "pin: $pinFound" : "",
+          style: TextStyle(
+            fontSize: 18,
+            color: Colors.orangeAccent,
           ),
         ),
         cameraBtnClicked
