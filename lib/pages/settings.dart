@@ -1,12 +1,14 @@
+import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:kene/control.dart';
 import 'package:kene/pages/save_accounts.dart';
 import 'package:kene/widgets/custom_nav.dart';
-import 'package:advanced_share/advanced_share.dart';
+//import 'package:advanced_share/advanced_share.dart';
 import 'package:package_info/package_info.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_share_me/flutter_share_me.dart';
+import 'package:flutter_share/flutter_share.dart';
 
 
 
@@ -95,8 +97,11 @@ class _SettingsState extends State<Settings> {
                         onTap: () {
 
                           print("clicked share on whataspp");
+                          Platform.isIOS ?
+                          share()
+                          :
                           FlutterShareMe()
-                              .shareToWhatsApp(msg: "Hi!! \nHave you heard of Nokanda ? \nIt saves you alot of time using mobile money and USSD Services. \nTry it out ) \n https://play.google.com/store/apps/details?id=com.hexakomb.nokanda", base64Image: "");
+                              .shareToWhatsApp(msg: "Hi!! \nHave you heard of Nokanda ? \nIt saves you a lot of time using mobile money and USSD Services. \nTry it out ) \n https://play.google.com/store/apps/details?id=com.hexakomb.nokanda", base64Image: "");
 //                          AdvancedShare.whatsapp(
 //                            msg:
 //                                "Hi!! \nHave you heard of Nokanda ? \nIt saves you alot of time using mobile money and USSD Services. \nTry it out ) \n https://play.google.com/store/apps/details?id=com.hexakomb.nokanda",
@@ -156,4 +161,13 @@ class _SettingsState extends State<Settings> {
           )),
     );
   }
+  Future<void> share() async {
+    await FlutterShare.share(
+        title: 'Nokanda App',
+        text: 'Hi!! \nHave you heard of Nokanda ? \nIt saves you a lot of time using mobile money and USSD Services. \nTry it out !!',
+        linkUrl: 'https://play.google.com/store/apps/details?id=com.hexakomb.nokanda',
+        chooserTitle: 'Share Nokanda App'
+    );
+  }
+
 }
