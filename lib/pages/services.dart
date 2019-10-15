@@ -596,7 +596,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
           });
         },
         child: Container(
-          width: MediaQuery.of(context).size.width*0.40,
+          width: MediaQuery.of(context).size.width*0.35,
           margin: EdgeInsets.only(bottom: 10, right: 10),
           decoration: BoxDecoration(
               color: Colors.white, borderRadius: BorderRadius.circular(5)),
