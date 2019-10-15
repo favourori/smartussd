@@ -38,13 +38,12 @@ class _SaveAccountState extends State<SaveAccount> {
       });
     });
 
-    if(widget.label != null && widget.label.isNotEmpty){
+    if (widget.label != null && widget.label.isNotEmpty) {
       setState(() {
         category = widget.label;
       });
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -71,14 +70,16 @@ class _SaveAccountState extends State<SaveAccount> {
                 SizedBox(
                   width: MediaQuery.of(context).size.width * 0.1,
                 ),
-                AutoSizeText("Save Accounts",
-                    style: TextStyle(color: Colors.white, fontSize: 28),
-                    maxLines: 2,)
+                AutoSizeText(
+                  "Save Accounts",
+                  style: TextStyle(color: Colors.white, fontSize: 28),
+                  maxLines: 2,
+                )
               ],
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(left:20.0, top:20,right: 20),
+            padding: const EdgeInsets.only(left: 20.0, top: 20, right: 20),
             child: Container(
               width: MediaQuery.of(context).size.width - 40,
               height: MediaQuery.of(context).size.height * 0.66,
@@ -260,53 +261,61 @@ class _SaveAccountState extends State<SaveAccount> {
     return tmp;
   }
 
-  Row buildSavedItem(
+  Widget buildSavedItem(
       String label, String serviceName, String number, String docId) {
-    return Row(
+    return Column(
       children: <Widget>[
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        Row(
           children: <Widget>[
-            Text(label),
-            Text(
-              "($serviceName)",
-              style: TextStyle(fontSize: 11),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(label),
+                Text(
+                  "($serviceName)",
+                  style: TextStyle(fontSize: 11),
+                ),
+                Text(number),
+              ],
             ),
-            Text(number),
+            Spacer(),
+            IconButton(
+              icon: Icon(
+                Icons.delete,
+                color: Colors.red,
+              ),
+              onPressed: () {
+                return showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        content:
+                            Text("Are you sure you want to delete $label?"),
+                        actions: <Widget>[
+                          FlatButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: Text("No"),
+                          ),
+                          FlatButton(
+                            onPressed: () {
+                              db.firestoreDelete("accounts/$uid/data", docId);
+                              Navigator.pop(context);
+                            },
+                            child: Text("Yes"),
+                          )
+                        ],
+                      );
+                    });
+              },
+            ),
           ],
         ),
-        Spacer(),
-        IconButton(
-          icon: Icon(
-            Icons.delete,
-            color: Colors.red,
-          ),
-          onPressed: () {
-            return showDialog(
-                context: context,
-                builder: (context) {
-                  return AlertDialog(
-                    content:
-                        Text("Are you sure you want to delete this account ?"),
-                    actions: <Widget>[
-                      FlatButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: Text("No"),
-                      ),
-                      FlatButton(
-                        onPressed: () {
-                          db.firestoreDelete("accounts/$uid/data", docId);
-                          Navigator.pop(context);
-                        },
-                        child: Text("Yes"),
-                      )
-                    ],
-                  );
-                });
-          },
-        ),
+        Divider(
+          height: 8,
+          thickness: 1,
+        )
       ],
     );
   }

@@ -74,7 +74,7 @@ class _SettingsState extends State<Settings> {
                 child: Container(
                   width: MediaQuery.of(context).size.width - 40,
                   height: MediaQuery.of(context).size.height * 0.68,
-                  child: ListView(
+                  child: Column(
                     children: <Widget>[
                       GestureDetector(
                         onTap: () {
@@ -101,7 +101,7 @@ class _SettingsState extends State<Settings> {
                           share()
                           :
                           FlutterShareMe()
-                              .shareToWhatsApp(msg: "Hi!! \nHave you heard of Nokanda ? \nIt saves you a lot of time using mobile money and USSD Services. \nTry it out ) \n https://play.google.com/store/apps/details?id=com.hexakomb.nokanda", base64Image: "");
+                              .shareToWhatsApp(msg: "Hi!! \nHave you heard of Nokanda ? \nIt saves you a lot of time using mobile money and USSD Services. \nTry it out !! \n Android : \nhttps://play.google.com/store/apps/details?id=com.hexakomb.nokanda \niOS: \nhttps://bit.ly/nokandaios", base64Image: "");
 //                          AdvancedShare.whatsapp(
 //                            msg:
 //                                "Hi!! \nHave you heard of Nokanda ? \nIt saves you alot of time using mobile money and USSD Services. \nTry it out ) \n https://play.google.com/store/apps/details?id=com.hexakomb.nokanda",
@@ -144,14 +144,18 @@ class _SettingsState extends State<Settings> {
                       SizedBox(
                         height: MediaQuery.of(context).size.height * 0.2,
                       ),
-                      Padding(
-                        padding: EdgeInsets.only(left: 0),
-                        child: Text(
-                          packageInfo != null
-                              ? "Version: ${packageInfo.version.toString() + "+" + packageInfo.buildNumber}"
-                              : "",
-                          style: TextStyle(color: Colors.grey),
-                        ),
+                      Expanded(flex: 1,child: Container(),),
+                     Align(
+                       alignment: Alignment.bottomCenter,
+                       child:  Padding(
+                           padding: EdgeInsets.only(left: 20),
+                           child: Text(
+                             packageInfo != null
+                                 ? "Version: ${packageInfo.version.toString() + " Build: " + packageInfo.buildNumber}"
+                                 : "",
+                             style: TextStyle(color: Colors.grey),
+                           ),
+                     )
                       )
                     ],
                   ),
@@ -164,10 +168,12 @@ class _SettingsState extends State<Settings> {
   Future<void> share() async {
     await FlutterShare.share(
         title: 'Nokanda App',
-        text: 'Hi!! \nHave you heard of Nokanda ? \nIt saves you a lot of time using mobile money and USSD Services. \nTry it out !!',
-        linkUrl: 'https://play.google.com/store/apps/details?id=com.hexakomb.nokanda',
+        text: 'Hi!! \nHave you heard of Nokanda ? \nIt saves you a lot of time using mobile money and USSD Services. \nTry it out !! \n Android : \nhttps://play.google.com/store/apps/details?id=com.hexakomb.nokanda \niOS: \nhttps://bit.ly/nokandaios',
+        linkUrl: '',
         chooserTitle: 'Share Nokanda App'
     );
   }
 
 }
+
+//"Android : \nhttps://play.google.com/store/apps/details?id=com.hexakomb.nokanda \niOS: \nhttps://bit.ly/nokandaios"

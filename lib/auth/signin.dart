@@ -62,358 +62,375 @@ class _SigninState extends State<Signin> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        key: _scaffoldKey,
-        body:
-        GestureDetector(
-          onTap: (){
-            FocusScope.of(context).unfocus();
-            },
-          child:
-          Form(
-            key: _formkey,
-            child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: ListView(
-                  children: <Widget>[
-                    Container(
-                      height: MediaQuery.of(context).size.height * 0.9,
-                      child: ListView(
-                        shrinkWrap: true,
-                        children: <Widget>[
-                          SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.07,
-                          ),
-                          Container(
-                            height: 80,
-                            decoration: BoxDecoration(
+      key: _scaffoldKey,
+      body: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).unfocus();
+        },
+        child: Form(
+          key: _formkey,
+          child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              child: ListView(
+                children: <Widget>[
+                  Container(
+                    height: MediaQuery.of(context).size.height * 0.9,
+                    child: ListView(
+                      shrinkWrap: true,
+                      children: <Widget>[
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.07,
+                        ),
+                        Container(
+                          height: 80,
+                          decoration: BoxDecoration(
 //                border: Border.all(),
-                                image: DecorationImage(
-                                    image: AssetImage("assets/images/nokanda.png"))),
-                          ),
+                              image: DecorationImage(
+                                  image:
+                                      AssetImage("assets/images/nokanda.png"))),
+                        ),
 
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Align(
-                                alignment: Alignment.center,
-                                child: Text(
-                                  "Nokanda will send an SMS to verify your phone number.",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(fontSize: 12),
-                                )),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Align(
+                              alignment: Alignment.center,
+                              child: Text(
+                                "Nokanda will send an SMS to verify your phone number.",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(fontSize: 12),
+                              )),
+                        ),
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.07,
+                        ),
+                        Container(
+                          height: 48,
+                          decoration: BoxDecoration(
+                            border:
+                                Border.all(color: Colors.grey.withOpacity(0.3)),
+                            // color: Colors.grey.withOpacity(0.3),
+                            borderRadius: BorderRadius.circular(5),
+                            // border: Border(bottom: BorderSide(width: 1),
+                            // )
                           ),
-                          SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.07,
-                          ),
-                          Container(
-                            height: 48,
-                            decoration: BoxDecoration(
-                              border: Border.all(color: Colors.grey.withOpacity(0.3)),
-                              // color: Colors.grey.withOpacity(0.3),
-                              borderRadius: BorderRadius.circular(5),
-                              // border: Border(bottom: BorderSide(width: 1),
-                              // )
-                            ),
-                            child: Row(
-                              children: <Widget>[
-                                Expanded(
-                                  child: Container(
-                                      height: 50,
-                                      width: 300,
-                                      child: StreamBuilder(
-                                        stream: Firestore.instance
-                                            .collection('country_codes')
-                                            .snapshots(),
-                                        builder: (context, snapshot) {
-                                          if (!snapshot.hasData)
-                                            return Center(child: Text(".."));
-                                          return ButtonTheme(
-                                            alignedDropdown: true,
-                                            child: DropdownButton(
-                                                underline: Container(),
-                                                icon: Icon(Icons.arrow_drop_down,
-                                                    size: 16, color: Colors.orange),
-                                                value: countryCode,
-                                                items: populateCountryCodes(
-                                                    snapshot.data.documents),
-                                                onChanged: (v) {
-                                                  setState(() {
-                                                    countryCode = v;
-                                                  });
-                                                }),
-                                          );
-                                        },
-                                      )),
-                                  flex: 2,
-                                ),
-                                Expanded(
-                                  child: TextFormField(
-
-                                    onChanged: (v) {
-                                      if (v.substring(0, 1) == "0") {
-                                        v = v.substring(1);
-                                      }
-                                      this.phoneNo = countryCode + v;
-                                      print(phoneNo);
-                                    },
-                                    keyboardAppearance: Brightness.dark,
-                                    keyboardType: TextInputType.phone,
-                                    cursorColor: Colors.orangeAccent,
-                                    decoration: InputDecoration(
-                                        hintText: "Phone number",
-                                        hintStyle: TextStyle(
-                                            fontSize: 14, color: Colors.black),
-                                        contentPadding: EdgeInsets.symmetric(
-                                            horizontal: 0, vertical: 15),
-                                        border: InputBorder.none),
-                                  ),
-                                  flex: 4,
-                                ),
-                              ],
-                            ),
-                          ),
-
-                          Padding(padding: EdgeInsets.only(left:5), child: Text("*phone number required", style: TextStyle(
-                              color: Colors.redAccent,
-                              fontSize: 11
-                          ),),),
-
-                          //other info
-                          isSignUp
-                              ? Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                          child: Row(
                             children: <Widget>[
-                              Container(
-                                margin: EdgeInsets.only(top: 10),
-                                width: double.infinity,
-                                decoration: BoxDecoration(
-                                    border: Border.all(
-                                        color: Colors.grey.withOpacity(0.3)),
-                                    // color: Colors.grey.withOpacity(0.3),
-                                    borderRadius: BorderRadius.circular(5)),
-                                child: Padding(
-                                    padding: const EdgeInsets.only(left: 20.0),
-                                    child: Row(
-                                      children: <Widget>[
-                                        GestureDetector(
-                                          onTap: () {
-                                            setState(() {
-                                              gender = "Male";
-                                            });
-                                          },
-                                          child: Row(
-                                            children: <Widget>[
-                                              Text("Male"),
-                                              Radio(
-                                                groupValue: gender,
-                                                value: "Male",
-                                                onChanged: (v) {
-                                                  setState(() {
-                                                    gender = v;
-                                                  });
-                                                },
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        GestureDetector(
-                                          onTap: () {
-                                            setState(() {
-                                              gender = "Female";
-                                            });
-                                          },
-                                          child: Row(
-                                            children: <Widget>[
-                                              Text("Female"),
-                                              Radio(
-                                                groupValue: gender,
-                                                value: "Female",
-                                                onChanged: (v) {
-                                                  setState(() {
-                                                    gender = v;
-                                                  });
-                                                },
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    )
+                              Expanded(
+                                child: Container(
+                                    height: 50,
+                                    width: 300,
+                                    child: StreamBuilder(
+                                      stream: Firestore.instance
+                                          .collection('country_codes')
+                                          .snapshots(),
+                                      builder: (context, snapshot) {
+                                        if (!snapshot.hasData)
+                                          return Center(child: Text(".."));
+                                        return ButtonTheme(
+                                          alignedDropdown: true,
+                                          child: DropdownButton(
+                                              underline: Container(),
+                                              icon: Icon(Icons.arrow_drop_down,
+                                                  size: 16,
+                                                  color: Colors.orange),
+                                              value: countryCode,
+                                              items: populateCountryCodes(
+                                                  snapshot.data.documents),
+                                              onChanged: (v) {
+                                                setState(() {
+                                                  countryCode = v;
+                                                });
+                                              }),
+                                        );
+                                      },
+                                    )),
+                                flex: 2,
+                              ),
+                              Expanded(
+                                child: TextFormField(
+                                  onChanged: (v) {
+                                    if (v.substring(0, 1) == "0") {
+                                      v = v.substring(1);
+                                    }
+                                    this.phoneNo = countryCode + v;
+                                    print(phoneNo);
+                                  },
+                                  keyboardAppearance: Brightness.dark,
+                                  keyboardType: TextInputType.phone,
+                                  cursorColor: Colors.orangeAccent,
+                                  decoration: InputDecoration(
+                                      hintText: "Phone number",
+                                      hintStyle: TextStyle(
+                                          fontSize: 14, color: Colors.black),
+                                      contentPadding: EdgeInsets.symmetric(
+                                          horizontal: 0, vertical: 15),
+                                      border: InputBorder.none),
+                                ),
+                                flex: 4,
+                              ),
+                            ],
+                          ),
+                        ),
 
-                                  // DropdownButton(
-                                  //   icon: Icon(Icons.arrow_drop_down,
-                                  //       size: 16, color: Colors.orange),
-                                  //   underline: Container(),
-                                  //   value: gender,
-                                  //   onChanged: (v) {
-                                  //     setState(() {
-                                  //       gender = v;
-                                  //     });
-                                  //   },
-                                  //   items: [
-                                  //     DropdownMenuItem(
-                                  //       value: "Select",
-                                  //       child: Text(
-                                  //         "Select gender",
-                                  //         style: TextStyle(
-                                  //             fontSize: 14, color: Colors.black),
-                                  //       ),
-                                  //     ),
-                                  //     DropdownMenuItem(
-                                  //       value: "Male",
-                                  //       child: Text("Male",
-                                  //           style: TextStyle(
-                                  //               fontSize: 14,
-                                  //               color: Colors.black)),
-                                  //     ),
-                                  //     DropdownMenuItem(
-                                  //       value: "Female",
-                                  //       child: Text("Female",
-                                  //           style: TextStyle(
-                                  //               fontSize: 14,
-                                  //               color: Colors.black)),
-                                  //     )
-                                  //   ],
-                                  // ),
+                        Padding(
+                          padding: EdgeInsets.only(left: 5),
+                          child: Text(
+                            "*phone number required",
+                            style: TextStyle(
+                                color: Colors.redAccent, fontSize: 11),
+                          ),
+                        ),
+
+                        //other info
+                        isSignUp
+                            ? Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Container(
+                                    margin: EdgeInsets.only(top: 10),
+                                    width: double.infinity,
+                                    decoration: BoxDecoration(
+                                        border: Border.all(
+                                            color:
+                                                Colors.grey.withOpacity(0.3)),
+                                        // color: Colors.grey.withOpacity(0.3),
+                                        borderRadius: BorderRadius.circular(5)),
+                                    child: Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 20.0),
+                                        child: Row(
+                                          children: <Widget>[
+                                            GestureDetector(
+                                              onTap: () {
+                                                setState(() {
+                                                  gender = "Male";
+                                                });
+                                              },
+                                              child: Row(
+                                                children: <Widget>[
+                                                  Text("Male"),
+                                                  Radio(
+                                                    groupValue: gender,
+                                                    value: "Male",
+                                                    onChanged: (v) {
+                                                      setState(() {
+                                                        gender = v;
+                                                      });
+                                                    },
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            GestureDetector(
+                                              onTap: () {
+                                                setState(() {
+                                                  gender = "Female";
+                                                });
+                                              },
+                                              child: Row(
+                                                children: <Widget>[
+                                                  Text("Female"),
+                                                  Radio(
+                                                    groupValue: gender,
+                                                    value: "Female",
+                                                    onChanged: (v) {
+                                                      setState(() {
+                                                        gender = v;
+                                                      });
+                                                    },
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        )
+
+                                        // DropdownButton(
+                                        //   icon: Icon(Icons.arrow_drop_down,
+                                        //       size: 16, color: Colors.orange),
+                                        //   underline: Container(),
+                                        //   value: gender,
+                                        //   onChanged: (v) {
+                                        //     setState(() {
+                                        //       gender = v;
+                                        //     });
+                                        //   },
+                                        //   items: [
+                                        //     DropdownMenuItem(
+                                        //       value: "Select",
+                                        //       child: Text(
+                                        //         "Select gender",
+                                        //         style: TextStyle(
+                                        //             fontSize: 14, color: Colors.black),
+                                        //       ),
+                                        //     ),
+                                        //     DropdownMenuItem(
+                                        //       value: "Male",
+                                        //       child: Text("Male",
+                                        //           style: TextStyle(
+                                        //               fontSize: 14,
+                                        //               color: Colors.black)),
+                                        //     ),
+                                        //     DropdownMenuItem(
+                                        //       value: "Female",
+                                        //       child: Text("Female",
+                                        //           style: TextStyle(
+                                        //               fontSize: 14,
+                                        //               color: Colors.black)),
+                                        //     )
+                                        //   ],
+                                        // ),
+                                        ),
+                                  ),
+                                  GestureDetector(
+                                    onTap: () {
+                                      DatePicker.showDatePicker(context,
+                                          showTitleActions: true,
+                                          minTime: DateTime(1770, 3, 5),
+                                          maxTime: DateTime(2019, 6, 7),
+                                          onChanged: (date) {},
+                                          onConfirm: (date) {
+                                        setState(() {
+                                          yob =
+                                              date.toString().substring(0, 10);
+                                        });
+                                      },
+                                          currentTime: DateTime.now(),
+                                          locale: LocaleType.en);
+                                    },
+                                    child: Container(
+                                      margin: EdgeInsets.only(top: 10),
+                                      height: 48,
+                                      decoration: BoxDecoration(
+                                          border: Border.all(
+                                              color:
+                                                  Colors.grey.withOpacity(0.3)),
+                                          borderRadius:
+                                              BorderRadius.circular(5)),
+                                      child: Padding(
+                                          padding:
+                                              const EdgeInsets.only(left: 20.0),
+                                          child: Row(
+                                            children: <Widget>[
+                                              Text(
+                                                "Date of birth",
+                                                style: TextStyle(
+                                                    fontSize: 14,
+                                                    color: Colors.black),
+                                              ),
+                                              SizedBox(
+                                                width: 30,
+                                              ),
+                                              Text(
+                                                yob,
+                                                style: TextStyle(
+                                                    fontSize: 14,
+                                                    color: Colors.black),
+                                              )
+                                            ],
+                                          )),
+                                    ),
+                                  ),
+                                ],
+                              )
+                            : Container(),
+                        SizedBox(
+                          height: 40,
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            validate();
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                                color: Colors.orangeAccent,
+                                borderRadius: BorderRadius.circular(40)),
+                            width: MediaQuery.of(context).size.width * 0.3,
+                            height: 50,
+                            child: Center(
+                                child: !isBtnClicked
+                                    ? Text(
+                                        !isSignUp ? "Log in" : "Sign up",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      )
+                                    : CupertinoActivityIndicator(
+                                        // animating: true,
+                                        radius: 15,
+                                        // backgroundColor: Colors.white,
+                                      )),
+                          ),
+                        ),
+
+                        Padding(
+                          padding: EdgeInsets.only(top: 30),
+                          child: Column(
+                            children: <Widget>[
+                              !isSignUp
+                                  ? GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    isSignUp = true;
+                                  });
+                                },
+                                child: Text(
+                                  "Sign up",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+//                                fontSize: 12
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              )
+                                  : GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    isSignUp = false;
+                                  });
+                                },
+                                child: Text(
+                                  "Log in",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+//                                fontSize: 12
+                                  ),
+                                  textAlign: TextAlign.center,
                                 ),
                               ),
-                              Container(
-                                margin: EdgeInsets.only(top: 10),
-                                height: 48,
-                                decoration: BoxDecoration(
-                                    border: Border.all(
-                                        color: Colors.grey.withOpacity(0.3)),
-                                    borderRadius: BorderRadius.circular(5)),
-                                child: Padding(
-                                  padding: const EdgeInsets.only(left: 20.0),
-                                  child: GestureDetector(
-                                      onTap: () {
-                                        DatePicker.showDatePicker(context,
-                                            showTitleActions: true,
-                                            minTime: DateTime(1770, 3, 5),
-                                            maxTime: DateTime(2019, 6, 7),
-                                            onChanged: (date) {},
-                                            onConfirm: (date) {
-                                              setState(() {
-                                                yob =
-                                                    date.toString().substring(0, 10);
-                                              });
-                                            },
-                                            currentTime: DateTime.now(),
-                                            locale: LocaleType.en);
-                                      },
-                                      child: Row(
-                                        children: <Widget>[
-                                          Text(
-                                            "Date of birth",
-                                            style: TextStyle(
-                                                fontSize: 14,
-                                                color: Colors.black),
-                                          ),
-                                          SizedBox(
-                                            width: 30,
-                                          ),
-                                          Text(
-                                            yob,
-                                            style: TextStyle(
-                                                fontSize: 14,
-                                                color: Colors.black),
-                                          )
-                                        ],
-                                      )),
-                                ),
+
+                              Padding(
+                                padding: EdgeInsets.only(top: 30, left: 30, right: 30),
+                                child: Text("By continuing, you agree to Nokanda's Terms of use and Privacy Policy", style: TextStyle(
+
+                                  fontSize: 12, color: Colors.grey
+
+                                ),),
                               )
                             ],
                           )
-                              : Container(),
-                          SizedBox(
-                            height: 40,
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              validate();
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                  color: Colors.orangeAccent,
-                                  borderRadius: BorderRadius.circular(40)),
-                              width: MediaQuery.of(context).size.width * 0.3,
-                              height: 50,
-                              child: Center(
-                                  child: !isBtnClicked
-                                      ? Text(
-                                    !isSignUp ? "Log in" : "Sign up",
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  )
-                                      : CupertinoActivityIndicator(
-                                    // animating: true,
-                                    radius: 15,
-                                    // backgroundColor: Colors.white,
-                                  )),
-                            ),
-                          ),
-
-                          Padding(
-                            padding: EdgeInsets.only(top: 30),
-                            child: !isSignUp
-                                ? GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  isSignUp = true;
-                                });
-                              },
-                              child: Text(
-                                "Sign up",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-//                                fontSize: 12
-
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                            )
-                                : GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  isSignUp = false;
-                                });
-                              },
-                              child: Text(
-                                "Log in",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-//                                fontSize: 12
-
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                          ),
-
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
+                  ),
 //                  SizedBox(
 //                    height: MediaQuery.of(context).size.height * 0.02,
 //                  ),
-                    Align(
-                      alignment: Alignment.bottomCenter,
-                      child: packageInfo != null
-                          ? Text(
-                        "Version: ${packageInfo.version.toString() + "+" + packageInfo.buildNumber}",
-                        style: TextStyle(fontSize: 12, color: Colors.grey),
-                        textAlign: TextAlign.center,
-                      )
-                          : Text(""),
-                    )
-                  ],
-                )),
-          )
-          ,
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: packageInfo != null
+                        ? Text(
+                            "Version: ${packageInfo.version.toString() + " Build: " + packageInfo.buildNumber}",
+                            style: TextStyle(fontSize: 12, color: Colors.grey),
+                            textAlign: TextAlign.center,
+                          )
+                        : Text(""),
+                  )
+                ],
+              )),
         ),
-
+      ),
     );
   }
 
@@ -442,9 +459,7 @@ class _SigninState extends State<Signin> {
 
   void validate() {
     if ((!isSignUp && phoneNo != "" && phoneNo != null) ||
-        (isSignUp &&
-            phoneNo != "" &&
-            phoneNo != null
+        (isSignUp && phoneNo != "" && phoneNo != null
 //            &&
 //            gender != "Select" &&
 //            yob.isNotEmpty
@@ -519,7 +534,6 @@ class _SigninState extends State<Signin> {
         });
       }
     } else {
-
       /// FOR SIGN UP USERS
       ///check for number and ask to login
 
@@ -528,7 +542,6 @@ class _SigninState extends State<Signin> {
           .where("phone", isEqualTo: phoneNo)
           .getDocuments();
       if (res.documents.length >= 1) {
-
         showFlushBar("Hey Awesome !!",
             "This number is already registered, please login");
         setState(() {
@@ -540,11 +553,9 @@ class _SigninState extends State<Signin> {
 //          canAuthenticate = true;
 //        });
       } else {
-
         setState(() {
           canAuthenticate = true;
         });
-
       }
     }
 
@@ -692,16 +703,16 @@ class _SigninState extends State<Signin> {
 
     try {
       credential = PhoneAuthProvider.getCredential(
-      verificationId: verificationId,
-      smsCode: code,
-    );
+        verificationId: verificationId,
+        smsCode: code,
+      );
     } catch (e) {
       print("error getting credentials");
     }
-    // AuthResult res = await 
-    signUserIn(credential).then((res){
-        pushUserDataToDB(res);
-    }).catchError((err){
+    // AuthResult res = await
+    signUserIn(credential).then((res) {
+      pushUserDataToDB(res);
+    }).catchError((err) {
       Navigator.push(
           context,
           CustomPageRoute(
@@ -711,7 +722,6 @@ class _SigninState extends State<Signin> {
     });
 
     return 1;
-    
   }
 
   navigateUsers(f) {

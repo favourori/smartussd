@@ -168,6 +168,7 @@
 				9705A1C41CF9048500538489 /* Embed Frameworks */,
 				3B06AD1E1E4923F5004D2608 /* Thin Binary */,
 				10E8441FBC61DCF7425445A6 /* [CP] Embed Pods Frameworks */,
+				304D54EFED4E639957FF0305 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -193,7 +194,7 @@
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.Push = {
-								enabled = 0;
+								enabled = 1;
 							};
 						};
 					};
@@ -270,6 +271,21 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		304D54EFED4E639957FF0305 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		3B06AD1E1E4923F5004D2608 /* Thin Binary */ = {
@@ -388,6 +404,7 @@
 			baseConfigurationReference = 7AFA3C8E1D35360C0083082E /* Release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
@@ -403,7 +420,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.hexakomb.nokanda;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.hexakomb.nokanda-ios";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				VERSIONING_SYSTEM = "apple-generic";
@@ -517,6 +534,7 @@
 			baseConfigurationReference = 9740EEB21CF90195004384FC /* Debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
@@ -532,7 +550,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.hexakomb.nokanda;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.hexakomb.nokanda-ios";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				VERSIONING_SYSTEM = "apple-generic";
@@ -544,6 +562,7 @@
 			baseConfigurationReference = 7AFA3C8E1D35360C0083082E /* Release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
@@ -559,7 +578,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.hexakomb.nokanda;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.hexakomb.nokanda-ios";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				VERSIONING_SYSTEM = "apple-generic";

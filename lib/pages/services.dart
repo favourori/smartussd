@@ -110,13 +110,13 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
     print("ml kit called");
     final FirebaseVisionImage visionImage =
         FirebaseVisionImage.fromFile(_image);
-    final BarcodeDetector barcodeDetector =
-        FirebaseVision.instance.barcodeDetector();
+//    final BarcodeDetector barcodeDetector =
+//        FirebaseVision.instance.barcodeDetector();
     final TextRecognizer textRecognizer =
         FirebaseVision.instance.textRecognizer();
 
-    final List<Barcode> barcodes =
-        await barcodeDetector.detectInImage(visionImage);
+//    final List<Barcode> barcodes =
+//        await barcodeDetector.detectInImage(visionImage);
     final VisionText visionText =
         await textRecognizer.processImage(visionImage);
 
@@ -125,6 +125,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
     print("text is $text");
     for (TextBlock block in visionText.blocks) {
       final String text = block.text;
+      print(text);
 
       //using the string voucher to detect pin
       if (isCardPinNext) {
@@ -184,7 +185,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
     });
 
     //call for permissions
-    askCallPermission(platform);
+//    askCallPermission(platform);
 
     String initialCollection = "services/${widget.carrierId}/services";
     navigationStack.add(initialCollection);
@@ -403,31 +404,31 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
             SizedBox(
               height: 20,
             ),
-            canSaveLabels != null && canSaveLabels
-                ? GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          CustomPageRoute(
-                              navigateTo: SaveAccount(
-                            label: serviceLable,
-                          )));
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.only(bottom: 10.0),
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          "Click to save $serviceLable Number",
-                          style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.orangeAccent,
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ),
-                  )
-                : Container(),
+//            canSaveLabels != null && canSaveLabels
+//                ? GestureDetector(
+//                    onTap: () {
+//                      Navigator.push(
+//                          context,
+//                          CustomPageRoute(
+//                              navigateTo: SaveAccount(
+//                            label: serviceLable,
+//                          )));
+//                    },
+//                    child: Padding(
+//                      padding: const EdgeInsets.only(bottom: 10.0),
+//                      child: Align(
+//                        alignment: Alignment.centerLeft,
+//                        child: Text(
+//                          "Click to save $serviceLable Number",
+//                          style: TextStyle(
+//                              fontSize: 14,
+//                              color: Colors.orangeAccent,
+//                              fontWeight: FontWeight.bold),
+//                        ),
+//                      ),
+//                    ),
+//                  )
+//                : Container(),
             SizedBox(
               height: 10,
             ),
@@ -461,7 +462,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                 builder: (context) {
                   return AlertDialog(
                     title: Text(
-                        "Would you like to save ${_recipientController.text} for future use ?"),
+                        "Would you like to save  ${_recipientController.text} for future use ?"),
                     content: Row(
                       children: <Widget>[
                         IconButton(
@@ -595,10 +596,11 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
           });
         },
         child: Container(
-          margin: EdgeInsets.only(right: 10),
+          width: MediaQuery.of(context).size.width*0.40,
+          margin: EdgeInsets.only(bottom: 10, right: 10),
           decoration: BoxDecoration(
               color: Colors.white, borderRadius: BorderRadius.circular(5)),
-          height: 30,
+          height: 48,
           child: Padding(
             padding: const EdgeInsets.only(left: 8.0, right: 8.0),
             child: Center(
@@ -616,6 +618,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
     return Column(
       children: <Widget>[
         Container(
+          height: 60,
           // padding: EdgeInsets.symmetric(vertical: 10),
           decoration: BoxDecoration(
               color: Colors.white, borderRadius: BorderRadius.circular(40)),
@@ -647,7 +650,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                       flex: 2,
                       child: GestureDetector(
                         onTap: () {
-                          if (canSaveLabels &&
+                          if ((canSaveLabels != null && canSaveLabels) &&
                               numberNotInSavedAccounts(
                                   _recipientController.text)) {
                             bool response = false;
@@ -733,9 +736,10 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
           SizedBox(
             height: 20,
           ),
+          canSaveLabels != null && canSaveLabels ?
           StreamBuilder(
               stream: Firestore.instance
-                  .collection("accounts/$uid/data")
+                  .collection("accounts/$uid/data").orderBy("label")
                   .where("service_name", isEqualTo: serviceLable)
                   .snapshots(),
               builder: (context, snapshot) {
@@ -747,23 +751,22 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                 savedAccounts = snapshot.data.documents;
                 return snapshot.data.documents.length > 0
                     ? Column(
-                        children: <Widget>[
-                          Text("Saved $label"),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          Container(
-                            height: 40,
-                            child: ListView(
-                              scrollDirection: Axis.horizontal,
-                              children:
-                                  populateSavedAccount(snapshot.data.documents),
-                            ),
-                          ),
-                        ],
-                      )
+                  children: <Widget>[
+                    Text("Saved $label"),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Container(
+//                            height: 40,
+                        child: Wrap(
+                          children: populateSavedAccount(snapshot.data.documents),
+                        )
+                    ),
+                  ],
+                )
                     : Container();
-              }),
+              }):
+          Container(),
         ],
       ),
     );
@@ -861,7 +864,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                   ),
                 ),
               ),
-              list['hasChildren'] != null && list['hasChildren']
+              (list['hasChildren'] != null && list['hasChildren']) || (list['requiresInput'] != null && list['requiresInput'])
                   ? Padding(
                       padding: EdgeInsets.only(left: 3, right: 15),
                       child: Icon(
@@ -954,7 +957,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
           ),
         ),
         Text(
-          pinFound.isNotEmpty ? "pin: $pinFound" : "",
+          pinFound.isNotEmpty ? "voucher: $pinFound" : "",
           style: TextStyle(
             fontSize: 18,
             color: Colors.orangeAccent,
@@ -1070,7 +1073,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
             builder: (context) {
               return CupertinoAlertDialog(
                 title: Text(
-                    "Would you like to save ${_recipientController.text} for future use ?"),
+                    "Would you like to save $recipientLabel ${_recipientController.text} for future use ?"),
                 content: alertDialogContent(),
               );
             })
@@ -1079,7 +1082,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
             builder: (context) {
               return AlertDialog(
                 title: Text(
-                  "Would you like to save ${_recipientController.text} for future use ?",
+                  "Would you like to save $recipientLabel ${_recipientController.text} for future use ?",
                   style: TextStyle(fontSize: 14),
                 ),
                 content: alertDialogContent(),
@@ -1163,7 +1166,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
             children: <Widget>[
               Platform.isIOS ? 
               CupertinoTextField(
-                prefix: Text("name e.g home"),
+                prefix: Text("Enter a name"),
                 padding: EdgeInsets.all(15),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(3),
@@ -1174,7 +1177,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
               )
                   :
               TextFormField(
-                decoration: InputDecoration(labelText: "Enter label e.g home"),
+                decoration: InputDecoration(labelText: "Enter a name"),
                 controller: _labelController,
                 validator: (v) => v.isEmpty ? "Label can't be empty" : null,
               ),
@@ -1202,6 +1205,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                     // ignore: missing_return
                     // ignore: missing_return
                     if (_labelFormKey.currentState.validate()) {
+                      Navigator.pop(context);
                       saveAccountsAction(context);
                     }
                   },

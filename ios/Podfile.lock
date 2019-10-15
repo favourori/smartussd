@@ -30,6 +30,18 @@ PODS:
   - Firebase/MLVision (6.10.0):
     - Firebase/CoreOnly
     - FirebaseMLVision (~> 0.19.0)
+  - Firebase/MLVisionBarcodeModel (6.10.0):
+    - Firebase/CoreOnly
+    - FirebaseMLVisionBarcodeModel (~> 0.19.0)
+  - Firebase/MLVisionFaceModel (6.10.0):
+    - Firebase/CoreOnly
+    - FirebaseMLVisionFaceModel (~> 0.19.0)
+  - Firebase/MLVisionLabelModel (6.10.0):
+    - Firebase/CoreOnly
+    - FirebaseMLVisionLabelModel (~> 0.19.0)
+  - Firebase/MLVisionTextModel (6.10.0):
+    - Firebase/CoreOnly
+    - FirebaseMLVisionTextModel (~> 0.19.0)
   - firebase_analytics (0.0.1):
     - Firebase/Analytics (~> 6.0)
     - Firebase/Core
@@ -124,6 +136,14 @@ PODS:
     - "GoogleToolboxForMac/NSData+zlib (~> 2.1)"
     - GTMSessionFetcher/Core (~> 1.1)
     - Protobuf (~> 3.5)
+  - FirebaseMLVisionBarcodeModel (0.19.0):
+    - FirebaseMLVision (~> 0.19)
+  - FirebaseMLVisionFaceModel (0.19.0):
+    - FirebaseMLVision (~> 0.19)
+  - FirebaseMLVisionLabelModel (0.19.0):
+    - FirebaseMLVision (~> 0.19)
+  - FirebaseMLVisionTextModel (0.19.0):
+    - FirebaseMLVision (~> 0.19)
   - Flutter (1.0.0)
   - flutter_share (0.0.1):
     - Flutter
@@ -224,6 +244,10 @@ PODS:
 DEPENDENCIES:
   - advanced_share (from `.symlinks/plugins/advanced_share/ios`)
   - cloud_firestore (from `.symlinks/plugins/cloud_firestore/ios`)
+  - Firebase/MLVisionBarcodeModel
+  - Firebase/MLVisionFaceModel
+  - Firebase/MLVisionLabelModel
+  - Firebase/MLVisionTextModel
   - firebase_analytics (from `.symlinks/plugins/firebase_analytics/ios`)
   - firebase_auth (from `.symlinks/plugins/firebase_auth/ios`)
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
@@ -265,6 +289,10 @@ SPEC REPOS:
     - FirebaseMessaging
     - FirebaseMLCommon
     - FirebaseMLVision
+    - FirebaseMLVisionBarcodeModel
+    - FirebaseMLVisionFaceModel
+    - FirebaseMLVisionLabelModel
+    - FirebaseMLVisionTextModel
     - GoogleAPIClientForREST
     - GoogleAppMeasurement
     - GoogleDataTransport
@@ -332,6 +360,10 @@ SPEC CHECKSUMS:
   FirebaseMessaging: 35edef69a6af9b34e9e44624089f054be3c09089
   FirebaseMLCommon: 074a67e05122b1c9f6401a4e33b2cea3b4efd224
   FirebaseMLVision: 7a456009787690e3b53436092ae9b635563de8f3
+  FirebaseMLVisionBarcodeModel: 96ef18a75ecdf867244ef2e75c8c1f01517667dc
+  FirebaseMLVisionFaceModel: d6ba42000f263df52187aee936262bc2002b3389
+  FirebaseMLVisionLabelModel: 7638a20d27219d5baa4b534a62375fc1d5bd077d
+  FirebaseMLVisionTextModel: c264caa3100ca804580bf2a7c1cb9ff390d1f471
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
   flutter_share: 4be0208963c60b537e6255ed2ce1faae61cd9ac2
   flutter_share_me: dd04bcb65a595f76bd2fa0537df08fffc5a04903
@@ -356,6 +388,6 @@ SPEC CHECKSUMS:
   sqflite: ff1d9da63c06588cc8d1faf7256d741f16989d5a
   url_launcher: 0067ddb8f10d36786672aa0722a21717dba3a298
 
-PODFILE CHECKSUM: beceac42db6f3d5fa1150858b085605414038003
+PODFILE CHECKSUM: 783cde9fdb19cb757c0737fe5f420861a14a3dfd
 
 COCOAPODS: 1.8.0.beta.1

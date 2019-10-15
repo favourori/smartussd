@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -94,7 +95,7 @@ class _CarriersState extends State<Carriers> {
         child: Stack(
           children: <Widget>[
             Container(
-              height: MediaQuery.of(context).size.height * 0.55,
+              height: MediaQuery.of(context).size.height * 0.35,
               decoration: BoxDecoration(
                   color: Colors.orange,
                   borderRadius: BorderRadius.only(
@@ -103,45 +104,66 @@ class _CarriersState extends State<Carriers> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
-                  SizedBox(height: 40
-                      // MediaQuery.of(context).size.height * 0.14,
-                      ),
+                  SizedBox(
+                    height: 40,
+                  ),
                   Container(
-                      padding: EdgeInsets.only(right: 15),
-                      child: Row(
-                        children: <Widget>[
-                          Expanded(
-                            flex: 1,
-                            child: Align(
-                              alignment: Alignment.center,
-                              child: Padding(
-                                padding: const EdgeInsets.only(left: 20.0),
-                                child: Text(
-                                  "Nokanda",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 24,
-                                    fontWeight: FontWeight.w900,
-                                  ),
-                                ),
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    //  decoration: BoxDecoration(
+                    //    border: Border.all()
+                    //  ),
+                    width: MediaQuery.of(context).size.width,
+                    child: Row(
+                      children: <Widget>[
+                        Expanded(
+                          flex: 2,
+                          child: Container(),
+                        ),
+                        Expanded(
+                          flex: 3,
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: AutoSizeText(
+                              "Nokanda",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 24,
+                                fontWeight: FontWeight.w900,
+                              ),
+                              maxLines: 2,
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          flex: 2,
+                          child: Align(
+                            alignment: Alignment.topRight,
+                            child: IconButton(
+                              onPressed: () {
+                                Navigator.push(context,
+                                    CustomPageRoute(navigateTo: Settings()));
+                              },
+                              icon: Icon(
+                                Icons.more_vert,
+                                color: Colors.white,
+                                size: 30,
                               ),
                             ),
                           ),
-                        ],
-                      )),
-                  SizedBox(height: 20
-                      //  MediaQuery.of(context).size.height * 0.05,
-                      ),
-                  Text(
-                    "Choose a service below",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 14,
+                        ),
+                      ],
                     ),
                   ),
-                  // SizedBox(
-                  //   height: MediaQuery.of(context).size.height * 0.06,
-                  // ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Align(
+                    alignment: Alignment.center,
+                    child: Text(
+                      "Choose a service",
+                      style: TextStyle(color: Colors.white, fontSize: 14),
+                    ),
+                  )
                 ],
               ),
             ),
