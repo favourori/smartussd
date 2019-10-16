@@ -213,7 +213,7 @@ class _CarriersState extends State<Carriers> {
                             : Container(
                                 child: Center(
                                   child: Text(
-                                    "Sorry you have a very old version which is no longer supported. Please update on the app store to Contiune",
+                                    "Sorry you have a old version of Nokanda which is no longer supported. Please update on the app store to Contiune",
                                     textAlign: TextAlign.center,
                                   ),
                                 ),

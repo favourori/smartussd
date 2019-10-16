@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:kene/utils/stylesguide.dart';
 import 'package:native_contact_picker/native_contact_picker.dart';
@@ -26,7 +28,7 @@ class SendMoney extends StatelessWidget {
 
               TextFormField(
                 controller: _textController,
-                keyboardType: TextInputType.number,
+                keyboardType: Platform.isAndroid ? TextInputType.number: TextInputType.text,
                 decoration: InputDecoration(
                   
                 ),
