@@ -739,17 +739,18 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
           canSaveLabels != null && canSaveLabels ?
           StreamBuilder(
               stream: Firestore.instance
-                  .collection("accounts/$uid/data").orderBy("label")
+                  .collection("accounts/$uid/data")
                   .where("service_name", isEqualTo: serviceLable)
                   .snapshots(),
-              builder: (context, snapshot) {
-                if (!snapshot.hasData)
+              builder: (context, accountsSnapshot) {
+                if (!accountsSnapshot.hasData)
                   return Container(
                     child: Text("Loading ..."),
                   );
 
-                savedAccounts = snapshot.data.documents;
-                return snapshot.data.documents.length > 0
+                savedAccounts = accountsSnapshot.data.documents;
+                savedAccounts.sort((a,b) => a['label'].compareTo(b['label']));
+                return accountsSnapshot.data.documents.length > 0
                     ? Column(
                   children: <Widget>[
                     Text("Saved $label"),
@@ -759,7 +760,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                     Container(
 //                            height: 40,
                         child: Wrap(
-                          children: populateSavedAccount(snapshot.data.documents),
+                          children: populateSavedAccount(savedAccounts),
                         )
                     ),
                   ],
