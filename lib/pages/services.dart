@@ -636,7 +636,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                             curve: Curves.easeIn);
                       }
                     },
-                    keyboardType: TextInputType.number,
+                    keyboardType: label != "Amount" ? TextInputType.text : TextInputType.number,
                     controller: controller,
                     decoration: InputDecoration(
                         labelText: "Enter $label",
@@ -909,7 +909,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
 //        buildServiceListItem(list),
 //      );
 
-      if (list['label'] == "LoadAirtime" && Platform.isIOS && false) {
+      if (list['label'] == "LoadAirtime" && Platform.isIOS) {
         continue;
       } else {
         tmp.add(
