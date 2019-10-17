@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:kene/control.dart';
+import 'package:kene/pages/faq.dart';
 import 'package:kene/pages/save_accounts.dart';
 import 'package:kene/widgets/custom_nav.dart';
 //import 'package:advanced_share/advanced_share.dart';
@@ -59,7 +60,7 @@ class _SettingsState extends State<Settings> {
                       width: MediaQuery.of(context).size.width*0.1,
                     ),
 
-                    AutoSizeText("Settings", style:TextStyle(
+                    AutoSizeText("Menu", style:TextStyle(
                       color:Colors.white,
                       fontSize:28,
                       
@@ -123,6 +124,26 @@ class _SettingsState extends State<Settings> {
                           ),
                         ),
                       ),
+
+                      GestureDetector(
+                        onTap: () {
+                          FirebaseAuth.instance.signOut().then((_) {
+                            Navigator.push(context,
+                                CustomPageRoute(navigateTo: FAQ()));
+                          });
+                        },
+                        child: ListTile(
+                          leading: Icon(
+                            Icons.question_answer,
+                            color: Colors.orangeAccent,
+                          ),
+                          title: Text("FAQ"),
+                          // subtitle: Text("Save your meter numbers etc", style: TextStyle(
+                          //   fontSize: 13
+                          // ),),
+                        ),
+                      ),
+
                       GestureDetector(
                         onTap: () {
                           FirebaseAuth.instance.signOut().then((_) {
