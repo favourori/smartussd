@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:kene/control.dart';
@@ -98,25 +99,40 @@ class _SettingsState extends State<Settings> {
                           ),
                         ),
                       ),
-                      GestureDetector(
-                        onTap: () {
+                      StreamBuilder(
+                        stream: Firestore.instance.collection("settings").snapshots(),
+                        builder: (context, snapshot){
+                          return GestureDetector(
+                            onTap: () {
 
-                          share();
+                              String text = "";
+                              String url = "";
+                              for(var item in snapshot.data.documents){
+                                  print(item.documentID);
+                                  if(item.documentID == "share_text"){
+                                    text = item['text'];
+                                    url = item['url'];
+
+                                  }
+                              }
+                              share(text, url);
 //                          FlutterShareMe()
 //                              .shareToWhatsApp(msg: "Hi!! \nHave you heard of Nokanda ? \nIt saves you a lot of time using mobile money and USSD Services. \nTry it out !! \n Android : \nhttps://play.google.com/store/apps/details?id=com.hexakomb.nokanda \niOS: \nhttps://bit.ly/nokandaios", base64Image: "");
 
+                            },
+                            child: ListTile(
+                              leading: Icon(
+                                Icons.share,
+                                color: Colors.orangeAccent,
+                              ),
+                              title: Text("Share Nokanda"),
+                              subtitle: Text(
+                                "Share app with friends",
+                                style: TextStyle(fontSize: 13),
+                              ),
+                            ),
+                          );
                         },
-                        child: ListTile(
-                          leading: Icon(
-                            Icons.share,
-                            color: Colors.orangeAccent,
-                          ),
-                          title: Text("Share Nokanda"),
-                          subtitle: Text(
-                            "Share app with friends",
-                            style: TextStyle(fontSize: 13),
-                          ),
-                        ),
                       ),
 
                       GestureDetector(
@@ -192,17 +208,17 @@ class _SettingsState extends State<Settings> {
           )),
     );
   }
-  Future<void> share() async {
+  Future<void> share(text, url) async {
     await FlutterShare.share(
         title: 'Nokanda App',
-        text: 'Hi!! \nHave you heard of Nokanda ? \nIt saves you a lot of time using mobile money and USSD Services. \nTry it out !!',
-        linkUrl: 'www.nokanda.hexakomb.com',
+        text: '$text',
+        linkUrl: '$url',
         chooserTitle: 'Share Nokanda App'
     );
   }
 
   _sendEmail(String email) async {
-    String url = 'mailto:$email?subject=Contact message from Nokanda App';
+    String url = 'mailto:$email?subject=Contact%20message%20from%20Nokanda%20App';
     if (await canLaunch(url)) {
       await launch(url);
     } else {
