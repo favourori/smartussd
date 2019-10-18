@@ -33,6 +33,7 @@ dependencies:
   flutter_share_me: ^0.6.0
   flutter_share: ^1.0.1+1
 
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

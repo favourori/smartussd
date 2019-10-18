@@ -2,14 +2,16 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:kene/control.dart';
+import 'package:kene/pages/contact.dart';
 import 'package:kene/pages/faq.dart';
 import 'package:kene/pages/save_accounts.dart';
 import 'package:kene/widgets/custom_nav.dart';
 //import 'package:advanced_share/advanced_share.dart';
 import 'package:package_info/package_info.dart';
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:flutter_share_me/flutter_share_me.dart';
+//import 'package:flutter_share_me/flutter_share_me.dart';
 import 'package:flutter_share/flutter_share.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 
 
@@ -33,6 +35,8 @@ class _SettingsState extends State<Settings> {
       });
     });
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -97,27 +101,17 @@ class _SettingsState extends State<Settings> {
                       GestureDetector(
                         onTap: () {
 
-                          print("clicked share on whataspp");
-                          Platform.isIOS ?
-                          share()
-                          :
-                          FlutterShareMe()
-                              .shareToWhatsApp(msg: "Hi!! \nHave you heard of Nokanda ? \nIt saves you a lot of time using mobile money and USSD Services. \nTry it out !! \n Android : \nhttps://play.google.com/store/apps/details?id=com.hexakomb.nokanda \niOS: \nhttps://bit.ly/nokandaios", base64Image: "");
-//                          AdvancedShare.whatsapp(
-//                            msg:
-//                                "Hi!! \nHave you heard of Nokanda ? \nIt saves you alot of time using mobile money and USSD Services. \nTry it out ) \n https://play.google.com/store/apps/details?id=com.hexakomb.nokanda",
-//                            url: "",
-//                          ).then((response) {
-////                            handleResponse(response, appName: "Whatsapp");
-//                            print("Shared on whatsapp");
-//                          });
+                          share();
+//                          FlutterShareMe()
+//                              .shareToWhatsApp(msg: "Hi!! \nHave you heard of Nokanda ? \nIt saves you a lot of time using mobile money and USSD Services. \nTry it out !! \n Android : \nhttps://play.google.com/store/apps/details?id=com.hexakomb.nokanda \niOS: \nhttps://bit.ly/nokandaios", base64Image: "");
+
                         },
                         child: ListTile(
                           leading: Icon(
                             Icons.share,
                             color: Colors.orangeAccent,
                           ),
-                          title: Text("Share on WhatsApp"),
+                          title: Text("Share Nokanda"),
                           subtitle: Text(
                             "Share app with friends",
                             style: TextStyle(fontSize: 13),
@@ -127,10 +121,8 @@ class _SettingsState extends State<Settings> {
 
                       GestureDetector(
                         onTap: () {
-                          FirebaseAuth.instance.signOut().then((_) {
-                            Navigator.push(context,
-                                CustomPageRoute(navigateTo: FAQ()));
-                          });
+                          Navigator.push(context,
+                              CustomPageRoute(navigateTo: FAQ()));
                         },
                         child: ListTile(
                           leading: Icon(
@@ -138,6 +130,20 @@ class _SettingsState extends State<Settings> {
                             color: Colors.orangeAccent,
                           ),
                           title: Text("FAQ"),
+                        ),
+                      ),
+
+                      GestureDetector(
+                        onTap: () {
+                          _sendEmail("support@hexakomb.com");
+
+                        },
+                        child: ListTile(
+                          leading: Icon(
+                            Icons.email,
+                            color: Colors.orangeAccent,
+                          ),
+                          title: Text("Contact us"),
                           // subtitle: Text("Save your meter numbers etc", style: TextStyle(
                           //   fontSize: 13
                           // ),),
@@ -162,9 +168,9 @@ class _SettingsState extends State<Settings> {
                           // ),),
                         ),
                       ),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.2,
-                      ),
+//                      SizedBox(
+//                        height: MediaQuery.of(context).size.height * 0.2,
+//                      ),
                       Expanded(flex: 1,child: Container(),),
                      Align(
                        alignment: Alignment.bottomCenter,
@@ -189,10 +195,19 @@ class _SettingsState extends State<Settings> {
   Future<void> share() async {
     await FlutterShare.share(
         title: 'Nokanda App',
-        text: 'Hi!! \nHave you heard of Nokanda ? \nIt saves you a lot of time using mobile money and USSD Services. \nTry it out !! \n Android : \nhttps://play.google.com/store/apps/details?id=com.hexakomb.nokanda \niOS: \nhttps://bit.ly/nokandaios',
-        linkUrl: '',
+        text: 'Hi!! \nHave you heard of Nokanda ? \nIt saves you a lot of time using mobile money and USSD Services. \nTry it out !!',
+        linkUrl: 'www.nokanda.hexakomb.com',
         chooserTitle: 'Share Nokanda App'
     );
+  }
+
+  _sendEmail(String email) async {
+    String url = 'mailto:$email?subject=Contact message from Nokanda App';
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 
 }
