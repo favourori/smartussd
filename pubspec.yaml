@@ -10,7 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^0.1.2
-  url_launcher: ^5.0.3
+  url_launcher: ^5.2.2
   native_contact_picker: ^0.0.6
   # firebase_core: 0.2.5+1
   firebase_analytics: ^5.0.0
