@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
-class FAQ extends StatelessWidget{
+class ContactUs extends StatelessWidget{
   @override
   Widget build(context){
     return Platform.isIOS ?
@@ -14,77 +14,8 @@ class FAQ extends StatelessWidget{
       ),
       debugShowCheckedModeBanner: false,
       home: CupertinoPageScaffold(
-        backgroundColor: CupertinoColors.activeOrange,
+          backgroundColor: CupertinoColors.activeOrange,
 
-          child:
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20),
-            child: Center(
-              child: Column(
-                children: <Widget>[
-                  SizedBox(
-                    height:30,
-                  ),
-                  Row(
-                    children: <Widget>[
-                      Expanded(
-                        flex: 1,
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: GestureDetector(child: Icon(Icons.arrow_back_ios, size: 24, color: Colors.white,), onTap: (){
-                              Navigator.pop(context);
-                            }),
-                          )
-                      ),
-
-                      Expanded(
-                        flex: 1,
-                        child: Center(
-                          child: Text("FAQ", style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 20,
-                              fontFamily: "Poppins",
-                              color: CupertinoColors.white
-                          ),),
-                        ),),
-
-                      Expanded(
-                        flex: 1,
-                        child: Container(),
-                      )
-                    ],
-                  ),
-
-                  SizedBox(height: 30,),
-
-                  StreamBuilder(
-                    stream: Firestore.instance.collection("settings/faq/faqs").orderBy("orderNo").snapshots(),
-                      builder:(context, snapshot){
-                          if(!snapshot.hasData)
-                            return Container(
-                              child: Text("Loading ...", style: TextStyle(
-                                color: Colors.white,
-                                fontFamily: "Poppins",
-                              ),),
-                            );
-                          return ListView(
-                            shrinkWrap: true,
-                            children:populateQuestions(snapshot.data.documents)
-                          );
-                  })
-                ],
-              ),
-            ),
-          )
-      ),
-    )
-    :
-    
-    Scaffold(
-      backgroundColor: CupertinoColors.activeOrange,
-//      appBar: AppBar(
-//        title: Text("FAQ"),
-//      ),
-      body: Center(
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 20),
             child: Center(
@@ -108,7 +39,7 @@ class FAQ extends StatelessWidget{
                       Expanded(
                         flex: 1,
                         child: Center(
-                          child: Text("FAQ", style: TextStyle(
+                          child: Text("Send us a message", style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 20,
                               fontFamily: "Poppins",
                               color: CupertinoColors.white
@@ -143,6 +74,16 @@ class FAQ extends StatelessWidget{
               ),
             ),
           )
+      ),
+    )
+        :
+
+    Scaffold(
+      appBar: AppBar(
+        title: Text("FAQ"),
+      ),
+      body: Center(
+
       ),
     );
   }
@@ -191,7 +132,7 @@ class _CollapsibleWidget extends State<CollapsibleWidget>{
               child: Row(
                 children: <Widget>[
                   Icon(
-                  !showAnswer ? Icons.keyboard_arrow_down: Icons.keyboard_arrow_up, size: 20, color:Colors.white),
+                      !showAnswer ? Icons.keyboard_arrow_down: Icons.keyboard_arrow_up, size: 20, color:Colors.white),
                   SizedBox(width: 10,),
                   Container(
                     width: MediaQuery.of(context).size.width * 0.8,
@@ -204,26 +145,26 @@ class _CollapsibleWidget extends State<CollapsibleWidget>{
               ),
             ),
           ),
-          
+
           showAnswer ?  Align(
             alignment: Alignment.centerRight,
             child: Opacity(opacity: 0.7,
-            child: Container(
-              width: MediaQuery.of(context).size.width * 0.7,
-              margin: EdgeInsets.only(top: 15),
-              padding: EdgeInsets.all(15),
-              decoration: BoxDecoration(
-                  color: Colors.white,
+              child: Container(
+                width: MediaQuery.of(context).size.width * 0.7,
+                margin: EdgeInsets.only(top: 15),
+                padding: EdgeInsets.all(15),
+                decoration: BoxDecoration(
+                    color: Colors.white,
 //                  border: Border.all(width: 2,),
-                  borderRadius: BorderRadius.only(topLeft:Radius.zero, topRight: Radius.circular(20), bottomLeft: Radius.circular(30), bottomRight: Radius.circular(20) )
-              ),
-              child: Center(
-                child: Text("${widget.answer}", style: TextStyle(
-                  color: Colors.black,
-                  fontFamily: "Poppins",
-                ),),
-              ),
-            ),),
+                    borderRadius: BorderRadius.only(topLeft:Radius.zero, topRight: Radius.circular(20), bottomLeft: Radius.circular(30), bottomRight: Radius.circular(20) )
+                ),
+                child: Center(
+                  child: Text("${widget.answer}", style: TextStyle(
+                    color: Colors.black,
+                    fontFamily: "Poppins",
+                  ),),
+                ),
+              ),),
           ): Container()
         ],
       ),
