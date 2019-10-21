@@ -3,14 +3,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:kene/control.dart';
-import 'package:kene/pages/contact.dart';
+import 'package:kene/pages/about.dart';
 import 'package:kene/pages/faq.dart';
 import 'package:kene/pages/save_accounts.dart';
 import 'package:kene/widgets/custom_nav.dart';
-//import 'package:advanced_share/advanced_share.dart';
 import 'package:package_info/package_info.dart';
 import 'package:auto_size_text/auto_size_text.dart';
-//import 'package:flutter_share_me/flutter_share_me.dart';
 import 'package:flutter_share/flutter_share.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -116,8 +114,6 @@ class _SettingsState extends State<Settings> {
                                   }
                               }
                               share(text, url);
-//                          FlutterShareMe()
-//                              .shareToWhatsApp(msg: "Hi!! \nHave you heard of Nokanda ? \nIt saves you a lot of time using mobile money and USSD Services. \nTry it out !! \n Android : \nhttps://play.google.com/store/apps/details?id=com.hexakomb.nokanda \niOS: \nhttps://bit.ly/nokandaios", base64Image: "");
 
                             },
                             child: ListTile(
@@ -133,6 +129,20 @@ class _SettingsState extends State<Settings> {
                             ),
                           );
                         },
+                      ),
+
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(context,
+                              CustomPageRoute(navigateTo: About()));
+                        },
+                        child: ListTile(
+                          leading: Icon(
+                            Icons.info,
+                            color: Colors.orangeAccent,
+                          ),
+                          title: Text("About Nokanda"),
+                        ),
                       ),
 
                       GestureDetector(

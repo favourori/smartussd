@@ -255,6 +255,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                                         headTitleStack.removeLast();
                                         var ht2 = headTitleStack;
                                         setState(() {
+                                          serviceDescription = "";
                                           headTitleStack = ht2;
                                           showActionSection = false;
                                           _amountController.text = "";
@@ -345,6 +346,9 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                             Platform.isIOS ? 
                                 showCupertinoDialog(context: context, builder: (context){
                                   return CupertinoAlertDialog(
+                                    title: Center(
+                                      child: Text("Info"),
+                                    ),
                                     content: Text("$serviceDescription "),
                                     actions: <Widget>[
                                       CupertinoButton(child: Text("Close"), onPressed: (){
@@ -358,6 +362,9 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                             
                             showDialog(context: context, builder: (context){
                               return AlertDialog(
+                                title: Center(
+                                  child: Text("Info"),
+                                ),
                                 content: Text("$serviceDescription"),
                               );
                             });
