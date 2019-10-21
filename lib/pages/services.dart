@@ -83,6 +83,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
   File _image;
   bool cameraBtnClicked = false;
   bool hasChildren = false;
+  String serviceDescription;
 
   String _recipientContactName = "";
   String pinFound = "";
@@ -316,15 +317,55 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                       ],
                     ),
                   ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Align(
-                    alignment: Alignment.center,
-                    child: Text(
-                      "${headTitleStack[headTitleStack.length - 1]}",
-                      style: TextStyle(color: Colors.white, fontSize: 14),
-                    ),
+//                  SizedBox(
+//                    height: 5,
+//                  ),
+                  Row(
+                    children:[
+                      Expanded(
+                        flex: 1,
+                        child: Container(),
+                      ),
+
+                      Expanded(
+                        flex:4,
+                        child:Align(
+                          alignment: Alignment.center,
+                          child: Text(
+                            "${headTitleStack[headTitleStack.length - 1]}",
+                            style: TextStyle(color: Colors.white, fontSize: 14),
+                          ),
+                        )
+                      ),
+
+                      Expanded(
+                        flex: 1,
+                        child: serviceDescription != null && serviceDescription.isNotEmpty ? GestureDetector(
+                          child: IconButton(icon: Icon(Icons.info_outline, color: Colors.white,), onPressed: (){
+                            Platform.isIOS ? 
+                                showCupertinoDialog(context: context, builder: (context){
+                                  return CupertinoAlertDialog(
+                                    content: Text("$serviceDescription "),
+                                    actions: <Widget>[
+                                      CupertinoButton(child: Text("Close"), onPressed: (){
+                                        Navigator.pop(context);
+                                      })
+                                    ],
+                                  );
+                                })
+                                
+                                :
+                            
+                            showDialog(context: context, builder: (context){
+                              return AlertDialog(
+                                content: Text("$serviceDescription"),
+                              );
+                            });
+                          }),
+                        ):
+                        Container(),
+                      ),
+                    ]
                   )
                 ],
               ),
@@ -800,6 +841,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
           canSaveLabels = list['canSaveLabels'];
           needsAmount = list['needsAmount'];
           requiresCamera = list["requiresCamera"];
+          serviceDescription = list["serviceDescription"];
           hasChildren =
               list['hasChildren'] != null ? list['hasChildren'] : false;
           parentID = list.documentID;
