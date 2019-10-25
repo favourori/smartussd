@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "94989616634-g55v7mgrt2nqfba1u764tlkqvrdt5l2i.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.kene",
+            "certificate_hash": "da7605af69cec4230c7f4ffda3d685895fd407a2"
+          }
+        },
+        {
           "client_id": "94989616634-c5a91ghcaa531f3t41mp25cf6qmu24ee.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -30,6 +38,57 @@
             {
               "client_id": "94989616634-c5a91ghcaa531f3t41mp25cf6qmu24ee.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "94989616634-1v2ck46qhmdvaf3eo6gjdbuorp697slc.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.hexakomb.nokanda"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:94989616634:android:6f0e8182e02d5aa4",
+        "android_client_info": {
+          "package_name": "com.hexakomb.nokanda"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "94989616634-3util3hacb6j65fh8c6gp8uhag0kcr2n.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.hexakomb.nokanda",
+            "certificate_hash": "da7605af69cec4230c7f4ffda3d685895fd407a2"
+          }
+        },
+        {
+          "client_id": "94989616634-c5a91ghcaa531f3t41mp25cf6qmu24ee.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDOttiEXfSMIjaRzgN_XOWqPWdIYs5jByk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "94989616634-c5a91ghcaa531f3t41mp25cf6qmu24ee.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "94989616634-1v2ck46qhmdvaf3eo6gjdbuorp697slc.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.hexakomb.nokanda"
+              }
             }
           ]
         }

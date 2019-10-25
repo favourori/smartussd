@@ -33,6 +33,7 @@ def parse_KV_file(file, separator='=')
 end
 
 target 'Runner' do
+  use_frameworks!
   # Prepare symlinks folder. We use symlinks to avoid having Podfile.lock
   # referring to absolute paths on developers' machines.
   system('rm -rf .symlinks')
@@ -58,8 +59,6 @@ target 'Runner' do
     File.symlink(p[:path], symlink)
     pod p[:name], :path => File.join(symlink, 'ios')
   }
-
-pod 'Firebase/Analytics'
 end
 
 # Prevent Cocoapods from embedding a second Flutter framework and causing an error with the new Xcode build system.
@@ -72,3 +71,8 @@ post_install do |installer|
     end
   end
 end
+
+pod 'Firebase/MLVisionBarcodeModel'
+pod 'Firebase/MLVisionFaceModel'
+pod 'Firebase/MLVisionLabelModel'
+pod 'Firebase/MLVisionTextModel'

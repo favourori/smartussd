@@ -9,29 +9,23 @@ void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
 
-  static FirebaseAnalytics analytics = FirebaseAnalytics();
-  FirebaseAnalyticsObserver observer = FirebaseAnalyticsObserver(analytics: analytics);
+  static FirebaseAnalytics xanalytics = FirebaseAnalytics();
+  FirebaseAnalyticsObserver observer = FirebaseAnalyticsObserver(analytics: xanalytics);
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Kene',
+      title: 'Nokanda',
       theme: ThemeData(
         primaryColor: Colors.black,
-        fontFamily: "Mali",
-        // brightness: Brightness.dark
+        fontFamily: "Poppins",
+        // brightness: Brightness.darkxs
       ),
       navigatorObservers: [
         observer,
       ],
-      home: Control()
-      
-      // Signin(
-      //   analytics: analytics, observer:observer
-      //   )
-
-//      Homepage(analytics: analytics, observer:observer),
+      home: Control(analytics: xanalytics,)
     );
   }
 }

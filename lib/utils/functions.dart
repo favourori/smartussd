@@ -4,13 +4,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 import 'dart:io';
 
+
 launchURL(String link) async {
-  String url = 'tel:$link';
+  String url = 'tel:$link#';
   if (await canLaunch(url)) {
     print(url);
     await launch(url);
   } else {
-    throw 'Could not launch $url';
+    throw 'Could not launch $url o';
   }
 }
 
@@ -21,7 +22,7 @@ Future<Null> sendAnalytics(analytics, eventName, parameters) async{
   ).then((f) =>
       print("event logged")
   );
-}
+} 
 
 Future getServices(String carier) async{
  if(FirebaseAuth.instance.currentUser() != null ){
@@ -45,14 +46,31 @@ catch(e){
 }
 
 
-
-  sendCode(platform, code, aText, rText) async{
-    String codeTosend = _computeCodeToSend(code, aText, rText);
+Future sendCode(platform, code, aText, rText) async{
+  String codeToSend = _computeCodeToSend(code, aText, rText);
+  if(Platform.isIOS){
+    launchURL(codeToSend+"");
+  }
+  else{
     try{
-      await platform.invokeMethod("moMoDialNumber", {"code": codeTosend});
-      print(codeTosend);
+      await platform.invokeMethod("moMoDialNumber", {"code": codeToSend});
+      print("after await");
+      print(codeToSend);
+
     }on PlatformException catch(e){
-      print("error check balance is $e");
+
+        print("error check balance is $e");
+      }
+    }
+  }
+
+
+  Future askCallPermission(platform) async{
+    try{
+      await platform.invokeMethod("nokandaAskCallPermission");
+    }
+    on PlatformException catch(e){
+      print("error on asking permision is $e");
     }
   }
 
@@ -65,6 +83,12 @@ String _computeCodeToSend(String rawCode, aText, rText){
       }
       else if(rawCode[x] == "A"){
           tmp += aText;
+      }
+      else if(rawCode[x] == " "){
+        continue;
+      }
+      else if(rawCode[x] == "  "){
+        continue;
       }
       else{
         tmp += rawCode[x];
