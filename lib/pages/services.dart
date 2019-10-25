@@ -15,6 +15,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:kene/utils/stylesguide.dart';
 import 'package:kene/widgets/custom_nav.dart';
+import 'package:kene/widgets/service_item.dart';
 import 'package:native_contact_picker/native_contact_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:auto_size_text/auto_size_text.dart';
@@ -38,7 +39,7 @@ class Services extends StatefulWidget {
 class _ServicesState extends State<Services> with TickerProviderStateMixin {
   static const platform = const MethodChannel('com.kene.momouusd');
   scrollListener() {
-    print(_listViewController.offset);
+//    print(_listViewController.offset);
   }
 
   GlobalKey _formKey = GlobalKey<FormState>();
@@ -410,6 +411,8 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
     ));
   }
 
+
+  /// Receives collection url and display children if available else, displays action
   StreamBuilder showServices(String collectionLink) {
     print(navigationStack);
     return StreamBuilder(
@@ -830,6 +833,20 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
     return tmp;
   }
 
+
+  updateCollectionURL(String url){
+
+    if (url.isNotEmpty){
+
+      var tmp = navigationStack;
+      tmp.add(collectionURL + url);
+      setState(() {
+        collectionURL = collectionURL + url;
+        navigationStack = tmp;
+      });
+    }
+  }
+
   GestureDetector buildServiceListItem(list) {
     return GestureDetector(
       onTap: () {
@@ -892,8 +909,8 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
               Container(
                 height: 50,
                 width: 50,
-                child: CachedNetworkImage(
-                  imageUrl: list['icon'],
+                child: list['icon'] != null && list['icon'].isNotEmpty ?  CachedNetworkImage(
+                  imageUrl: list['icon'].trim(),
                   placeholder: (context, url) => new Icon(
                     Icons.album,
                     size: 50,
@@ -902,7 +919,12 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                     Icons.album,
                     size: 50,
                   ),
-                ),
+                ):
+                Icon(
+                  Icons.album,
+                  size: 50,
+                )
+                ,
               ),
               Expanded(
                 child: Padding(
@@ -951,18 +973,38 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
     }
   }
 
+
+
+  ///receives list and calls build services, function which builds the single items
   displayServices(lists) {
     List<Widget> tmp = [];
     for (var list in lists) {
-//      tmp.add(
-//        buildServiceListItem(list),
-//      );
 
       if (list['label'] == "LoadAirtime" && Platform.isIOS) {
         continue;
       } else {
         tmp.add(
           buildServiceListItem(list),
+//        ServiceItem(
+//          backgroundColor: Colors.white,
+//          icon:list['icon'],
+//          name:list['name'],
+//          serviceLabel: list['serviceLabel'],
+//          needsContact: list['needsContact'],
+//          needsRecipient: list['needsRecipient'],
+//          requiresInput: list['requiresInput'],
+//          codeToSend: list['codeToSend'],
+//          recipientLabel:list['recipientLabel'],
+//          canSaveLabels:list['canSaveLabels'],
+//          needsAmount:list['needsAmount'],
+//          requiresCamera:list['requiresCamera'],
+//          serviceDescription:list['serviceDescription'],
+//          hasChildren:list['hasChildren'],
+//          parentID:list.documentID,
+//          updateCollectionURL: updateCollectionURL,
+//
+//
+//        ),
         );
       }
     }
