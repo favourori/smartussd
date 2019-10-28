@@ -24,13 +24,13 @@ class ServiceItem extends StatefulWidget{
   ///operations done and sent to parent
   ///
 
-  final updateCollectionURL;
+  final serviceActions;
 
 
   ServiceItem({this.backgroundColor, this.serviceLabel, this.needsContact, this.requiresInput,
     this.needsRecipient, this.codeToSend, this.recipientLabel, this.canSaveLabels, this.needsAmount,
     this.requiresCamera, this.hasChildren, this.serviceDescription, this.parentID, this.icon, this.name,
-    this.updateCollectionURL});
+    this.serviceActions});
 
   @override
   createState() => _ServiceItemState();
@@ -49,7 +49,7 @@ class _ServiceItemState extends State<ServiceItem>{
             itemClicked = true;
           });
 
-          Future.delayed(Duration(milliseconds: 300)).then((f){
+          Future.delayed(Duration(milliseconds: 300)).then((f){ // delay for 300 milli secs before Navigating
 
             //          var hT = headTitleStack;
 //          if (list['requiresInput'] != null && list['requiresInput']) {
@@ -72,28 +72,24 @@ class _ServiceItemState extends State<ServiceItem>{
 //            parentID = list.documentID;
 //          });
 
+            // sending name for parent to update to update header title
+            String name = widget.requiresInput != null && widget.requiresInput ? widget.name : null;
+
             if (widget.hasChildren != null && widget.hasChildren) {
-//            setState(() {
-////              collectionURL = collectionURL + "/" + parentID + "/children";
-//            });
 
               /// UPDATE THE COLLECTION URL IF THERE'S CHILDREN FOR THE TREE TO REBUILD
               String newURL = "/" + widget.parentID + "/children";
-              widget.updateCollectionURL(newURL);
+              widget.serviceActions(newURL, 0, {"label":widget.serviceLabel, "name":name});  //motive of 0, when it has children, and empty data
             }
-//          else if (!list['requiresInput']) {
-//            sendCode(platform, codeToSend, _amountController.text,
-//                _recipientController.text);
-//          } else {
-//            setState(() {
-//              showActionSection = true;
-//            });
-//            _listViewController.animateTo(0,
-//                duration: Duration(milliseconds: 10), curve: Curves.easeIn);
-//          }
-//
-//          sendAnalytics(widget.analytics, serviceLable, null);
+            /// if requires input, send code to parent to make the call
+          else if (!widget.requiresInput) {
+            widget.serviceActions(null, 1, {"code": widget.codeToSend, "label":widget.serviceLabel, "name":name});
+          } else {
 
+            /// call parent to open up action center
+              widget.serviceActions(null, 2, {"label":widget.serviceLabel, "name":name});
+
+          }
           });
 
         },

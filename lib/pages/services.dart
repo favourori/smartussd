@@ -833,9 +833,13 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
     return tmp;
   }
 
+// called from serviceItem class
+// receives motive from child and performs actions accordingly
 
-  updateCollectionURL(String url){
+  serviceActions(String url, int motive, Map<String, dynamic> data){
 
+
+  if(motive == 0){
     if (url.isNotEmpty){
 
       var tmp = navigationStack;
@@ -845,6 +849,32 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
         navigationStack = tmp;
       });
     }
+  }
+  else if(motive == 1){
+    sendCode(platform, data['code'], _amountController.text, _recipientController.text);
+  }
+
+  else{
+    setState(() {
+      showActionSection = true;
+    });
+    _listViewController.animateTo(0,
+        duration: Duration(milliseconds: 10), curve: Curves.easeIn);
+  }
+
+  sendAnalytics(widget.analytics, data['label'], null);
+
+
+  // check for name and update the headerText
+  var hT = headTitleStack;
+  if (data['name'] != null) {
+    hT.add(data['name']);
+
+    setState(() {
+      headTitleStack = hT;
+    });
+  }
+
   }
 
   GestureDetector buildServiceListItem(list) {
@@ -984,27 +1014,27 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
         continue;
       } else {
         tmp.add(
-          buildServiceListItem(list),
-//        ServiceItem(
-//          backgroundColor: Colors.white,
-//          icon:list['icon'],
-//          name:list['name'],
-//          serviceLabel: list['serviceLabel'],
-//          needsContact: list['needsContact'],
-//          needsRecipient: list['needsRecipient'],
-//          requiresInput: list['requiresInput'],
-//          codeToSend: list['codeToSend'],
-//          recipientLabel:list['recipientLabel'],
-//          canSaveLabels:list['canSaveLabels'],
-//          needsAmount:list['needsAmount'],
-//          requiresCamera:list['requiresCamera'],
-//          serviceDescription:list['serviceDescription'],
-//          hasChildren:list['hasChildren'],
-//          parentID:list.documentID,
-//          updateCollectionURL: updateCollectionURL,
-//
-//
-//        ),
+//          buildServiceListItem(list),
+        ServiceItem(
+          backgroundColor: Colors.white,
+          icon:list['icon'],
+          name:list['name'],
+          serviceLabel: list['serviceLabel'],
+          needsContact: list['needsContact'],
+          needsRecipient: list['needsRecipient'],
+          requiresInput: list['requiresInput'],
+          codeToSend: list['codeToSend'],
+          recipientLabel:list['recipientLabel'],
+          canSaveLabels:list['canSaveLabels'],
+          needsAmount:list['needsAmount'],
+          requiresCamera:list['requiresCamera'],
+          serviceDescription:list['serviceDescription'],
+          hasChildren:list['hasChildren'],
+          parentID:list.documentID,
+          serviceActions: serviceActions,
+
+
+        ),
         );
       }
     }
