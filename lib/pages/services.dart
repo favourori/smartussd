@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:kene/components/input_container.dart';
 import 'package:kene/database/db.dart';
 import 'package:kene/pages/cariers.dart';
 import 'package:kene/pages/save_accounts.dart';
@@ -15,12 +16,18 @@ import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:kene/utils/stylesguide.dart';
 import 'package:kene/widgets/custom_nav.dart';
-import 'package:kene/widgets/service_item.dart';
+import 'package:kene/components/service_item.dart';
 import 'package:native_contact_picker/native_contact_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 //import 'package:keyboard_visibility/keyboard_visibility.dart';
 import 'package:flutter/cupertino.dart';
+
+
+///
+/// TODO: Support languages, country selection, multiple input and map structure of services; fix the ios bug
+///
+
 
 class Services extends StatefulWidget {
   final carrierId;
@@ -186,28 +193,16 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
       }
     });
 
-    //call for permissions
-//    askCallPermission(platform);
-
     String initialCollection = "services/${widget.carrierId}/services";
     navigationStack.add(initialCollection);
     setState(() {
       collectionURL = initialCollection;
     });
-
-//    KeyboardVisibilityNotification().addNewListener(
-//      onChange: (bool isVisible){
-//          print("keyboard status is $isVisible");
-//      }
-//    );
-
-//    print(Color(0xffffcc00).value);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-//       resizeToAvoidBottomInset: true,
         body: GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
@@ -319,9 +314,6 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                       ],
                     ),
                   ),
-//                  SizedBox(
-//                    height: 5,
-//                  ),
                   Row(
                     children:[
                       Expanded(
@@ -394,8 +386,9 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                       controller: _listViewController,
                       children: <Widget>[
                         !showActionSection
-                            ? showServices("$collectionURL")
-                            : actionContainer(),
+                            ? fetchServices("$collectionURL")
+                            : InputContainer(),
+//                        actionContainer(),
                         SizedBox(
                           height: 100,
                         ),
@@ -412,8 +405,8 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
   }
 
 
-  /// Receives collection url and display children if available else, displays action
-  StreamBuilder showServices(String collectionLink) {
+  /// Receives collection url and fetches children
+  StreamBuilder fetchServices(String collectionLink) {
     print(navigationStack);
     return StreamBuilder(
       stream: Firestore.instance
@@ -427,7 +420,10 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
         snapshot.data.documents.sort((DocumentSnapshot a, DocumentSnapshot b) =>
             getServiceOrderNo(a).compareTo(getServiceOrderNo(b)));
 
-        return Column(children: displayServices(snapshot.data.documents));
+        return Column(
+            children:
+            displayServices(snapshot.data.documents) //display the services fetched
+        );
       },
     );
   }
@@ -436,63 +432,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
     return x['orderNo'];
   }
 
-  Container actionContainer() {
-    return Container(
-      child: Form(
-        key: _formKey,
-        child: Column(
-          children: <Widget>[
-            needsAmount == null || needsAmount
-                ? textInputContainerAmount("Amount", _amountController)
-                : Container(),
-            SizedBox(
-              height: 10,
-            ),
-            needsContact ? chooseContactBtn(recipientLabel) : Container(),
-            needsRecipient
-                ? textInputContainerRecipient(recipientLabel)
-                : Container(),
-            SizedBox(
-              height: 20,
-            ),
-//            canSaveLabels != null && canSaveLabels
-//                ? GestureDetector(
-//                    onTap: () {
-//                      Navigator.push(
-//                          context,
-//                          CustomPageRoute(
-//                              navigateTo: SaveAccount(
-//                            label: serviceLable,
-//                          )));
-//                    },
-//                    child: Padding(
-//                      padding: const EdgeInsets.only(bottom: 10.0),
-//                      child: Align(
-//                        alignment: Alignment.centerLeft,
-//                        child: Text(
-//                          "Click to save $serviceLable Number",
-//                          style: TextStyle(
-//                              fontSize: 14,
-//                              color: Colors.orangeAccent,
-//                              fontWeight: FontWeight.bold),
-//                        ),
-//                      ),
-//                    ),
-//                  )
-//                : Container(),
-            SizedBox(
-              height: 10,
-            ),
-            serviceLable == "LoadAirtime" ? showCameraButton() : Container(),
-            hasChildren ? showChildren(parentID) : Container(),
-            SizedBox(
-              height: 100,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+
 
   bool numberNotInSavedAccounts(number) {
     for (int i = 0; i < savedAccounts.length; i++) {
@@ -835,11 +775,11 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
 
 // called from serviceItem class
 // receives motive from child and performs actions accordingly
-
+//  _listViewController
   serviceActions(String url, int motive, Map<String, dynamic> data){
 
 
-  if(motive == 0){
+  if(motive == 0){  // service has children
     if (url.isNotEmpty){
 
       var tmp = navigationStack;
@@ -850,11 +790,11 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
       });
     }
   }
-  else if(motive == 1){
+  else if(motive == 1){ // has no input and no children
     sendCode(platform, data['code'], _amountController.text, _recipientController.text);
   }
 
-  else{
+  else{ // leaf service [has input and no children]
     setState(() {
       showActionSection = true;
     });
@@ -1005,7 +945,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
 
 
 
-  ///receives list and calls build services, function which builds the single items
+  ///receives list data and returns Services list of it
   displayServices(lists) {
     List<Widget> tmp = [];
     for (var list in lists) {
