@@ -2,9 +2,11 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:kene/bloc/appBloc.dart';
 import 'package:kene/pages/services.dart';
 import 'package:kene/pages/settings.dart';
 import 'package:kene/utils/stylesguide.dart';
+import 'package:kene/widgets/bloc_provider.dart';
 import 'package:kene/widgets/custom_nav.dart';
 import 'package:package_info/package_info.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -242,6 +244,11 @@ class _CarriersState extends State<Carriers> {
     print(icon);
     return GestureDetector(
       onTap: () {
+
+        // Push in to primary color stream
+//        AppBloc appBloc = BlocProvider.of(context);
+//        appBloc.primaryColorIn(color);
+
         Navigator.push(
             context,
             CustomPageRoute(

@@ -11,18 +11,18 @@ import 'package:kene/widgets/adaptive_dialog.dart';
 import 'package:kene/widgets/bloc_provider.dart';
 import 'package:native_contact_picker/native_contact_picker.dart';
 
-class InputContainer extends StatefulWidget{
+class InputActionContainer extends StatefulWidget{
 
   final primaryColor;
 
-  InputContainer({this.primaryColor});
+  InputActionContainer({this.primaryColor});
 
   @override
   createState() => _InputContainerState();
 }
 
 
-class _InputContainerState extends State<InputContainer> with SingleTickerProviderStateMixin {
+class _InputContainerState extends State<InputActionContainer> with SingleTickerProviderStateMixin {
 
   var _formKey = GlobalKey<FormState>();
   var _amountController = TextEditingController();
@@ -63,10 +63,10 @@ class _InputContainerState extends State<InputContainer> with SingleTickerProvid
     super.initState();
 
     appBloc = BlocProvider.of(context);
-    appBloc.serviceStreamOut.listen((d){
-      print(d);
+    appBloc.serviceDataOut.listen((dataFromStream){
+      print(dataFromStream);
       setState(() {
-        serviceData = d;
+        serviceData = dataFromStream != null ? dataFromStream : {};
       });
     });
 
@@ -84,6 +84,7 @@ class _InputContainerState extends State<InputContainer> with SingleTickerProvid
 
   @override
   build(context) =>
+  serviceData != null ?
     Container(
       child: Form(
         key: _formKey,
@@ -115,7 +116,14 @@ class _InputContainerState extends State<InputContainer> with SingleTickerProvid
           ],
         ),
       ),
-    );
+    ):
+  
+  Container(
+    margin: EdgeInsets.only(top: MediaQuery.of(context).size.width * 0.3),
+    child: Center(
+      child: Text("Loading..."),
+    ),
+  );
 
 
   Column textInputContainerAmount(

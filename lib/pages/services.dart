@@ -175,6 +175,13 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
     return double.tryParse(str) != null;
   }
 
+
+  // Add listener on recipient Input to aid submit button display
+  // Initialize headerTitle stack to the service title
+  // Set the authenticated user id for accounts checking
+  // Set initial collection Url to the service title
+
+
   @override
   void initState() {
     super.initState();
@@ -267,7 +274,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                                     )
                                   : IconButton(
                                       onPressed: () {
-                                        Navigator.push(
+                                        Navigator.pushReplacement(
                                             context,
                                             CustomPageRoute(
                                                 navigateTo: Carriers()));
@@ -387,7 +394,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                       children: <Widget>[
                         !showActionSection
                             ? fetchServices("$collectionURL")
-                            : InputContainer(),
+                            : InputActionContainer(primaryColor: widget.primaryColor,),
 //                        actionContainer(),
                         SizedBox(
                           height: 100,
@@ -407,7 +414,6 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
 
   /// Receives collection url and fetches children
   StreamBuilder fetchServices(String collectionLink) {
-    print(navigationStack);
     return StreamBuilder(
       stream: Firestore.instance
           .collection("$collectionLink")
@@ -795,6 +801,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
   }
 
   else{ // leaf service [has input and no children]
+
     setState(() {
       showActionSection = true;
     });
@@ -803,7 +810,6 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
   }
 
   sendAnalytics(widget.analytics, data['label'], null);
-
 
   // check for name and update the headerText
   var hT = headTitleStack;
@@ -944,8 +950,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
   }
 
 
-
-  ///receives list data and returns Services list of it
+  // Receives list data, creates a service item out the data and returns list of service data
   displayServices(lists) {
     List<Widget> tmp = [];
     for (var list in lists) {

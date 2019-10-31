@@ -13,21 +13,26 @@ class AppBloc implements BlocBase {
   final StreamController<String> _amountStreamController = BehaviorSubject();
   final StreamController<String> _recipientStreamController = BehaviorSubject();
   final StreamController<String> _headerTitleStreamController = BehaviorSubject();
+//  final StreamController<int> _primaryColorStreamController = BehaviorSubject();
   final StreamController<Map<String, dynamic>> _serviceDataController = BehaviorSubject();
 
   /////////// ============= get methods ================== \\\\\\\\\\\\\\\
 
-  get amountIn => _amountStreamController.stream;
-  get amountOut => _amountStreamController.sink.add;
+  get amountOut => _amountStreamController.stream;
+  get amountIn => _amountStreamController.sink.add;
 
-  get recipientIn => _recipientStreamController.stream;
-  get recipientOut => _recipientStreamController.sink.add;
 
-  get headerTitleIn => _headerTitleStreamController.stream;
-  get headerTitleOut => _headerTitleStreamController.sink.add;
+//  get primaryColorOut => _primaryColorStreamController.stream;
+//  get primaryColorIn => _primaryColorStreamController.sink.add;
 
-  get serviceDataIn => _serviceDataController.stream;
-  get serviceDataOut => _serviceDataController.sink.add;
+  get recipientOut => _recipientStreamController.stream;
+  get recipientIn => _recipientStreamController.sink.add;
+
+  get headerTitleOut => _headerTitleStreamController.stream;
+  get headerTitleIn => _headerTitleStreamController.sink.add;
+
+  get serviceDataOut => _serviceDataController.stream;
+  get serviceDataIn => _serviceDataController.sink.add;
 
   @override
   void dispose() {
@@ -35,6 +40,7 @@ class AppBloc implements BlocBase {
     _recipientStreamController.close();
     _headerTitleStreamController.close();
     _serviceDataController.close();
+//    _primaryColorStreamController.close();
 
   }
 }

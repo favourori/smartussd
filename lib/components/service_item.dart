@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:kene/widgets/bloc_provider.dart';
 
 
 class ServiceItem extends StatefulWidget{
@@ -45,11 +46,9 @@ class _ServiceItemState extends State<ServiceItem>{
     return
       GestureDetector(
         onTap: () {
-          setState(() {
-            itemClicked = true;
-          });
 
-          Future.delayed(Duration(milliseconds: 300)).then((f){ // delay for 300 milli secs before Navigating
+
+          Future.delayed(Duration(milliseconds: 100)).then((f){ // delay for 300 milli secs before Navigating
 
             //          var hT = headTitleStack;
 //          if (list['requiresInput'] != null && list['requiresInput']) {
@@ -72,6 +71,11 @@ class _ServiceItemState extends State<ServiceItem>{
 //            parentID = list.documentID;
 //          });
 
+          // Restore the boolean to revert the background color
+            setState(() {
+              itemClicked = false;
+            });
+
             // sending name for parent to update to update header title
             String name = widget.requiresInput != null && widget.requiresInput ? widget.name : null;
 
@@ -86,10 +90,35 @@ class _ServiceItemState extends State<ServiceItem>{
             widget.serviceActions(null, 1, {"code": widget.codeToSend, "label":widget.serviceLabel, "name":name});
           } else {
 
+              var appBloc = BlocProvider.of(context);
+              Map<String, dynamic> data = {
+                "backgroundColor": widget.backgroundColor,
+                "icon": widget.icon,
+                "name":widget.name,
+                "serviceLabel":widget.serviceLabel,
+                "needsContact":widget.needsContact,
+                "needsRecipient":widget.needsRecipient,
+                "requiresInput":widget.requiresInput,
+                "codeToSend":widget.codeToSend,
+                "recipientLabel":widget.recipientLabel,
+                "canSaveLabels":widget.canSaveLabels,
+                "needsAmount":widget.needsAmount,
+                "requiresCamera":widget.requiresCamera,
+                "serviceDescription":widget.serviceDescription,
+                "hasChildren":widget.hasChildren,
+                "parentID":widget.parentID,
+              };
+              appBloc.serviceDataIn(data);
+
+
             /// call parent to open up action center
               widget.serviceActions(null, 2, {"label":widget.serviceLabel, "name":name});
 
           }
+          });
+
+          setState(() {
+            itemClicked = true;
           });
 
         },
