@@ -14,7 +14,7 @@ dependencies:
   native_contact_picker: ^0.0.6
   # firebase_core: 0.2.5+1
   firebase_analytics: ^5.0.0
-  advanced_share: ^0.1.0
+#  advanced_share: ^0.1.0
   firebase_auth: ^0.14.0+2
   # google_sign_in: 3.2.4
   cloud_firestore: ^0.12.9

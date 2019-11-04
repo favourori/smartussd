@@ -10,8 +10,8 @@ void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
 
-  static FirebaseAnalytics xanalytics = FirebaseAnalytics();
-  FirebaseAnalyticsObserver observer = FirebaseAnalyticsObserver(analytics: xanalytics);
+  static FirebaseAnalytics xAnalytics = FirebaseAnalytics();
+  final FirebaseAnalyticsObserver observer = FirebaseAnalyticsObserver(analytics: xAnalytics);
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
           navigatorObservers: [
             observer,
           ],
-          home: Control(analytics: xanalytics,)
+          home: Control(analytics: xAnalytics,)
       ),
     );
   }

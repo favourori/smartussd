@@ -22,7 +22,9 @@ class PhoneVerify extends StatefulWidget {
 
 class _PhoneVerifyState extends State<PhoneVerify>
     with SingleTickerProviderStateMixin {
-  GlobalKey<FormState> _formkey = GlobalKey();
+  GlobalKey<FormState> _formKey = GlobalKey();
+  FocusNode focusNode;
+
   final FirebaseAuth _auth = FirebaseAuth.instance;
   String code;
   bool isBtnClicked = false;
@@ -82,6 +84,7 @@ class _PhoneVerifyState extends State<PhoneVerify>
 
   @override
   void initState() {
+    focusNode = FocusNode(debugLabel: "verifyInput");
     super.initState();
     durationCount();
   }
@@ -115,10 +118,16 @@ class _PhoneVerifyState extends State<PhoneVerify>
 
             GestureDetector(
               onTap: (){
-                FocusScope.of(context).unfocus();
+                if(FocusScope.of(context) != null && FocusScope.of(context).focusedChild != null && FocusScope.of(context).focusedChild.debugLabel == "verifyInput"){
+                  FocusScope.of(context).unfocus();
+                }
+                else{
+                  print("nothing to unfocus");
+                }
+
               },
               child: Form(
-                key: _formkey,
+                key: _formKey,
                 child: Padding(
                     padding: EdgeInsets.symmetric(horizontal: 20),
                     child: ListView(
@@ -136,7 +145,9 @@ class _PhoneVerifyState extends State<PhoneVerify>
                           height: MediaQuery.of(context).size.height * 0.18,
                         ),
                         TextFormField(
+                          focusNode: focusNode,
                           onChanged: (v) {
+                            FocusScope.of(context).requestFocus(focusNode);
                             this.code = v;
                           },
                           keyboardAppearance: Brightness.dark,

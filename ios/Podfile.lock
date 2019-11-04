@@ -1,6 +1,4 @@
 PODS:
-  - advanced_share (0.0.1):
-    - Flutter
   - BoringSSL-GRPC (0.0.3):
     - BoringSSL-GRPC/Implementation (= 0.0.3)
     - BoringSSL-GRPC/Interface (= 0.0.3)
@@ -242,7 +240,6 @@ PODS:
     - Flutter
 
 DEPENDENCIES:
-  - advanced_share (from `.symlinks/plugins/advanced_share/ios`)
   - cloud_firestore (from `.symlinks/plugins/cloud_firestore/ios`)
   - Firebase/MLVisionBarcodeModel
   - Firebase/MLVisionFaceModel
@@ -303,8 +300,6 @@ SPEC REPOS:
     - Protobuf
 
 EXTERNAL SOURCES:
-  advanced_share:
-    :path: ".symlinks/plugins/advanced_share/ios"
   cloud_firestore:
     :path: ".symlinks/plugins/cloud_firestore/ios"
   firebase_analytics:
@@ -339,7 +334,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/url_launcher/ios"
 
 SPEC CHECKSUMS:
-  advanced_share: 68f02708351cff9881a72d04f3a656351faf17f7
   BoringSSL-GRPC: db8764df3204ccea016e1c8dd15d9a9ad63ff318
   cloud_firestore: 41f84086d2e1a5c216a6af07ef050758de825ff0
   Firebase: 5e6b7b12bf9adb90986688edc06b156c37e109cd

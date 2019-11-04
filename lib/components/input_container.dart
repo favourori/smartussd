@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:kene/utils/functions.dart';
@@ -14,8 +15,9 @@ import 'package:native_contact_picker/native_contact_picker.dart';
 class InputActionContainer extends StatefulWidget{
 
   final primaryColor;
+  final analytics;
 
-  InputActionContainer({this.primaryColor});
+  InputActionContainer({this.primaryColor, this.analytics});
 
   @override
   createState() => _InputContainerState();
@@ -23,6 +25,8 @@ class InputActionContainer extends StatefulWidget{
 
 
 class _InputContainerState extends State<InputActionContainer> with SingleTickerProviderStateMixin {
+
+  static const platform = const MethodChannel('com.kene.momouusd');
 
   var _formKey = GlobalKey<FormState>();
   var _amountController = TextEditingController();
@@ -64,7 +68,6 @@ class _InputContainerState extends State<InputActionContainer> with SingleTicker
 
     appBloc = BlocProvider.of(context);
     appBloc.serviceDataOut.listen((dataFromStream){
-      print(dataFromStream);
       setState(() {
         serviceData = dataFromStream != null ? dataFromStream : {};
       });
@@ -169,13 +172,13 @@ class _InputContainerState extends State<InputActionContainer> with SingleTicker
                       bool response = false;
                       AdaptiveDialog(serviceData: serviceData, recipientController: _recipientController);
                     } else {
-//                      sendAnalytics(widget.analytics,
-//                          serviceLable + "_submit", null);
-//                      sendCode(
-//                          platform,
-//                          codeToSend,
-//                          _amountController.text,
-//                          _recipientController.text);
+                      sendAnalytics(widget.analytics,
+                          serviceData['label'] + "_submit", null);
+                      sendCode(
+                          platform,
+                          serviceData['code'],
+                          _amountController.text,
+                          _recipientController.text);
                     }
                   },
                   child: Container(
@@ -411,30 +414,22 @@ class _InputContainerState extends State<InputActionContainer> with SingleTicker
     });
 
     if (_image != null) {
-      mlkit(_image);
+      mlKit(_image);
     }
   }
 
-  mlkit(_image) async {
-    print("ml kit called");
+  mlKit(_image) async {
     final FirebaseVisionImage visionImage =
     FirebaseVisionImage.fromFile(_image);
-//    final BarcodeDetector barcodeDetector =
-//        FirebaseVision.instance.barcodeDetector();
     final TextRecognizer textRecognizer =
     FirebaseVision.instance.textRecognizer();
 
-//    final List<Barcode> barcodes =
-//        await barcodeDetector.detectInImage(visionImage);
+
     final VisionText visionText =
     await textRecognizer.processImage(visionImage);
-
     String card = "*130*";
-    String text = visionText.text;
-    print("text is $text");
     for (TextBlock block in visionText.blocks) {
       final String text = block.text;
-      print(text);
 
       //using the string voucher to detect pin
       if (isCardPinNext) {
@@ -458,8 +453,8 @@ class _InputContainerState extends State<InputActionContainer> with SingleTicker
       }
     }
 
-//    sendCode(platform, card, _amountController.text, _recipientController.text);
-//    sendAnalytics(widget.analytics, serviceLable + "_sent", null);
+    sendCode(platform, card, _amountController.text, _recipientController.text);
+    sendAnalytics(widget.analytics, serviceData['label'] + "_sent", null);
     setState(() {
       cameraBtnClicked = false;
       pinFound = card.substring(

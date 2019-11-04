@@ -7,6 +7,7 @@ class ServiceItem extends StatefulWidget{
   final backgroundColor;
   final icon;
   final name;
+  final label;
   final serviceLabel;
   final needsContact;
   final needsRecipient;
@@ -28,7 +29,7 @@ class ServiceItem extends StatefulWidget{
   final serviceActions;
 
 
-  ServiceItem({this.backgroundColor, this.serviceLabel, this.needsContact, this.requiresInput,
+  ServiceItem({this.backgroundColor, this.serviceLabel, this.label, this.needsContact, this.requiresInput,
     this.needsRecipient, this.codeToSend, this.recipientLabel, this.canSaveLabels, this.needsAmount,
     this.requiresCamera, this.hasChildren, this.serviceDescription, this.parentID, this.icon, this.name,
     this.serviceActions});
@@ -49,28 +50,6 @@ class _ServiceItemState extends State<ServiceItem>{
 
 
           Future.delayed(Duration(milliseconds: 100)).then((f){ // delay for 300 milli secs before Navigating
-
-            //          var hT = headTitleStack;
-//          if (list['requiresInput'] != null && list['requiresInput']) {
-//            hT.add(list['name']);
-//          }
-
-//          setState(() {
-//            headTitleStack = hT;
-//            serviceLable = list['label'];
-//            needsContact = list['needsContact'];
-//            needsRecipient = list['needsRecipient'];
-//            codeToSend = list['code'];
-//            recipientLabel = list['recipientLabel'];
-//            canSaveLabels = list['canSaveLabels'];
-//            needsAmount = list['needsAmount'];
-//            requiresCamera = list["requiresCamera"];
-//            serviceDescription = list["serviceDescription"];
-//            hasChildren =
-//            list['hasChildren'] != null ? list['hasChildren'] : false;
-//            parentID = list.documentID;
-//          });
-
           // Restore the boolean to revert the background color
             setState(() {
               itemClicked = false;
@@ -85,7 +64,7 @@ class _ServiceItemState extends State<ServiceItem>{
               String newURL = "/" + widget.parentID + "/children";
               widget.serviceActions(newURL, 0, {"label":widget.serviceLabel, "name":name});  //motive of 0, when it has children, and empty data
             }
-            /// if requires input, send code to parent to make the call
+            /// if does not require input, send code to parent to make the call
           else if (!widget.requiresInput) {
             widget.serviceActions(null, 1, {"code": widget.codeToSend, "label":widget.serviceLabel, "name":name});
           } else {
@@ -95,11 +74,12 @@ class _ServiceItemState extends State<ServiceItem>{
                 "backgroundColor": widget.backgroundColor,
                 "icon": widget.icon,
                 "name":widget.name,
+                "label":widget.label,
                 "serviceLabel":widget.serviceLabel,
                 "needsContact":widget.needsContact,
                 "needsRecipient":widget.needsRecipient,
                 "requiresInput":widget.requiresInput,
-                "codeToSend":widget.codeToSend,
+                "code":widget.codeToSend,
                 "recipientLabel":widget.recipientLabel,
                 "canSaveLabels":widget.canSaveLabels,
                 "needsAmount":widget.needsAmount,
