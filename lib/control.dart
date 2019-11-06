@@ -4,6 +4,8 @@ import 'package:flutter/services.dart';
 import 'package:kene/auth/signin.dart';
 import 'package:kene/pages/cariers.dart';
 import 'package:kene/pages/welcome.dart';
+import 'package:kene/utils/functions.dart';
+import 'package:kene/widgets/bloc_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Control extends StatefulWidget {
@@ -21,9 +23,8 @@ class _ControlState extends State<Control> {
 
 
   SharedPreferences prefs;
-
-  
   @override
+
   void initState() {
     super.initState();
 
@@ -33,6 +34,9 @@ class _ControlState extends State<Control> {
         setState(() {
           isLoggedIn = true;
         });
+
+
+        getLocale(context); // Set the locale
 
          SharedPreferences.getInstance().then((f){
       f.setBool("isFirstLogin", false);

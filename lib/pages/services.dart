@@ -403,6 +403,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
           backgroundColor: Colors.white,
           icon:list['icon'],
           name:list['name'],
+          nameMap: list['name_map'],
           label:list['label'],
           needsContact: list['needsContact'],
           needsRecipient: list['needsRecipient'],

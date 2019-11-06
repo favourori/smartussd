@@ -2,6 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_share/flutter_share.dart';
 import 'package:kene/pages/success.dart';
+import 'package:kene/widgets/bloc_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
@@ -166,5 +168,19 @@ Future<void> share() async {
 
 void addTransactions(String label, int amount){
   Firestore.instance.collection("transactions").add({"service": label, "amount":amount});
+
+}
+
+
+getLocale(context){
+  var locale;
+  SharedPreferences.getInstance().then((p){
+    locale = p.getString("locale") != null ? p.getString("locale") : "kw";
+    // Add locale to stream
+    var appBloc = BlocProvider.of(context);
+
+    appBloc.localeIn(locale);
+  });
+
 
 }

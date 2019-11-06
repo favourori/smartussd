@@ -19,6 +19,7 @@ class ServiceItem extends StatefulWidget{
   final serviceDescription;
   final hasChildren;
   final parentID;
+  final nameMap;
 
 
   ///
@@ -28,7 +29,7 @@ class ServiceItem extends StatefulWidget{
   final serviceActions;
 
 
-  ServiceItem({this.backgroundColor, this.label, this.needsContact, this.requiresInput,
+  ServiceItem({this.backgroundColor, this.label, this.nameMap, this.needsContact, this.requiresInput,
     this.needsRecipient, this.codeToSend, this.recipientLabel, this.canSaveLabels, this.needsAmount,
     this.requiresCamera, this.hasChildren, this.serviceDescription, this.parentID, this.icon, this.name,
     this.serviceActions});
@@ -41,6 +42,26 @@ class ServiceItem extends StatefulWidget{
 class _ServiceItemState extends State<ServiceItem>{
 
  bool itemClicked = false;
+ String locale = "en";
+ var appBloc;
+
+ @override
+ void initState() {
+
+    super.initState();
+
+
+    // Get locale from stream
+    appBloc = BlocProvider.of(context);
+
+    appBloc.localeOut.listen((data){
+      setState(() {
+        locale = data != null ? data : locale;
+        print("locale is ===== $data");
+      });
+    });
+  }
+
   @override
   build(context){
     return
@@ -68,7 +89,7 @@ class _ServiceItemState extends State<ServiceItem>{
             widget.serviceActions(null, 1, {"code": widget.codeToSend, "label":widget.label, "name":name});
           } else {
 
-              var appBloc = BlocProvider.of(context);
+
               Map<String, dynamic> data = {
                 "backgroundColor": widget.backgroundColor,
                 "icon": widget.icon,
@@ -136,7 +157,12 @@ class _ServiceItemState extends State<ServiceItem>{
                     child: ListView(
                       shrinkWrap: true,
                       scrollDirection: Axis.horizontal,
-                      children: <Widget>[Text(widget.name)],
+                      children: <Widget>[ 
+                        widget.nameMap == null
+                            ? Text(widget.name) 
+                            : Text(widget.nameMap[locale])
+                      
+                      ],
                     ),
                   ),
                 ),

@@ -15,6 +15,7 @@ class AppBloc implements BlocBase {
   final StreamController<String> _headerTitleStreamController = BehaviorSubject();
 //  final StreamController<int> _primaryColorStreamController = BehaviorSubject();
   final StreamController<Map<String, dynamic>> _serviceDataController = BehaviorSubject();
+  final StreamController<String> _localeController = BehaviorSubject();
 
   /////////// ============= get methods ================== \\\\\\\\\\\\\\\
 
@@ -27,6 +28,10 @@ class AppBloc implements BlocBase {
 
   get recipientOut => _recipientStreamController.stream;
   get recipientIn => _recipientStreamController.sink.add;
+
+
+  get localeOut => _localeController.stream;
+  get localeIn => _localeController.sink.add;
 
   get headerTitleOut => _headerTitleStreamController.stream;
   get headerTitleIn => _headerTitleStreamController.sink.add;
@@ -41,6 +46,7 @@ class AppBloc implements BlocBase {
     _headerTitleStreamController.close();
     _serviceDataController.close();
 //    _primaryColorStreamController.close();
+    _localeController.close();
 
   }
 }
