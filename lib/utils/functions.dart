@@ -1,4 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_share/flutter_share.dart';
+import 'package:kene/pages/success.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
@@ -24,13 +27,13 @@ Future<Null> sendAnalytics(analytics, eventName, parameters) async{
   );
 } 
 
-Future getServices(String carier) async{
+Future getServices(String carrier) async{
  if(FirebaseAuth.instance.currentUser() != null ){
 
 
 try{
   var ser = await Firestore.instance
-    .collection("services/$carier/services").getDocuments();
+    .collection("services/$carrier/services").getDocuments();
 
   print(ser.documents[0].data);
 
@@ -55,15 +58,23 @@ bool isNumeric(String str) {
 }
 
 
-Future sendCode(platform, code, aText, rText) async{
+Future sendCode(platform, code, aText, rText, context) async{
   String codeToSend = _computeCodeToSend(code, aText, rText);
   if(Platform.isIOS){
     launchURL(codeToSend+"");
+
+    Future.delayed(Duration(seconds: 1)).then((f){
+      Navigator.push(context, MaterialPageRoute(builder: (context) => SuccessPage()));
+    });
   }
   else{
     try{
+      print("beforeee wait" );
+      Future.delayed(Duration(seconds: 2)).then((f){
+        Navigator.push(context, MaterialPageRoute(builder: (context) => SuccessPage()));
+      });
       await platform.invokeMethod("moMoDialNumber", {"code": codeToSend});
-      print("after await");
+      print("afterrr await");
       print(codeToSend);
 
     }on PlatformException catch(e){
@@ -71,7 +82,10 @@ Future sendCode(platform, code, aText, rText) async{
         print("error check balance is $e");
       }
     }
-  }
+
+
+
+}
 
 
   Future askCallPermission(platform) async{
@@ -117,4 +131,40 @@ String _computeCodeToSend(String rawCode, aText, rText){
      return false;
    }
   return false;
+}
+
+
+Future<void> share() async {
+  String text = "";
+  String url = "";
+
+  Firestore.instance.collection("settings").getDocuments().then((d){
+    List docs = d.documents;
+    for(var item in docs){
+      print(item.documentID);
+      if(item.documentID == "share_text"){
+        text = item['text'];
+        url = item['url'];
+
+      }
+    }
+
+    print("$text and $url");
+
+    FlutterShare.share(
+        title: 'Nokanda App',
+        text: '$text',
+        linkUrl: '$url',
+        chooserTitle: 'Share Nokanda App'
+    );
+
+  });
+
+
+}
+
+
+void addTransactions(String label, int amount){
+  Firestore.instance.collection("transactions").add({"service": label, "amount":amount});
+
 }

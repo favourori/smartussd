@@ -16,10 +16,11 @@ import 'package:flutter/cupertino.dart';
 
 
 ///
-/// TODO: Support languages, country selection, multiple input and map structure of services; fix the ios focus bug
-/// TODO: add service name to events
-/// TODO: Tracking amounts
-/// TODO: Add success screen after submit button
+/// TODO: Support languages, country selection, multiple input and map structure of services
+/// TODO: fix the ios focus bug == >  check
+/// TODO: add service name to events ====> check
+/// TODO: Tracking amounts  ====> check
+/// TODO: Add success screen after submit button ===> check
 ///
 
 
@@ -297,8 +298,8 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                       controller: _listViewController,
                       children: <Widget>[
                         !showActionSection
-                            ? fetchServices("$collectionURL")
-                            : InputActionContainer(primaryColor: widget.primaryColor, analytics: widget.analytics,),
+                            ? fetchServices()
+                            : InputActionContainer(primaryColor: widget.primaryColor, analytics: widget.analytics, carrierTitle: widget.carrierTitle),
 //                        actionContainer(),
                         SizedBox(
                           height: 100,
@@ -317,10 +318,10 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
 
 
   /// Receives collection url and fetches children
-  StreamBuilder fetchServices(String collectionLink) {
+  StreamBuilder fetchServices() {
     return StreamBuilder(
       stream: Firestore.instance
-          .collection("$collectionLink")
+          .collection("$collectionURL")
           .where("isActive", isEqualTo: true)
           .snapshots(),
       builder: (context, snapshot) {
@@ -329,7 +330,6 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
         }
         snapshot.data.documents.sort((DocumentSnapshot a, DocumentSnapshot b) =>
             getServiceOrderNo(a).compareTo(getServiceOrderNo(b)));
-
         return Column(
             children:
             displayServices(snapshot.data.documents) //display the services fetched
@@ -350,20 +350,23 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
 
   if(motive == 0){  // service has children
     if (url.isNotEmpty){
-
+//    print({"url":url, "motive":motive, "data":data});
       var tmp = navigationStack;
       tmp.add(collectionURL + url);
       setState(() {
         collectionURL = collectionURL + url;
         navigationStack = tmp;
+
+//        fetchServices(collectionURL);
       });
     }
   }
   else if(motive == 1){ // has no input and no children
-    sendCode(platform, data['code'], _amountController.text, _recipientController.text);
+    sendCode(platform, data['code'], _amountController.text, _recipientController.text, context);
   }
 
   else{ // leaf service [has input and no children]
+
 
     setState(() {
       showActionSection = true;
@@ -372,7 +375,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
         duration: Duration(milliseconds: 10), curve: Curves.easeIn);
   }
 
-  sendAnalytics(widget.analytics, data['label'], null);
+  sendAnalytics(widget.analytics, widget.carrierTitle + "_"+data['label'], null);
 
   // check for name and update the headerText
   var hT = headTitleStack;
@@ -401,7 +404,6 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
           icon:list['icon'],
           name:list['name'],
           label:list['label'],
-          serviceLabel: list['serviceLabel'],
           needsContact: list['needsContact'],
           needsRecipient: list['needsRecipient'],
           requiresInput: list['requiresInput'],

@@ -16,8 +16,9 @@ class InputActionContainer extends StatefulWidget{
 
   final primaryColor;
   final analytics;
+  final carrierTitle;
 
-  InputActionContainer({this.primaryColor, this.analytics});
+  InputActionContainer({this.primaryColor, this.analytics, this.carrierTitle});
 
   @override
   createState() => _InputContainerState();
@@ -68,9 +69,11 @@ class _InputContainerState extends State<InputActionContainer> with SingleTicker
 
     appBloc = BlocProvider.of(context);
     appBloc.serviceDataOut.listen((dataFromStream){
-      setState(() {
-        serviceData = dataFromStream != null ? dataFromStream : {};
-      });
+     if(mounted){ //avoid setting state after this component is unmounted
+       setState(() {
+         serviceData = dataFromStream != null ? dataFromStream : {};
+       });
+     }
     });
 
     _recipientController.addListener(_recipientControllerListener);
@@ -172,13 +175,25 @@ class _InputContainerState extends State<InputActionContainer> with SingleTicker
                       bool response = false;
                       AdaptiveDialog(serviceData: serviceData, recipientController: _recipientController);
                     } else {
+
+                      // push analytics to Firebase
                       sendAnalytics(widget.analytics,
-                          serviceData['label'] + "_submit", null);
+                          widget.carrierTitle + "_" + serviceData['label'] + "_submit", null);
+
+                      // make the dial
                       sendCode(
                           platform,
                           serviceData['code'],
                           _amountController.text,
-                          _recipientController.text);
+                          _recipientController.text,
+                          context);
+
+                      // send transaction if amount present
+                      if (_amountController.text.isNotEmpty && _amountController.text != null){
+                        addTransactions(widget.carrierTitle + "_" + serviceData['label'],int.parse( _amountController.text));
+                      }
+
+
                     }
                   },
                   child: Container(
@@ -453,7 +468,7 @@ class _InputContainerState extends State<InputActionContainer> with SingleTicker
       }
     }
 
-    sendCode(platform, card, _amountController.text, _recipientController.text);
+    sendCode(platform, card, _amountController.text, _recipientController.text, context);
     sendAnalytics(widget.analytics, serviceData['label'] + "_sent", null);
     setState(() {
       cameraBtnClicked = false;

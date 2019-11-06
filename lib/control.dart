@@ -17,7 +17,7 @@ class Control extends StatefulWidget {
 }
 
 class _ControlState extends State<Control> {
-  bool isLogedIn = false;
+  bool isLoggedIn = false;
 
 
   SharedPreferences prefs;
@@ -31,7 +31,7 @@ class _ControlState extends State<Control> {
     FirebaseAuth.instance.currentUser().then((user) {
       if (user != null) {
         setState(() {
-          isLogedIn = true;
+          isLoggedIn = true;
         });
 
          SharedPreferences.getInstance().then((f){
@@ -56,7 +56,7 @@ class _ControlState extends State<Control> {
 
   @override
   Widget build(BuildContext context) {
-    return prefs != null && prefs.getBool("isFirstLogin")  ? Welcome()  : isLogedIn ? Carriers(analytics: widget.analytics,) : Signin();
+    return prefs != null && prefs.getBool("isFirstLogin")  ? Welcome()  : isLoggedIn ? Carriers(analytics: widget.analytics,) : Signin();
   }
 }
 

@@ -8,7 +8,6 @@ class ServiceItem extends StatefulWidget{
   final icon;
   final name;
   final label;
-  final serviceLabel;
   final needsContact;
   final needsRecipient;
   final requiresInput;
@@ -29,7 +28,7 @@ class ServiceItem extends StatefulWidget{
   final serviceActions;
 
 
-  ServiceItem({this.backgroundColor, this.serviceLabel, this.label, this.needsContact, this.requiresInput,
+  ServiceItem({this.backgroundColor, this.label, this.needsContact, this.requiresInput,
     this.needsRecipient, this.codeToSend, this.recipientLabel, this.canSaveLabels, this.needsAmount,
     this.requiresCamera, this.hasChildren, this.serviceDescription, this.parentID, this.icon, this.name,
     this.serviceActions});
@@ -62,11 +61,11 @@ class _ServiceItemState extends State<ServiceItem>{
 
               /// UPDATE THE COLLECTION URL IF THERE'S CHILDREN FOR THE TREE TO REBUILD
               String newURL = "/" + widget.parentID + "/children";
-              widget.serviceActions(newURL, 0, {"label":widget.serviceLabel, "name":name});  //motive of 0, when it has children, and empty data
+              widget.serviceActions(newURL, 0, {"label":widget.label, "name":name});  //motive of 0, when it has children, and empty data
             }
             /// if does not require input, send code to parent to make the call
           else if (!widget.requiresInput) {
-            widget.serviceActions(null, 1, {"code": widget.codeToSend, "label":widget.serviceLabel, "name":name});
+            widget.serviceActions(null, 1, {"code": widget.codeToSend, "label":widget.label, "name":name});
           } else {
 
               var appBloc = BlocProvider.of(context);
@@ -75,7 +74,6 @@ class _ServiceItemState extends State<ServiceItem>{
                 "icon": widget.icon,
                 "name":widget.name,
                 "label":widget.label,
-                "serviceLabel":widget.serviceLabel,
                 "needsContact":widget.needsContact,
                 "needsRecipient":widget.needsRecipient,
                 "requiresInput":widget.requiresInput,
@@ -92,7 +90,7 @@ class _ServiceItemState extends State<ServiceItem>{
 
 
             /// call parent to open up action center
-              widget.serviceActions(null, 2, {"label":widget.serviceLabel, "name":name});
+              widget.serviceActions(null, 2, {"label":widget.label, "name":name});
 
           }
           });

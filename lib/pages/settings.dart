@@ -6,10 +6,10 @@ import 'package:kene/control.dart';
 import 'package:kene/pages/about.dart';
 import 'package:kene/pages/faq.dart';
 import 'package:kene/pages/save_accounts.dart';
+import 'package:kene/utils/functions.dart';
 import 'package:kene/widgets/custom_nav.dart';
 import 'package:package_info/package_info.dart';
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:flutter_share/flutter_share.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 
@@ -33,6 +33,8 @@ class _SettingsState extends State<Settings> {
         packageInfo = f;
       });
     });
+
+
   }
 
 
@@ -103,17 +105,8 @@ class _SettingsState extends State<Settings> {
                           return GestureDetector(
                             onTap: () {
 
-                              String text = "";
-                              String url = "";
-                              for(var item in snapshot.data.documents){
-                                  print(item.documentID);
-                                  if(item.documentID == "share_text"){
-                                    text = item['text'];
-                                    url = item['url'];
 
-                                  }
-                              }
-                              share(text, url);
+                              share();
 
                             },
                             child: ListTile(
@@ -216,14 +209,6 @@ class _SettingsState extends State<Settings> {
               )
             ],
           )),
-    );
-  }
-  Future<void> share(text, url) async {
-    await FlutterShare.share(
-        title: 'Nokanda App',
-        text: '$text',
-        linkUrl: '$url',
-        chooserTitle: 'Share Nokanda App'
     );
   }
 
