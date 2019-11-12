@@ -172,7 +172,7 @@ class _InputContainerState extends State<InputActionContainer> with SingleTicker
                     if ((serviceData['canSaveLabels'] != null && serviceData['canSaveLabels']) &&
                         numberNotInSavedAccounts(
                             _recipientController.text)) {
-                      bool response = false;
+//                      bool response = false;
                       AdaptiveDialog(serviceData: serviceData, recipientController: _recipientController);
                     } else {
 

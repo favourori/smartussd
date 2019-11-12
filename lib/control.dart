@@ -1,11 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:kene/auth/signin.dart';
 import 'package:kene/pages/cariers.dart';
 import 'package:kene/pages/welcome.dart';
 import 'package:kene/utils/functions.dart';
-import 'package:kene/widgets/bloc_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Control extends StatefulWidget {

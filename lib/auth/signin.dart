@@ -11,7 +11,6 @@ import 'package:kene/widgets/custom_nav.dart';
 import 'dart:io';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:package_info/package_info.dart';
-import 'package:kene/actions/auth_actions.dart';
 
 class Signin extends StatefulWidget {
   final analytics;
@@ -24,8 +23,8 @@ class Signin extends StatefulWidget {
 
 class _SigninState extends State<Signin> {
   GlobalKey<FormState> _formkey = GlobalKey();
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _passworddController = TextEditingController();
+//  TextEditingController _emailController = TextEditingController();
+//  TextEditingController _passworddController = TextEditingController();
   FocusManager focusManager = FocusManager();
 
   FocusNode fNode;
@@ -38,7 +37,7 @@ class _SigninState extends State<Signin> {
   String phoneNo;
   String verificationId;
   String smsCode;
-  TextEditingController _yobController = TextEditingController();
+//  TextEditingController _yobController = TextEditingController();
   String countryName = "";
   bool isBtnClicked = false;
   bool canAuthenticate = false;

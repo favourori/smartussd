@@ -3,9 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
-import 'package:kene/control.dart';
 import 'package:kene/database/db.dart';
-import 'package:kene/widgets/custom_nav.dart';
 
 class SaveAccount extends StatefulWidget {
   final String label;

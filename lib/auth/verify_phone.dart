@@ -3,10 +3,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:kene/control.dart';
-import 'package:kene/pages/homepage.dart';
-import 'package:kene/utils/functions.dart';
-import 'package:kene/widgets/custom_nav.dart';
+//import 'package:kene/control.dart';
+//import 'package:kene/pages/homepage.dart';
+//import 'package:kene/utils/functions.dart';
+//import 'package:kene/widgets/custom_nav.dart';
 
 class PhoneVerify extends StatefulWidget {
   final analytics;

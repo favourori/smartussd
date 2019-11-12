@@ -1,7 +1,7 @@
-import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:kene/components/choose_language.dart';
 import 'package:kene/control.dart';
 import 'package:kene/pages/about.dart';
 import 'package:kene/pages/faq.dart';
@@ -80,7 +80,8 @@ class _SettingsState extends State<Settings> {
                 child: Container(
                   width: MediaQuery.of(context).size.width - 40,
                   height: MediaQuery.of(context).size.height * 0.68,
-                  child: Column(
+                  child: ListView(
+                    shrinkWrap: true,
                     children: <Widget>[
                       GestureDetector(
                         onTap: () {
@@ -122,6 +123,26 @@ class _SettingsState extends State<Settings> {
                             ),
                           );
                         },
+                      ),
+
+
+                      GestureDetector(
+                        onTap: () {
+                          showDialog(context: context, builder: (context)=> AlertDialog(
+                            title: Text("Select Language", style: TextStyle(
+                              color: Colors.orange
+                            ),),
+
+                            content: ChooseLanguage(),
+                          ));
+                        },
+                        child: ListTile(
+                          leading: Icon(
+                            Icons.language,
+                            color: Colors.orangeAccent,
+                          ),
+                          title: Text("Change Language"),
+                        ),
                       ),
 
                       GestureDetector(
@@ -190,7 +211,7 @@ class _SettingsState extends State<Settings> {
 //                      SizedBox(
 //                        height: MediaQuery.of(context).size.height * 0.2,
 //                      ),
-                      Expanded(flex: 1,child: Container(),),
+//                      Expanded(flex: 1,child: Container(),),
                      Align(
                        alignment: Alignment.bottomCenter,
                        child:  Padding(

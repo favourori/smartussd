@@ -77,8 +77,8 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
   String parentID = "";
   List<dynamic> savedAccounts = [];
 
-  var _labelFormKey = GlobalKey<FormState>();
-  TextEditingController _labelController = TextEditingController();
+//  var _labelFormKey = GlobalKey<FormState>();
+//  TextEditingController _labelController = TextEditingController();
   KDB db = KDB();
 
 

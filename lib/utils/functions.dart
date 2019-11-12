@@ -184,3 +184,15 @@ getLocale(context){
 
 
 }
+
+setLocale(v){
+  SharedPreferences.getInstance().then((p){
+    p.setString("locale", v);
+    print(v);
+    // Add locale to sharedPreference
+
+  });
+
+
+
+}
