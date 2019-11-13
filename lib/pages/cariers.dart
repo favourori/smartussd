@@ -68,9 +68,6 @@ class _CarriersState extends State<Carriers> {
         setState(() {
           packageInfo = f.version.toString() + "+" + f.buildNumber.toString();
         });
-
-        print("version of app");
-        print(f.version.toString() + "+" + f.buildNumber.toString());
       });
     });
 

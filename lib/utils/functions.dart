@@ -175,7 +175,7 @@ void addTransactions(String label, int amount){
 getLocale(context){
   var locale;
   SharedPreferences.getInstance().then((p){
-    locale = p.getString("locale") != null ? p.getString("locale") : "kw";
+    locale = p.getString("locale") != null ? p.getString("locale") : "en";
     // Add locale to stream
     var appBloc = BlocProvider.of(context);
 

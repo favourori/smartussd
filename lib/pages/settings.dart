@@ -25,12 +25,22 @@ class Settings extends StatefulWidget {
 
 class _SettingsState extends State<Settings> {
   PackageInfo packageInfo;
+  List languageList = [];
+
+
   @override
   void initState() {
     super.initState();
 
+    // Get languages here and pass to languages widgets
+    Firestore.instance.collection("language_codes").getDocuments().then((data){
+      setState(() {
+        languageList = data.documents;
+      });
+    });
+
     PackageInfo.fromPlatform().then((f) {
-      // for getting the package/build/version number on load
+      // For getting the package/build/version number on load
       setState(() {
         packageInfo = f;
       });
@@ -241,7 +251,12 @@ class _SettingsState extends State<Settings> {
   reactiveDialog(){
     Platform.isIOS ?
         showCupertinoDialog(context: context, builder: (context) => CupertinoAlertDialog(
-          content: ChooseLanguage(),
+          content: ChooseLanguage(languageList: languageList,),
+          actions: <Widget>[
+            CupertinoButton(child: Text("Close"), onPressed: (){
+              Navigator.pop(context);
+            })
+          ],
         ))
         :
     showDialog(context: context, builder: (context)=> AlertDialog(
@@ -249,7 +264,7 @@ class _SettingsState extends State<Settings> {
           color: Colors.orange
       ),),
 
-      content: ChooseLanguage(),
+      content: ChooseLanguage(languageList: languageList,),
     ));
   }
 

@@ -22,9 +22,9 @@ class ServiceItem extends StatefulWidget{
   final nameMap;
 
 
-  ///
-  ///operations done and sent to parent
-  ///
+  //
+  // Operations done and sent to parent
+  //
 
   final serviceActions;
 
@@ -57,7 +57,6 @@ class _ServiceItemState extends State<ServiceItem>{
     appBloc.localeOut.listen((data){
       setState(() {
         locale = data != null ? data : locale;
-        print("locale is ===== $data");
       });
     });
   }

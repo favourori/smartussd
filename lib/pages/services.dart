@@ -15,13 +15,9 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 
 
-///
-/// TODO: Support languages, country selection, multiple input and map structure of services
-/// TODO: fix the ios focus bug == >  check
-/// TODO: add service name to events ====> check
-/// TODO: Tracking amounts  ====> check
-/// TODO: Add success screen after submit button ===> check
-///
+//
+// TODO: Support country selection, multiple input and map structure of services
+//
 
 
 class Services extends StatefulWidget {
