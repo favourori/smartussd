@@ -1,3 +1,5 @@
+import 'dart:io';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:kene/bloc/appBloc.dart';
 import 'package:kene/utils/functions.dart';
@@ -57,6 +59,12 @@ AppBloc appBloc;
                 child: Text("French"),),
             ],
           ),
+
+          Platform.isIOS ?
+          CupertinoButton.filled(child: Text("Close"), onPressed: (){
+            Navigator.pop(context);
+          })
+          :
 
           RaisedButton(child: Text("Close"),onPressed: (){
             Navigator.pop(context);

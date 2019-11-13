@@ -92,6 +92,8 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
   void initState() {
     super.initState();
 
+    print("analytics is==========>>>>");
+    print(widget.analytics);
     var tmpHeader = [widget.carrierTitle];
     setState(() {
       headTitleStack = tmpHeader;

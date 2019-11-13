@@ -1,3 +1,5 @@
+import 'dart:io';
+import 'package:flutter/cupertino.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -128,13 +130,7 @@ class _SettingsState extends State<Settings> {
 
                       GestureDetector(
                         onTap: () {
-                          showDialog(context: context, builder: (context)=> AlertDialog(
-                            title: Text("Select Language", style: TextStyle(
-                              color: Colors.orange
-                            ),),
-
-                            content: ChooseLanguage(),
-                          ));
+                          reactiveDialog();
                         },
                         child: ListTile(
                           leading: Icon(
@@ -240,6 +236,21 @@ class _SettingsState extends State<Settings> {
     } else {
       throw 'Could not launch $url';
     }
+  }
+
+  reactiveDialog(){
+    Platform.isIOS ?
+        showCupertinoDialog(context: context, builder: (context) => CupertinoAlertDialog(
+          content: ChooseLanguage(),
+        ))
+        :
+    showDialog(context: context, builder: (context)=> AlertDialog(
+      title: Text("Select Language", style: TextStyle(
+          color: Colors.orange
+      ),),
+
+      content: ChooseLanguage(),
+    ));
   }
 
 }

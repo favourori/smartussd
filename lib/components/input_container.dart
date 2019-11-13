@@ -272,7 +272,7 @@ class _InputContainerState extends State<InputActionContainer> with SingleTicker
           StreamBuilder(
               stream: Firestore.instance
                   .collection("accounts/$uid/data")
-                  .where("service_name", isEqualTo: serviceData['serviceLable'])
+                  .where("service_name", isEqualTo: serviceData['label'])
                   .snapshots(),
               builder: (context, accountsSnapshot) {
                 if (!accountsSnapshot.hasData)

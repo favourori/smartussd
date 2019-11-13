@@ -31,6 +31,9 @@ class _CarriersState extends State<Carriers> {
   void initState() {
     super.initState();
 
+
+    print(" carriers analytics is==========>>>>");
+    print(widget.analytics);
     _firebaseMessaging.requestNotificationPermissions();
     _firebaseMessaging.configure(
         onMessage: (Map<String, dynamic> message) async{
@@ -65,6 +68,9 @@ class _CarriersState extends State<Carriers> {
         setState(() {
           packageInfo = f.version.toString() + "+" + f.buildNumber.toString();
         });
+
+        print("version of app");
+        print(f.version.toString() + "+" + f.buildNumber.toString());
       });
     });
 
@@ -211,11 +217,16 @@ class _CarriersState extends State<Carriers> {
                                 },
                               )
                             : Container(
-                                child: Center(
-                                  child: Text(
-                                    "Sorry you have a very old version which is no longer supported. Please update on the app store to Contiune",
-                                    textAlign: TextAlign.center,
-                                  ),
+                                child: StreamBuilder(
+                                  stream: Firestore.instance.collection("settings").where("label", isEqualTo:"versioning" ).snapshots(),
+                                  builder: (context, snapshot) {
+                                    return Center(
+                                      child: Text(
+                                        "${snapshot.data.documents[0]['update_message']}",
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    );
+                                  }
                                 ),
                               );
                       },
