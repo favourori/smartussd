@@ -82,3 +82,5 @@
 
 # scan temporary files
 **/fastlane/test_output
+ios/Runner.app.dSYM.zip
+ios/Runner.ipa
