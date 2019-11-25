@@ -2,6 +2,8 @@
 #include "GeneratedPluginRegistrant.h"
 #import <Flutter/Flutter.h>
 #import <UIKit/UIKit.h>
+#import "Runner-Swift.h"
+
 
 
 @import UIKit;
@@ -11,9 +13,13 @@
 
 UIImagePickerController *picker;
 
+
 - (BOOL)application:(UIApplication *)application
     didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     [FIRApp configure];
+    
+    
+    
     
     FlutterViewController* controller = (FlutterViewController*)self.window.rootViewController;
     
@@ -37,7 +43,10 @@ UIImagePickerController *picker;
             }
         }
         else if([@"takePicture" isEqualToString:call.method]){
-            [weakSelf takePhotoAndReadText ];
+            
+            NokandaImageRecognitionObjC *nokandaImageRecognition = [NokandaImageRecognitionObjC new];
+//            [nokandaImageRecognition callGetImage]
+            
         }
         else {
             result(FlutterMethodNotImplemented);
