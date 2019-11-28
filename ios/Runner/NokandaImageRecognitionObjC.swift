@@ -9,18 +9,18 @@
 import Foundation
 
 
-class NokandaImageRecognitionObjC:NSObject{
+@objc class NokandaImageRecognitionObjC:NSObject{
     var instance: NokandaImageRecognition = NokandaImageRecognition()
     
     override init() {
         super.init()
-        print("init called from NokandaImageRecognition")
+        print("===>init called from NokandaImageRecognition")
         instance.getImage()
-        print("after function call")
+        print("===>after function call")
         
     }
     
-    func callGetImage(){
+    @objc func callGetImage(){
         instance.getImage()
     }
 }

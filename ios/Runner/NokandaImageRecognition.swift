@@ -15,21 +15,29 @@ import Firebase
     var imagePicker: UIImagePickerController!
     
     
-    //get image from source type
+    // Get image from source type
     func getImage() {
         
-        print("get image called")
-        //Check is source type available
+        print("===>get image called")
+        // Check is source type available
         if UIImagePickerController.isSourceTypeAvailable(.camera) {
             imagePicker = UIImagePickerController();
             imagePicker.delegate = self
             imagePicker.sourceType = .camera
-            self.present(imagePicker, animated: true, completion: nil);
+            let currentViewController = UIApplication.shared.keyWindow?.rootViewController
+            currentViewController?.dismiss(animated: true, completion: nil)
+            
+            if self.presentedViewController == nil {
+                currentViewController?.present(imagePicker, animated: true, completion: nil);
+            } else {
+                self.present(imagePicker, animated: true, completion: nil);
+            }
+
             
         }
     }
     func readTextOnImage(uiimage:UIImage){
-        print("image recognition called");
+        print(" ===>image recognition called");
         print(uiimage.imageOrientation);
         let vision = Vision.vision();
         let textRecognizer = vision.onDeviceTextRecognizer();
@@ -69,6 +77,7 @@ import Firebase
     
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        print("===> image controller callback called")
         if let pickedImage = info[UIImagePickerController.InfoKey.originalImage] as? UIImage
         {
             readTextOnImage(uiimage:pickedImage);

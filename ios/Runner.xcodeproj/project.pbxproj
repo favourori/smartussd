@@ -14,6 +14,7 @@
 		528237102386E8B400276F2E /* NokandaImageRecognition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5282370F2386E8B400276F2E /* NokandaImageRecognition.swift */; };
 		528237122386F22200276F2E /* NokandaImageRecognitionObjC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 528237112386F22200276F2E /* NokandaImageRecognitionObjC.swift */; };
 		5289017A2334F68C0032356F /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 528901792334F68C0032356F /* GoogleService-Info.plist */; };
+		52ED3B9B238EAEDE00C4BE4C /* NokandaImageRecViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 52ED3B9A238EAEDE00C4BE4C /* NokandaImageRecViewController.m */; };
 		5F2D1871C7B9AB62A51A3948 /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B1D361466E0381117A90F886 /* Pods_Runner.framework */; };
 		9705A1C61CF904A100538489 /* Flutter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9740EEBA1CF902C7004384FC /* Flutter.framework */; };
 		9705A1C71CF904A300538489 /* Flutter.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 9740EEBA1CF902C7004384FC /* Flutter.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -49,6 +50,8 @@
 		5282370F2386E8B400276F2E /* NokandaImageRecognition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NokandaImageRecognition.swift; sourceTree = "<group>"; };
 		528237112386F22200276F2E /* NokandaImageRecognitionObjC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NokandaImageRecognitionObjC.swift; sourceTree = "<group>"; };
 		528901792334F68C0032356F /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		52ED3B99238EAEDE00C4BE4C /* NokandaImageRecViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NokandaImageRecViewController.h; sourceTree = "<group>"; };
+		52ED3B9A238EAEDE00C4BE4C /* NokandaImageRecViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NokandaImageRecViewController.m; sourceTree = "<group>"; };
 		52F4E17A2354A909006C3D42 /* Runner.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Runner.entitlements; sourceTree = "<group>"; };
 		622B22587E60FAC00699D46D /* Pods-Runner.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.profile.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.profile.xcconfig"; sourceTree = "<group>"; };
 		7AFA3C8E1D35360C0083082E /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Release.xcconfig; path = Flutter/Release.xcconfig; sourceTree = "<group>"; };
@@ -140,6 +143,8 @@
 				5282370F2386E8B400276F2E /* NokandaImageRecognition.swift */,
 				5282370E2386E8B300276F2E /* Runner-Bridging-Header.h */,
 				528237112386F22200276F2E /* NokandaImageRecognitionObjC.swift */,
+				52ED3B99238EAEDE00C4BE4C /* NokandaImageRecViewController.h */,
+				52ED3B9A238EAEDE00C4BE4C /* NokandaImageRecViewController.m */,
 			);
 			path = Runner;
 			sourceTree = "<group>";
@@ -330,6 +335,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				52ED3B9B238EAEDE00C4BE4C /* NokandaImageRecViewController.m in Sources */,
 				528237122386F22200276F2E /* NokandaImageRecognitionObjC.swift in Sources */,
 				528237102386E8B400276F2E /* NokandaImageRecognition.swift in Sources */,
 				978B8F6F1D3862AE00F588F7 /* AppDelegate.m in Sources */,
