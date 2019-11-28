@@ -1,7 +1,7 @@
 name: kene
 description: A USSD UI app for Mobile Money services.
 
-version: 1.0.1+12
+version: 1.0.3+12
 
 environment:
   sdk: ">=2.1.0 <3.0.0"
@@ -22,7 +22,7 @@ dependencies:
   flushbar: ^1.8.1
   image_picker: ^0.6.1+1
   flutter_launcher_icons: ^0.7.2+1
-  firebase_ml_vision: ^0.9.2+1 #for firebase machine learning kits
+  firebase_ml_vision: ^0.9.2+2 #for firebase machine learning kits
   flutter_spinkit: "^4.0.0" # for custom spinners
   flutter_datetime_picker: ^1.2.6 #date time picker for choosing date on signup
   package_info: ^0.4.0+6 #for getting the build info of the application
@@ -31,8 +31,9 @@ dependencies:
   auto_size_text: ^2.1.0
   rxdart: ^0.21.0
   firebase_messaging: ^5.1.6
-  flutter_share_me: ^0.6.0
-  flutter_share: ^1.0.1+1
+#  flutter_share_me: ^0.6.0
+  flutter_share: ^1.0.2+1
+#  mlkit: ^0.15.0
 
 
 dev_dependencies:

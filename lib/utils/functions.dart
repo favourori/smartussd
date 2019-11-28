@@ -7,7 +7,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+
+openImage(){
+
+  ImagePicker();
+}
 
 
 launchURL(String link) async {
@@ -21,8 +27,21 @@ launchURL(String link) async {
 }
 
 Future<Null> sendAnalytics(analytics, eventName, parameters) async{
+
+  // Replace spaces with underscore in the eventName
+  var eventNameToSend = "";
+
+  for(int i=0; i < eventName.length; i++ ){
+    if(eventName[i] == " "){
+      eventNameToSend += "_";
+    }
+    else{
+      eventNameToSend += eventName[i];
+    }
+  }
+
   await analytics.logEvent(
-    name:"$eventName",
+    name:"$eventNameToSend",
     parameters: parameters,
   ).then((f) =>
       print("event logged")
@@ -61,9 +80,21 @@ bool isNumeric(String str) {
 
 
 Future sendCode(platform, code, aText, rText, context) async{
+  int motive = 1;
+
   String codeToSend = _computeCodeToSend(code, aText, rText);
   if(Platform.isIOS){
-    launchURL(codeToSend+"");
+
+
+    try{
+      var res = await platform.invokeMethod("moMoDialNumber", {"code": codeToSend, "motive": motive});
+      print(res);
+
+    }on PlatformException catch(e){
+
+      print("error check balance is $e");
+    }
+
 
     Future.delayed(Duration(seconds: 1)).then((f){
       Navigator.push(context, MaterialPageRoute(builder: (context) => SuccessPage()));
@@ -71,13 +102,10 @@ Future sendCode(platform, code, aText, rText, context) async{
   }
   else{
     try{
-      print("beforeee wait" );
       Future.delayed(Duration(seconds: 2)).then((f){
         Navigator.push(context, MaterialPageRoute(builder: (context) => SuccessPage()));
       });
       await platform.invokeMethod("moMoDialNumber", {"code": codeToSend});
-      print("afterrr await");
-      print(codeToSend);
 
     }on PlatformException catch(e){
 
@@ -167,7 +195,7 @@ Future<void> share() async {
 
 
 void addTransactions(String label, int amount){
-  Firestore.instance.collection("transactions").add({"service": label, "amount":amount});
+  Firestore.instance.collection("transactions").add({"service": label, "amount":amount, "created_at": DateTime.now()});
 
 }
 

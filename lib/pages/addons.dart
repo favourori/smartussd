@@ -11,10 +11,10 @@ class Addons extends StatefulWidget {
 
 class _AddonsState extends State<Addons> {
 
-  TextEditingController _meterController = TextEditingController();
+  TextEditingController _accountNumberController = TextEditingController();
   TextEditingController _labelController = TextEditingController();
 
-  List<Widget> meterList = [];
+  List<Widget> userAccountList = [];
   double _widthAnimate = 0;
 
 
@@ -36,7 +36,7 @@ class _AddonsState extends State<Addons> {
       ),
       body: ListView(
         children: <Widget>[
-          
+
           Container(
             margin: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.1, vertical: 20),
             height: 300,
@@ -66,7 +66,7 @@ class _AddonsState extends State<Addons> {
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 20),
                       child: TextFormField(
-                        controller: _meterController,
+                        controller: _accountNumberController,
                         keyboardType: TextInputType.number,
                         decoration: InputDecoration(
                             labelText: "Enter meter number",
@@ -75,7 +75,7 @@ class _AddonsState extends State<Addons> {
                       ),
                     ),
                     Spacer(),
-                    
+
                     Padding(
                       padding: EdgeInsets.only(bottom: 15),
                       child: Container(
@@ -104,9 +104,9 @@ class _AddonsState extends State<Addons> {
 
           Column(
 
-            children: meterList,
+            children: userAccountList,
           ),
-          
+
         ],
       controller: _listViewController,),
     );
@@ -115,7 +115,7 @@ class _AddonsState extends State<Addons> {
   meterAdd() async{
     List<String> values  = [];
     values.add(_labelController.text);
-    values.add(_meterController.text);
+    values.add(_accountNumberController.text);
 
     await db.intiDB().then((f) =>
       db.insert("meter", values).then((f) =>
@@ -130,7 +130,7 @@ class _AddonsState extends State<Addons> {
   updateText(){
     setState(() {
       _labelController.text = "";
-      _meterController.text = "";
+      _accountNumberController.text = "";
     });
   }
 
@@ -185,7 +185,7 @@ class _AddonsState extends State<Addons> {
     }
 
     setState(() {
-      meterList = temp;
+      userAccountList = temp;
     });
   }
 }

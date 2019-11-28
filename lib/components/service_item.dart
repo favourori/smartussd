@@ -68,7 +68,7 @@ class _ServiceItemState extends State<ServiceItem>{
         onTap: () {
 
 
-          Future.delayed(Duration(milliseconds: 100)).then((f){ // delay for 300 milli secs before Navigating
+          Future.delayed(Duration(milliseconds: 50)).then((f){ // delay for 300 milli secs before Navigating
           // Restore the boolean to revert the background color
             setState(() {
               itemClicked = false;
@@ -125,7 +125,7 @@ class _ServiceItemState extends State<ServiceItem>{
           height: 70,
           decoration: BoxDecoration(
             // border: Border.all(color: widget.primaryColor),
-              color: itemClicked ? Color(0xffB9BBBD) : widget.backgroundColor,
+              color: itemClicked ? Colors.black12 : widget.backgroundColor,
               borderRadius: BorderRadius.circular(40)),
           child: Padding(
             padding: const EdgeInsets.only(left: 20.0, top: 10, bottom: 10),
@@ -156,11 +156,11 @@ class _ServiceItemState extends State<ServiceItem>{
                     child: ListView(
                       shrinkWrap: true,
                       scrollDirection: Axis.horizontal,
-                      children: <Widget>[ 
+                      children: <Widget>[
                         widget.nameMap == null
-                            ? Text(widget.name) 
+                            ? Text(widget.name)
                             : Text(widget.nameMap[locale])
-                      
+
                       ],
                     ),
                   ),

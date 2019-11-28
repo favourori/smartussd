@@ -617,7 +617,7 @@ class _SigninState extends State<Signin> {
         });
       }
 
-      showFlushBar("Error!", "$mess");
+      showFlushBar("Error!", "${exception.message}");
       setState(() {
         isBtnClicked = false;
       });

@@ -11,6 +11,8 @@ import 'package:kene/utils/functions.dart';
 import 'package:kene/widgets/adaptive_dialog.dart';
 import 'package:kene/widgets/bloc_provider.dart';
 import 'package:native_contact_picker/native_contact_picker.dart';
+//import 'package:mlkit/mlkit.dart';
+
 
 class InputActionContainer extends StatefulWidget{
 
@@ -33,6 +35,7 @@ class _InputContainerState extends State<InputActionContainer> with TickerProvid
   var _amountController = TextEditingController();
   var _recipientController = TextEditingController();
   String uid = "";
+  String cameraBtnText = "Take a Picture";
 
   String _recipientContactName = "";
 
@@ -317,9 +320,6 @@ class _InputContainerState extends State<InputActionContainer> with TickerProvid
 
         child: Column(
           children: <Widget>[
-//            Center(
-//              child: Text("OR"),
-//            ),
             SizedBox(
               height: 10,
             ),
@@ -367,12 +367,19 @@ class _InputContainerState extends State<InputActionContainer> with TickerProvid
             setState(() {
               cameraBtnClicked = true;
             });
-            getImage();
+
+            Future.delayed(Duration(milliseconds: 300)).then((f){
+              getImage();
+              setState(() {
+                cameraBtnText = "Loading";
+              });
+            });
           },
           child: Container(
             margin: EdgeInsets.only(bottom: 20),
             decoration: BoxDecoration(
-                color: Colors.orange, borderRadius: BorderRadius.circular(40)),
+                color: cameraBtnClicked ?  Colors.black12 : Colors.orange,
+                borderRadius: BorderRadius.circular(40)),
             height: 48,
             width: MediaQuery.of(context).size.width * 0.4,
             child: Center(
@@ -386,7 +393,7 @@ class _InputContainerState extends State<InputActionContainer> with TickerProvid
                   Padding(
                     padding: EdgeInsets.only(left: 10),
                     child: Text(
-                      cameraBtnClicked ? "Loading ...." : "Take a Picture",
+                      "$cameraBtnText",
                       style: TextStyle(color: Colors.white),
                     ),
                   )
@@ -434,15 +441,26 @@ class _InputContainerState extends State<InputActionContainer> with TickerProvid
   }
 
   mlKit(_image) async {
-    final FirebaseVisionImage visionImage =
-    FirebaseVisionImage.fromFile(_image);
-    final TextRecognizer textRecognizer =
-    FirebaseVision.instance.textRecognizer();
+    print("====>> flutter[]: mlkit called");
+
+//    FirebaseVisionTextDetector firebaseVisionTextDetector = FirebaseVisionTextDetector.instance;
+//
+//    print("before labels");
+//    var labels = await firebaseVisionTextDetector.detectFromPath(_image.path);
+//    print(labels.length);
+//    for(var text in labels){
+//      print(text.text+"xx");
+//    }
+//    print("after labels");
+
+    final FirebaseVisionImage visionImage = FirebaseVisionImage.fromFile(_image);
+    final TextRecognizer textRecognizer = FirebaseVision.instance.textRecognizer();
 
 
-    final VisionText visionText =
-    await textRecognizer.processImage(visionImage);
+    final VisionText visionText = await textRecognizer.processImage(visionImage);
+
     String card = "*130*";
+    print(visionText.text);
     for (TextBlock block in visionText.blocks) {
       final String text = block.text;
 

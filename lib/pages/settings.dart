@@ -17,6 +17,12 @@ import 'package:url_launcher/url_launcher.dart';
 
 
 class Settings extends StatefulWidget {
+
+  final analytics;
+
+  Settings({
+    this.analytics
+});
   @override
   State<StatefulWidget> createState() {
     return _SettingsState();
@@ -32,20 +38,23 @@ class _SettingsState extends State<Settings> {
   void initState() {
     super.initState();
 
-    // Get languages here and pass to languages widgets
+    // Get language codes from database here
     Firestore.instance.collection("language_codes").getDocuments().then((data){
       setState(() {
         languageList = data.documents;
       });
     });
 
+
+    // For getting the package/build/version number on load
     PackageInfo.fromPlatform().then((f) {
-      // For getting the package/build/version number on load
       setState(() {
         packageInfo = f;
       });
     });
 
+    // Send analytics on page load/initialize
+    sendAnalytics(widget.analytics, "SettingsPage_Open", null);
 
   }
 
@@ -98,7 +107,7 @@ class _SettingsState extends State<Settings> {
                       GestureDetector(
                         onTap: () {
                           Navigator.push(context,
-                              CustomPageRoute(navigateTo: SaveAccount()));
+                              CustomPageRoute(navigateTo: SaveAccount(analytics: widget.analytics,)));
                         },
                         child: ListTile(
                           leading: Icon(
@@ -154,7 +163,7 @@ class _SettingsState extends State<Settings> {
                       GestureDetector(
                         onTap: () {
                           Navigator.push(context,
-                              CustomPageRoute(navigateTo: About()));
+                              CustomPageRoute(navigateTo: About(analytics: widget.analytics)));
                         },
                         child: ListTile(
                           leading: Icon(
@@ -214,10 +223,6 @@ class _SettingsState extends State<Settings> {
                           // ),),
                         ),
                       ),
-//                      SizedBox(
-//                        height: MediaQuery.of(context).size.height * 0.2,
-//                      ),
-//                      Expanded(flex: 1,child: Container(),),
                      Align(
                        alignment: Alignment.bottomCenter,
                        child:  Padding(
@@ -269,5 +274,3 @@ class _SettingsState extends State<Settings> {
   }
 
 }
-
-//"Android : \nhttps://play.google.com/store/apps/details?id=com.hexakomb.nokanda \niOS: \nhttps://bit.ly/nokandaios"

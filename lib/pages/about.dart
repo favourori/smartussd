@@ -1,14 +1,19 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
-
-// TODO: image recognition service not showing
+import 'package:kene/utils/functions.dart';
 
 
 class About extends StatelessWidget {
+  final analytics;
+  About({this.analytics});
 
   @override
   Widget build(BuildContext context) {
+
+
+    // Send analytics on page load/initialize
+    sendAnalytics(analytics, "AboutPage_Open", null);
     return Scaffold(
       body: Container(
           height: MediaQuery.of(context).size.height,
