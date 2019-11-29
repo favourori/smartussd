@@ -1,7 +1,9 @@
+import 'dart:io';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:kene/components/loader.dart';
 import 'package:kene/pages/services.dart';
 import 'package:kene/pages/settings.dart';
@@ -38,7 +40,6 @@ bool isOlderVersion;
       _scrollController.jumpTo(45);
     }
   }
-
 
 
 
@@ -225,12 +226,38 @@ bool isOlderVersion;
                               child: StreamBuilder(
                                   stream: Firestore.instance.collection("settings").where("label", isEqualTo:"versioning" ).snapshots(),
                                   builder: (context, snapshot) {
-                                    return Center(
-                                      child: Text(
-                                        "${snapshot.data.documents[0]['update_message']}",
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    );
+                                    return snapshot.hasData ? Center(
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: <Widget>[
+                                          Text(
+                                            "${snapshot.data.documents[0]['update_message']}",
+                                            textAlign: TextAlign.center,
+                                          ),
+                                          SizedBox(height: 20,),
+                                          Platform.isIOS ?
+                                              CupertinoButton(
+
+                                                  child: Text("Click to update"), onPressed: (){
+                                                upDateButtonAction();
+
+                                              })
+                                              :
+
+                                          RaisedButton(
+                                            color: Colors.orangeAccent,
+                                            onPressed: (){
+                                              upDateButtonAction();
+                                            },
+                                            child: Text("Click to update", style: TextStyle(
+                                              color: Colors.white
+                                            ),),
+                                          )
+                                        ],
+                                      )
+                                    ):
+
+                                    NLoader();
                                   }
                               ),
                             );

@@ -22,6 +22,17 @@ class _NLoaderState extends State<NLoader>  with SingleTickerProviderStateMixin 
     }
 
   }
+
+  @override
+  void dispose() {
+
+    _fadeTransition.dispose();
+    super.dispose();
+
+
+  }
+
+
   @override
   void initState() {
     super.initState();

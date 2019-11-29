@@ -14,12 +14,12 @@ import 'dart:io';
 
 // Launch given URL
 launchURL(String link) async {
-  String url = 'tel:$link#';
+  String url = link;
   if (await canLaunch(url)) {
     print(url);
     await launch(url);
   } else {
-    throw 'Could not launch $url o';
+    throw 'Could not launch $url';
   }
 }
 
@@ -194,6 +194,22 @@ bool isAuthenticatedUser(){
 
 }
 
+upDateButtonAction(){
+  Firestore.instance.collection("settings").getDocuments().then((d){
+    List docs = d.documents;
+    for(var item in docs){
+      print(item.documentID);
+      if(item.documentID == "share_text"){
+
+        launchURL(item['url']);
+
+      }
+    }
+
+
+  });
+}
+
 // Invoke the  share apps screen asking users to share the app
 Future<void> share() async {
   String text = "";
@@ -209,8 +225,6 @@ Future<void> share() async {
 
       }
     }
-
-    print("$text and $url");
 
     FlutterShare.share(
         title: 'Nokanda App',
