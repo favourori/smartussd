@@ -18,7 +18,6 @@ import 'package:flutter/cupertino.dart';
 // TODO: Support country selection, multiple input and map structure of services
 // TODO: make success page same design
 // TODO: Update version on app open
-// TODO: add events to all screens
 // TODO: button leading to app stores to update app on old versions
 // TODO: add thousand separator on amount field
 //

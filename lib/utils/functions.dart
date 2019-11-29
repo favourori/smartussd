@@ -3,19 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_share/flutter_share.dart';
 import 'package:kene/pages/success.dart';
 import 'package:kene/widgets/bloc_provider.dart';
+import 'package:package_info/package_info.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
-import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
-openImage(){
-
-  ImagePicker();
-}
 
 
+// Launch given URL
 launchURL(String link) async {
   String url = 'tel:$link#';
   if (await canLaunch(url)) {
@@ -26,6 +23,7 @@ launchURL(String link) async {
   }
 }
 
+// Send events analytics to fireBase
 Future<Null> sendAnalytics(analytics, eventName, parameters) async{
 
   // Replace spaces with underscore in the eventName
@@ -46,7 +44,8 @@ Future<Null> sendAnalytics(analytics, eventName, parameters) async{
   ).then((f) =>
       print("event logged")
   );
-} 
+}
+
 
 Future getServices(String carrier) async{
  if(FirebaseAuth.instance.currentUser() != null ){
@@ -71,6 +70,17 @@ catch(e){
 }
 
 
+// Return user ID
+Future<String> getUserID() async{
+  var user = await FirebaseAuth.instance.currentUser();
+  if (user != null){
+    return user.uid.toString();
+  }
+  return "";
+}
+
+
+// Return true if string is numeric
 bool isNumeric(String str) {
   if (str == null) {
     return false;
@@ -79,6 +89,8 @@ bool isNumeric(String str) {
 }
 
 
+
+// Call platform code and make call to given url/call code
 Future sendCode(platform, code, aText, rText, context) async{
   int motive = 1;
 
@@ -118,6 +130,7 @@ Future sendCode(platform, code, aText, rText, context) async{
 }
 
 
+// Invoke native code to ask for user permission for calls [Android only]
   Future askCallPermission(platform) async{
     try{
       await platform.invokeMethod("nokandaAskCallPermission");
@@ -128,6 +141,8 @@ Future sendCode(platform, code, aText, rText, context) async{
   }
 
 
+
+// Decode and add appropriate numbers to the code to eventually send as phone call
 String _computeCodeToSend(String rawCode, aText, rText){
   String tmp = "";
   for(int x=0; x < rawCode.length; x++){
@@ -151,6 +166,8 @@ String _computeCodeToSend(String rawCode, aText, rText){
   return tmp;
 }
 
+
+// Check if phone has internet connection
  Future<bool> hasInternetConnection() async{
    try {
      final result = await InternetAddress.lookup('google.com');
@@ -163,7 +180,21 @@ String _computeCodeToSend(String rawCode, aText, rText){
   return false;
 }
 
+// Check if user is authenticated
+bool isAuthenticatedUser(){
+  var isAuth;
+  FirebaseAuth.instance.currentUser().then((f){
+    if(f != null){
+      isAuth = f;
+    }
+  });
 
+
+  return isAuth != null;
+
+}
+
+// Invoke the  share apps screen asking users to share the app
 Future<void> share() async {
   String text = "";
   String url = "";
@@ -194,12 +225,52 @@ Future<void> share() async {
 }
 
 
+// Record the transactions made to database
 void addTransactions(String label, int amount){
   Firestore.instance.collection("transactions").add({"service": label, "amount":amount, "created_at": DateTime.now()});
 
 }
 
+Future<Map<String, String>> getDeviceVersionAndBuildNumber() async{
+  Map<String, String> versionBuildNumber = {};
 
+  var packageInfo = await PackageInfo.fromPlatform();
+
+  versionBuildNumber = {
+    "build": packageInfo.buildNumber.toString(),
+    "version":packageInfo.version.toString(),
+  };
+
+  return versionBuildNumber;
+}
+
+
+
+// Check if device is supported to display services
+// Update the boolean to handle the different cases of supported devices and unsupported
+Future<bool> isOldVersion() async{
+
+  var phoneBuildVersion = await getDeviceVersionAndBuildNumber();
+
+  // Get the supported minimum version from database
+  var f = await Firestore.instance.collection("settings").getDocuments();
+
+  var minimumSupportedVersion = f.documents[0].data['minimum_supported_version'];
+
+
+  double phoneVersion = double.parse(phoneBuildVersion['version'].split(".").join());
+
+  double phoneBuild = double.parse(phoneBuildVersion['build']);
+
+  double minVersion = double.parse(minimumSupportedVersion.split("+")[0].split(".").join());
+
+  double minBuild = double.parse(minimumSupportedVersion.split("+")[1]);
+
+  return phoneVersion < minVersion || (phoneVersion == minVersion && phoneBuild < minBuild);
+
+}
+
+// Get the current device locale
 getLocale(context){
   var locale;
   SharedPreferences.getInstance().then((p){
@@ -213,6 +284,8 @@ getLocale(context){
 
 }
 
+
+// Set the selected locale to device
 setLocale(v){
   SharedPreferences.getInstance().then((p){
     p.setString("locale", v);
@@ -221,6 +294,52 @@ setLocale(v){
 
   });
 
+}
+
+// Get the current app version of the logged in user
+Future<String> getCurrentVersionOnFireBase(String uid) async{
+  String version = "";
+  if(isAuthenticatedUser()){
+      // Get stored version and return
+    var userRecord = await Firestore.instance.collection("users").where("user_id", isEqualTo: uid).getDocuments();
+    version =  userRecord.documents[0]['version'];
+  }
+
+  return version;
+
+}
 
 
+// Update the version of the app on FireBase
+updateVersion() async{
+  String userID = await getUserID();
+  if(userID.isNotEmpty){
+
+    String userCurrentVersionFromFireBase = await getCurrentVersionOnFireBase(userID);
+    Map<String, dynamic> deviceUserVersion = await getDeviceVersionAndBuildNumber();
+    String deviceVersionString = deviceUserVersion['version']+"+"+deviceUserVersion['build'];
+
+
+    // Update the database if not equal
+    if(deviceVersionString != userCurrentVersionFromFireBase){
+      String uid = await getUserID();
+
+    var userData = await Firestore.instance.collection("users").where("user_id", isEqualTo: userID).getDocuments();
+
+
+    // In scenarios there are more than one record for this user
+      for(int i=0; i < userData.documents.length; i++){
+
+        var userDocumentID = userData.documents[i].documentID;
+        Firestore.instance.collection("users").document(userDocumentID).updateData({
+          "version": deviceVersionString
+        });
+
+      }
+
+
+    }
+
+
+  }
 }

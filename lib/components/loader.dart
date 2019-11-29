@@ -26,7 +26,7 @@ class _NLoaderState extends State<NLoader>  with SingleTickerProviderStateMixin 
   void initState() {
     super.initState();
 
-    _fadeTransition = AnimationController(vsync: this, duration: Duration(milliseconds: 3000));
+    _fadeTransition = AnimationController(vsync: this, duration: Duration(milliseconds: 2000));
     opacityAnimation = Tween<double>(begin: 0.2, end: 1).animate(CurvedAnimation(parent: _fadeTransition, curve: Curves.bounceIn));
     _fadeTransition.forward();
     _fadeTransition.addListener(listener);
@@ -58,7 +58,7 @@ class _NLoaderState extends State<NLoader>  with SingleTickerProviderStateMixin 
       margin: EdgeInsets.only(bottom: 10),
       width: double.infinity,
       decoration: BoxDecoration(
-        color: Colors.grey[400],
+        color: Colors.black12,
         borderRadius: BorderRadius.circular(40),
 //        border: Border.all(color: Colors.grey)
 

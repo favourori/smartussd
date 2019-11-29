@@ -7,7 +7,6 @@ import 'package:kene/pages/services.dart';
 import 'package:kene/pages/settings.dart';
 import 'package:kene/utils/functions.dart';
 import 'package:kene/widgets/custom_nav.dart';
-import 'package:package_info/package_info.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 
@@ -28,9 +27,7 @@ class Carriers extends StatefulWidget {
 class _CarriersState extends State<Carriers> {
 
 
-  // Needed variable for checking device version and displaying services or not
-  String minimumSupportedVersion = '';
-  String packageInfo = "";
+bool isOlderVersion;
 
   final FirebaseMessaging _fireBaseMessaging = FirebaseMessaging();
   ScrollController _scrollController;
@@ -41,6 +38,10 @@ class _CarriersState extends State<Carriers> {
       _scrollController.jumpTo(45);
     }
   }
+
+
+
+
 
   @override
   void initState() {
@@ -83,43 +84,19 @@ class _CarriersState extends State<Carriers> {
     });
 
 
-    // Get the supported minimum version from database
-    Firestore.instance.collection("settings").getDocuments().then((f) {
+    // Set is olderVersion
+    isOldVersion().then((state){
       setState(() {
-        minimumSupportedVersion =
-            f.documents[0].data['minimum_supported_version'];
-      });
-
-
-      //  Get the package/build/version number of the device on load
-      PackageInfo.fromPlatform().then((f) {
-        setState(() {
-          packageInfo = f.version.toString() + "+" + f.buildNumber.toString();
-        });
+        isOlderVersion = state;
       });
     });
 
+    // Update version on firebase
+    updateVersion();
+
+
   }
 
-
-  // Check if device is supported to display services
-  // Update the boolean to handle the different cases of supported devices and unsupported
-  isOldVersion() {
-    double phoneVersion =
-        double.parse(packageInfo.split("+")[0].split(".").join());
-    double phoneBuild = double.parse(packageInfo.split("+")[1]);
-
-    double minVersion =
-        double.parse(minimumSupportedVersion.split("+")[0].split(".").join());
-    double minBuild = double.parse(minimumSupportedVersion.split("+")[1]);
-
-    if (phoneVersion < minVersion || (phoneVersion == minVersion && phoneBuild < minBuild)) {
-      return true;
-    }
-   
-
-    return false;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -219,7 +196,7 @@ class _CarriersState extends State<Carriers> {
                           stream:
                           Firestore.instance.collection("services").snapshots(),
                           builder: (context, snapshot) {
-                            if (!snapshot.hasData || packageInfo == "")
+                            if (!snapshot.hasData || isOlderVersion == null)
                               return Center(
                                 child: NLoader(),
                               );
@@ -228,7 +205,7 @@ class _CarriersState extends State<Carriers> {
                                     (DocumentSnapshot a, DocumentSnapshot b) =>
                                     getServiceOrderNo(a)
                                         .compareTo(getServiceOrderNo(b)));
-                            return !isOldVersion()
+                            return !isOlderVersion
                                 ? ListView.builder(
                               itemCount: snapshot.data.documents.length,
                               itemBuilder: (context, index) {
