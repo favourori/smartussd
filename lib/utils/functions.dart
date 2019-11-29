@@ -47,6 +47,29 @@ Future<Null> sendAnalytics(analytics, eventName, parameters) async{
 }
 
 
+//Add thousand separator to figures
+String addFigureSeparator(String value){
+//
+//  String stringWithSeparator = "";
+//  int counter = 0;
+//
+//  for(int i = value.length-1; i >= 0; i--){
+//    counter += 1;
+//
+//    if(counter % 3 == 0){
+//      stringWithSeparator = stringWithSeparator + "," +value[i];
+//    }
+//    else{
+//      stringWithSeparator = stringWithSeparator +  value[i];
+//    }
+//
+//  }
+
+  return value;
+
+}
+
+
 Future getServices(String carrier) async{
  if(FirebaseAuth.instance.currentUser() != null ){
 

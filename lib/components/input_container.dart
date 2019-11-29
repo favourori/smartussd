@@ -11,8 +11,7 @@ import 'package:kene/utils/functions.dart';
 import 'package:kene/widgets/adaptive_dialog.dart';
 import 'package:kene/widgets/bloc_provider.dart';
 import 'package:native_contact_picker/native_contact_picker.dart';
-//import 'package:mlkit/mlkit.dart';
-
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 class InputActionContainer extends StatefulWidget{
 
@@ -50,6 +49,13 @@ class _InputContainerState extends State<InputActionContainer> with TickerProvid
   bool showSubmit = false;
 
   List<dynamic> savedAccounts = [];
+
+
+  var textEditingController = TextEditingController(text: "123456789");
+  var maskFormatter = new MaskTextInputFormatter(mask: '###-###-###', filter: { "#": RegExp(r'[0-9]') });
+
+
+
 
   _recipientControllerListener() {
     if (_recipientController.text == null ||
@@ -151,6 +157,7 @@ class _InputContainerState extends State<InputActionContainer> with TickerProvid
                 child: Padding(
                   padding: EdgeInsets.symmetric(vertical: 10),
                   child: TextField(
+                    inputFormatters: [maskFormatter],
                     onTap: () {
                       if (serviceData['needsContact']) {
 //                        _listViewController.animateTo(101.5,
@@ -158,7 +165,7 @@ class _InputContainerState extends State<InputActionContainer> with TickerProvid
 //                            curve: Curves.easeIn);
                       }
                     },
-                    keyboardType: label != "Amount" ? TextInputType.text : TextInputType.number,
+                    keyboardType:TextInputType.text,
                     controller: controller,
                     decoration: InputDecoration(
                         labelText: "Enter $label",
@@ -257,6 +264,7 @@ class _InputContainerState extends State<InputActionContainer> with TickerProvid
       ],
     );
   }
+
 
 
   Container textInputContainerRecipient(String label) {
