@@ -2,15 +2,17 @@ import 'dart:io';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:kene/components/loader.dart';
+import 'package:kene/pages/receive.dart';
 import 'package:kene/pages/services.dart';
 import 'package:kene/pages/settings.dart';
 import 'package:kene/utils/functions.dart';
 import 'package:kene/widgets/custom_nav.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-
+import 'package:qr_flutter/qr_flutter.dart';
 
 
 class Carriers extends StatefulWidget {
@@ -29,7 +31,8 @@ class Carriers extends StatefulWidget {
 class _CarriersState extends State<Carriers> {
 
 
-bool isOlderVersion;
+  bool isOlderVersion;
+  var _qrScan;
 
   final FirebaseMessaging _fireBaseMessaging = FirebaseMessaging();
   ScrollController _scrollController;
@@ -48,7 +51,17 @@ bool isOlderVersion;
   void initState() {
     super.initState();
 
-
+    FirebaseAuth.instance.currentUser().then((f){ // Set the logged in phone number as qrCode data
+      if(f != null){
+        setState(() {
+          _qrScan = QrImage(
+            data: f.phoneNumber.toString(),
+            version: QrVersions.auto,
+            size: 200.0,
+          );
+        });
+      }
+    });
     // Scroll controller for listView
     _scrollController = ScrollController(initialScrollOffset: 0.0);
     _scrollController.addListener(listener);
@@ -207,20 +220,43 @@ bool isOlderVersion;
                                     getServiceOrderNo(a)
                                         .compareTo(getServiceOrderNo(b)));
                             return !isOlderVersion
-                                ? ListView.builder(
-                              itemCount: snapshot.data.documents.length,
-                              itemBuilder: (context, index) {
-                                return snapshot.data.documents[index]
-                                ['isActive']
-                                    ?
-                                CarriersItem(
-                                  carrierID: snapshot.data.documents[index].documentID,
-                                  label: snapshot.data.documents[index]['label'],
-                                  analytics: widget.analytics,
-                                  color: snapshot.data.documents[index]['primaryColor'],
-                                  icon: snapshot.data.documents[index]['icon'],)
-                                    : Container();
-                              },
+                                ? Column(
+                              children: <Widget>[
+                                ListView.builder(
+                                  shrinkWrap: true,
+                                  itemCount: snapshot.data.documents.length,
+                                  itemBuilder: (context, index) {
+                                    return snapshot.data.documents[index]
+                                    ['isActive']
+                                        ?
+                                    CarriersItem(
+                                      isReceiveButton: false,
+                                      carrierID: snapshot.data.documents[index].documentID,
+                                      label: snapshot.data.documents[index]['label'],
+                                      analytics: widget.analytics,
+                                      color: snapshot.data.documents[index]['primaryColor'],
+                                      icon: snapshot.data.documents[index]['icon'],
+                                      qrScan: _qrScan,
+                                    )
+                                        : Container();
+                                  },
+                                ),
+
+                                _qrScan != null ?
+
+                                    GestureDetector(
+                                      onTap: (){},
+                                      child: CarriersItem(
+                                        isReceiveButton: true,
+                                        icon: "",
+                                        label: "Receive Payment",
+                                        qrScan: _qrScan,
+                                      ),
+                                    )
+                                    :
+                                    Container()
+
+                              ],
                             )
                                 : Container(
                               child: StreamBuilder(
@@ -287,13 +323,15 @@ bool isOlderVersion;
 
 /// A class for carrierItems
 class CarriersItem extends StatefulWidget{
+  final isReceiveButton;
   final label;
   final color;
   final carrierID;
   final icon;
   final analytics;
+  final qrScan;
 
-  CarriersItem({this.label, this.analytics, this.icon, this.carrierID, this.color});
+  CarriersItem({this.label, this.analytics, this.qrScan, this.icon, this.carrierID, this.isReceiveButton, this.color});
 
   @override
   _CarriersItemState createState() => _CarriersItemState();
@@ -314,12 +352,16 @@ class _CarriersItemState extends State<CarriersItem> {
             Navigator.push(
                 context,
                 CustomPageRoute(
-                    navigateTo: Services(
+                    navigateTo: !widget.isReceiveButton ? Services(
                       carrierId: widget.carrierID,
                       primaryColor: Color(widget.color),
                       carrierTitle: widget.label,
                       analytics: widget.analytics,
-                    ))).then((d){
+                    ):
+                    ReceivePage(qrImage: widget.qrScan,)
+                )
+
+            ).then((d){
                       setState(() {
                         isBtnClicked = false;
                       });
