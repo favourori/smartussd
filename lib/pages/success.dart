@@ -6,8 +6,16 @@ class SuccessPage extends StatelessWidget{
   @override
   build(context){
     return Scaffold(
+      backgroundColor: Colors.orangeAccent,
       body: Center(
         child: Container(
+
+//          width: MediaQuery.of(context).size.width * 0.7,
+        margin: EdgeInsets.all(40),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(40),
+            color: Colors.white
+          ),
           padding: EdgeInsets.all(30),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -40,17 +48,23 @@ class SuccessPage extends StatelessWidget{
   RaisedButton pageButtons(String label, Function onPressedAction, IconData icon, context){
     return RaisedButton(onPressed: onPressedAction, child:
     Container(
-      width: MediaQuery.of(context).size.width * 0.7,
+      width: double.infinity,
       height: 50,
       child: Center(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Icon(icon, color: Colors.white,),
+            Expanded(
+              flex: 3,
+              child: Icon(icon, color: Colors.white,),
+            ),
             SizedBox(
               width: 20,
             ),
-            Text("$label", style: TextStyle(color: Colors.white),),
+            Expanded(
+              flex: 8,
+              child: Text("$label", style: TextStyle(color: Colors.white),),
+            )
 
           ],
         ),
