@@ -11,7 +11,10 @@ import 'package:kene/utils/functions.dart';
 import 'package:kene/widgets/adaptive_dialog.dart';
 import 'package:kene/widgets/bloc_provider.dart';
 import 'package:native_contact_picker/native_contact_picker.dart';
-import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+import 'package:flutter_masked_text/flutter_masked_text.dart';
+
+
+
 
 class InputActionContainer extends StatefulWidget{
 
@@ -51,12 +54,15 @@ class _InputContainerState extends State<InputActionContainer> with TickerProvid
   List<dynamic> savedAccounts = [];
 
 
-  var textEditingController = TextEditingController(text: "123456789");
-  var maskFormatter = new MaskTextInputFormatter(mask: '###-###-###', filter: { "#": RegExp(r'[0-9]') });
+  var _currencyController = new TextEditingController();
 
 
+  _amountListener(){
 
-
+//    if(_amountController.text.length > 3){
+//      _amountController.text = _amountController.text.substring(0, _amountController.text.length-2);
+//    }
+  }
   _recipientControllerListener() {
     if (_recipientController.text == null ||
         _recipientController.text.isEmpty) {
@@ -85,6 +91,7 @@ class _InputContainerState extends State<InputActionContainer> with TickerProvid
      }
     });
 
+    _amountController.addListener(_amountListener);
     _recipientController.addListener(_recipientControllerListener);
 
     FirebaseAuth.instance.currentUser().then((u) {  //setting the uid
@@ -106,7 +113,7 @@ class _InputContainerState extends State<InputActionContainer> with TickerProvid
         child: Column(
           children: <Widget>[
             serviceData['needsAmount'] == null || serviceData['needsAmount'] ?  // show amount if needed
-                 textInputContainerAmount("Amount", _amountController)
+                 textInputContainerAmount("Amount", _currencyController)
                 : Container(),
             SizedBox(
               height: 10,
@@ -157,7 +164,7 @@ class _InputContainerState extends State<InputActionContainer> with TickerProvid
                 child: Padding(
                   padding: EdgeInsets.symmetric(vertical: 10),
                   child: TextField(
-                    inputFormatters: [maskFormatter],
+//                    inputFormatters:[ maskFormatter ],
                     onTap: () {
                       if (serviceData['needsContact']) {
 //                        _listViewController.animateTo(101.5,
@@ -165,7 +172,7 @@ class _InputContainerState extends State<InputActionContainer> with TickerProvid
 //                            curve: Curves.easeIn);
                       }
                     },
-                    keyboardType:TextInputType.text,
+                    keyboardType:label == "Amount" ? TextInputType.number : TextInputType.text,
                     controller: controller,
                     decoration: InputDecoration(
                         labelText: "Enter $label",
@@ -568,6 +575,41 @@ class _InputContainerState extends State<InputActionContainer> with TickerProvid
         _recipientContactName = contact.fullName;
       });
     }
+
   }
 
 }
+
+
+
+//class CurrencyController extends TextEditingController{
+//  CurrencyController(){
+//    this.addListener((){
+//      this.updateText(this.text);
+////      this.afterChange();
+//
+//    });
+//
+//    this.updateText(this.text);
+//  }
+//
+//
+//  updateText(String text){
+//    print(this.text);
+//
+//    if(this.text.isNotEmpty){
+//
+//      this.text =  "";
+//    }
+//    }
+//    this.selection = new TextSelection.fromPosition(
+//        new TextPosition(offset: this.text.length));
+//  }
+//
+//
+//  String _applyMask(String value) {
+//    return value+",";
+//  }
+//
+//   Function afterChange = (){};
+//  }

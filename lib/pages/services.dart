@@ -64,7 +64,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
   String recipientLabel = "";
   int optionID = 0;
   bool showActionSection = false;
-  String serviceLable = "";
+  String serviceLabel = "";
   bool canSaveLabels;
   bool needsAmount;
   bool requiresCamera;
