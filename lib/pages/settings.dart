@@ -1,22 +1,28 @@
 import 'dart:io';
+import 'package:flutter/cupertino.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:kene/components/choose_language.dart';
 import 'package:kene/control.dart';
-import 'package:kene/pages/contact.dart';
+import 'package:kene/pages/about.dart';
 import 'package:kene/pages/faq.dart';
 import 'package:kene/pages/save_accounts.dart';
+import 'package:kene/utils/functions.dart';
 import 'package:kene/widgets/custom_nav.dart';
-//import 'package:advanced_share/advanced_share.dart';
 import 'package:package_info/package_info.dart';
 import 'package:auto_size_text/auto_size_text.dart';
-//import 'package:flutter_share_me/flutter_share_me.dart';
-import 'package:flutter_share/flutter_share.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 
 
 class Settings extends StatefulWidget {
+
+  final analytics;
+
+  Settings({
+    this.analytics
+});
   @override
   State<StatefulWidget> createState() {
     return _SettingsState();
@@ -25,16 +31,31 @@ class Settings extends StatefulWidget {
 
 class _SettingsState extends State<Settings> {
   PackageInfo packageInfo;
+  List languageList = [];
+
+
   @override
   void initState() {
     super.initState();
 
+    // Get language codes from database here
+    Firestore.instance.collection("language_codes").getDocuments().then((data){
+      setState(() {
+        languageList = data.documents;
+      });
+    });
+
+
+    // For getting the package/build/version number on load
     PackageInfo.fromPlatform().then((f) {
-      // for getting the package/build/version number on load
       setState(() {
         packageInfo = f;
       });
     });
+
+    // Send analytics on page load/initialize
+    sendAnalytics(widget.analytics, "SettingsPage_Open", null);
+
   }
 
 
@@ -80,12 +101,13 @@ class _SettingsState extends State<Settings> {
                 child: Container(
                   width: MediaQuery.of(context).size.width - 40,
                   height: MediaQuery.of(context).size.height * 0.68,
-                  child: Column(
+                  child: ListView(
+                    shrinkWrap: true,
                     children: <Widget>[
                       GestureDetector(
                         onTap: () {
                           Navigator.push(context,
-                              CustomPageRoute(navigateTo: SaveAccount()));
+                              CustomPageRoute(navigateTo: SaveAccount(analytics: widget.analytics,)));
                         },
                         child: ListTile(
                           leading: Icon(
@@ -105,19 +127,8 @@ class _SettingsState extends State<Settings> {
                           return GestureDetector(
                             onTap: () {
 
-                              String text = "";
-                              String url = "";
-                              for(var item in snapshot.data.documents){
-                                  print(item.documentID);
-                                  if(item.documentID == "share_text"){
-                                    text = item['text'];
-                                    url = item['url'];
 
-                                  }
-                              }
-                              share(text, url);
-//                          FlutterShareMe()
-//                              .shareToWhatsApp(msg: "Hi!! \nHave you heard of Nokanda ? \nIt saves you a lot of time using mobile money and USSD Services. \nTry it out !! \n Android : \nhttps://play.google.com/store/apps/details?id=com.hexakomb.nokanda \niOS: \nhttps://bit.ly/nokandaios", base64Image: "");
+                              share();
 
                             },
                             child: ListTile(
@@ -133,6 +144,34 @@ class _SettingsState extends State<Settings> {
                             ),
                           );
                         },
+                      ),
+
+
+                      GestureDetector(
+                        onTap: () {
+                          reactiveDialog();
+                        },
+                        child: ListTile(
+                          leading: Icon(
+                            Icons.language,
+                            color: Colors.orangeAccent,
+                          ),
+                          title: Text("Change Language"),
+                        ),
+                      ),
+
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(context,
+                              CustomPageRoute(navigateTo: About(analytics: widget.analytics)));
+                        },
+                        child: ListTile(
+                          leading: Icon(
+                            Icons.info,
+                            color: Colors.orangeAccent,
+                          ),
+                          title: Text("About Nokanda"),
+                        ),
                       ),
 
                       GestureDetector(
@@ -184,10 +223,6 @@ class _SettingsState extends State<Settings> {
                           // ),),
                         ),
                       ),
-//                      SizedBox(
-//                        height: MediaQuery.of(context).size.height * 0.2,
-//                      ),
-                      Expanded(flex: 1,child: Container(),),
                      Align(
                        alignment: Alignment.bottomCenter,
                        child:  Padding(
@@ -208,14 +243,6 @@ class _SettingsState extends State<Settings> {
           )),
     );
   }
-  Future<void> share(text, url) async {
-    await FlutterShare.share(
-        title: 'Nokanda App',
-        text: '$text',
-        linkUrl: '$url',
-        chooserTitle: 'Share Nokanda App'
-    );
-  }
 
   _sendEmail(String email) async {
     String url = 'mailto:$email?subject=Contact%20message%20from%20Nokanda%20App';
@@ -226,6 +253,24 @@ class _SettingsState extends State<Settings> {
     }
   }
 
-}
+  reactiveDialog(){
+    Platform.isIOS ?
+        showCupertinoDialog(context: context, builder: (context) => CupertinoAlertDialog(
+          content: ChooseLanguage(languageList: languageList,),
+          actions: <Widget>[
+            CupertinoButton(child: Text("Close"), onPressed: (){
+              Navigator.pop(context);
+            })
+          ],
+        ))
+        :
+    showDialog(context: context, builder: (context)=> AlertDialog(
+      title: Text("Select Language", style: TextStyle(
+          color: Colors.orange
+      ),),
 
-//"Android : \nhttps://play.google.com/store/apps/details?id=com.hexakomb.nokanda \niOS: \nhttps://bit.ly/nokandaios"
+      content: ChooseLanguage(languageList: languageList,),
+    ));
+  }
+
+}

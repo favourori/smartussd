@@ -3,14 +3,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
-import 'package:kene/control.dart';
 import 'package:kene/database/db.dart';
-import 'package:kene/widgets/custom_nav.dart';
+import 'package:kene/utils/functions.dart';
 
 class SaveAccount extends StatefulWidget {
   final String label;
+  final analytics;
 
-  SaveAccount({this.label});
+  SaveAccount({this.label, this.analytics});
   @override
   State<StatefulWidget> createState() {
     return _SaveAccountState();
@@ -28,6 +28,11 @@ class _SaveAccountState extends State<SaveAccount> {
   @override
   void initState() {
     super.initState();
+
+    // Send analytics on page load/initialize
+    sendAnalytics(widget.analytics, "AccountPage_Open", null);
+
+
     FirebaseAuth.instance.currentUser().then((u) {
       setState(() {
         if (u != null) {

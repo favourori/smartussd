@@ -1,9 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:kene/auth/signin.dart';
 import 'package:kene/pages/cariers.dart';
 import 'package:kene/pages/welcome.dart';
+import 'package:kene/utils/functions.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Control extends StatefulWidget {
@@ -17,13 +17,12 @@ class Control extends StatefulWidget {
 }
 
 class _ControlState extends State<Control> {
-  bool isLogedIn = false;
+  bool isLoggedIn = false;
 
 
   SharedPreferences prefs;
-
-  
   @override
+
   void initState() {
     super.initState();
 
@@ -31,8 +30,11 @@ class _ControlState extends State<Control> {
     FirebaseAuth.instance.currentUser().then((user) {
       if (user != null) {
         setState(() {
-          isLogedIn = true;
+          isLoggedIn = true;
         });
+
+
+        getLocale(context); // Set the locale
 
          SharedPreferences.getInstance().then((f){
       f.setBool("isFirstLogin", false);
@@ -56,7 +58,7 @@ class _ControlState extends State<Control> {
 
   @override
   Widget build(BuildContext context) {
-    return prefs != null && prefs.getBool("isFirstLogin")  ? Welcome()  : isLogedIn ? Carriers(analytics: widget.analytics,) : Signin();
+    return prefs != null && prefs.getBool("isFirstLogin")  ? Welcome()  : isLoggedIn ? Carriers(analytics: widget.analytics,) : Signin();
   }
 }
 

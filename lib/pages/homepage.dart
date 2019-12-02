@@ -29,12 +29,12 @@ class _HomepageState extends State<Homepage> with SingleTickerProviderStateMixin
     );
   }
 
-  Future<Null> _currentScreen() async{
-       await widget.analytics.setCurrentScreen(
-         screenName:"Homepage",
-         screenClassOveride:"HomePage"
-       );
-  }
+//  Future<Null> _currentScreen() async{
+//       await widget.analytics.setCurrentScreen(
+//         screenName:"Homepage",
+//         screenClassOveride:"HomePage"
+//       );
+//  }
 
   @override
   initState(){
