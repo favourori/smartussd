@@ -20,7 +20,7 @@ class ServiceItem extends StatefulWidget{
   final hasChildren;
   final parentID;
   final nameMap;
-
+  final primaryColor;
 
   //
   // Operations done and sent to parent
@@ -29,7 +29,7 @@ class ServiceItem extends StatefulWidget{
   final serviceActions;
 
 
-  ServiceItem({this.backgroundColor, this.label, this.nameMap, this.needsContact, this.requiresInput,
+  ServiceItem({this.backgroundColor, this.primaryColor, this.label, this.nameMap, this.needsContact, this.requiresInput,
     this.needsRecipient, this.codeToSend, this.recipientLabel, this.canSaveLabels, this.needsAmount,
     this.requiresCamera, this.hasChildren, this.serviceDescription, this.parentID, this.icon, this.name,
     this.serviceActions});
@@ -152,17 +152,23 @@ class _ServiceItemState extends State<ServiceItem>{
                 ),
                 Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: ListView(
-                      shrinkWrap: true,
-                      scrollDirection: Axis.horizontal,
-                      children: <Widget>[
-                        widget.nameMap == null
+                    padding: const EdgeInsets.symmetric(horizontal:10.0, vertical: 3),
+                    child: widget.nameMap == null
                             ? Text(widget.name)
-                            : Text(widget.nameMap[locale])
+                            : Text(widget.nameMap[locale], style: TextStyle(
+                              fontWeight: FontWeight.w200
+                            ),)
+                    
+                    // ListView(
+                    //   shrinkWrap: true,
+                    //   scrollDirection: Axis.horizontal,
+                    //   children: <Widget>[
+                    //     widget.nameMap == null
+                    //         ? Text(widget.name)
+                    //         : Text(widget.nameMap[locale])
 
-                      ],
-                    ),
+                    //   ],
+                    // ),
                   ),
                 ),
                 (widget.hasChildren != null && widget.hasChildren) || (widget.requiresInput != null && widget.requiresInput)
@@ -171,7 +177,7 @@ class _ServiceItemState extends State<ServiceItem>{
                   child: Icon(
                     Icons.arrow_forward_ios,
                     size: 25,
-                    color: Colors.grey,
+                    color: widget.primaryColor,
                   ),
                 )
                     : Text(""),

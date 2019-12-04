@@ -7,11 +7,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:kene/database/db.dart';
 import 'package:kene/utils/functions.dart';
 import 'package:kene/widgets/adaptive_dialog.dart';
 import 'package:kene/widgets/bloc_provider.dart';
 import 'package:native_contact_picker/native_contact_picker.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
+import 'package:flutter/cupertino.dart';
 
 
 
@@ -53,9 +55,15 @@ class _InputContainerState extends State<InputActionContainer> with TickerProvid
 
   List<dynamic> savedAccounts = [];
 
-
+  KDB db = KDB();
+  
   var _currencyController = new TextEditingController();
 
+
+  var _labelFormKey = GlobalKey<FormState>();
+
+
+  TextEditingController _labelController = TextEditingController();
 
   _amountListener(){
 
@@ -186,12 +194,19 @@ class _InputContainerState extends State<InputActionContainer> with TickerProvid
                 flex: 2,
                 child: GestureDetector(
                   onTap: () {
+
+                    print("recipient is ");
+                    print(_recipientController.text);
                     if ((serviceData['canSaveLabels'] != null && serviceData['canSaveLabels']) &&
                         numberNotInSavedAccounts(
                             _recipientController.text)) {
+                              print("here 11");
 //                      bool response = false;
-                      AdaptiveDialog(serviceData: serviceData, recipientController: _recipientController);
+                      // AdaptiveDialog(serviceData: serviceData, recipientController: _recipientController);
+                      show(context);
+                      print("after dialog");
                     } else {
+                      print("called here");
 
                       // push analytics to Firebase
                       sendAnalytics(widget.analytics,
@@ -558,6 +573,7 @@ class _InputContainerState extends State<InputActionContainer> with TickerProvid
 
 
   getContact() async {
+    print("ger contact called");
     final NativeContactPicker _contactPicker = new NativeContactPicker();
     Contact contact = await _contactPicker.selectContact();
     if (contact != null) {
@@ -574,42 +590,232 @@ class _InputContainerState extends State<InputActionContainer> with TickerProvid
         _recipientController.text = numberToStore;
         _recipientContactName = contact.fullName;
       });
+      print("reachd");
     }
 
+  }
+
+
+  show(context){
+   print("show called");
+    return Platform.isIOS
+        ? showCupertinoDialog(
+        context: context,
+        builder: (context) {
+          return CupertinoAlertDialog(
+            title: Text(
+                "Would you like to save ${serviceData['recipientLabel']} ${_recipientController.text} for future use ?"),
+            content: alertDialogContent(),
+          );
+        })
+        : showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text(
+              "Would you like to save ${serviceData['recipientLabel']} ${_recipientController.text} for future use ?",
+              style: TextStyle(fontSize: 14),
+            ),
+            content: alertDialogContent(),
+          );
+        });
+  }
+
+
+
+  Widget alertDialogContent() {
+    return Row(
+      children: <Widget>[
+        Expanded(
+          flex: 1,
+          child: Platform.isIOS
+              ? CupertinoButton(
+              child: Text("No"), onPressed: () => saveAccountsNoResponse())
+              : IconButton(
+              icon: Icon(
+                Icons.cancel,
+                color: Colors.grey,
+                size: 48,
+              ),
+              onPressed: () {
+                //IF RESPONSE IS NO, POP NAVIGATION AND SUBMIT REQUEST
+                saveAccountsNoResponse();
+              }),
+        ),
+        Expanded(
+          flex: 1,
+          child: Platform.isIOS
+              ? CupertinoButton(child: Text("Yes"), onPressed: () {
+            Navigator.pop(context);
+            showDialogSaveAccountsYesCallback();
+          })
+              : IconButton(
+              icon: Icon(Icons.check_box,
+                  color: Colors.orangeAccent, size: 48),
+              onPressed: () {
+                // POP NAVIGATION, AND OPEN DIALOG TO ENTER LABEL. AFTER SAVE, SEND REQUEST
+
+                Navigator.pop(context);
+
+                showDialogSaveAccountsYesCallback();
+              }),
+        )
+      ],
+    );
+  }
+
+
+  void saveAccountsNoResponse() {
+    Navigator.pop(context);
+   sendAnalytics(widget.analytics, serviceData['label'] + "_submit", null);
+   sendCode(platform, serviceData['code'], _amountController.text,
+       _recipientController.text, context);
+  }
+
+  Future showDialogSaveAccountsYesCallback() {
+    return Platform.isIOS
+        ? showCupertinoDialog(
+        context: context,
+        builder: (context) {
+          return CupertinoAlertDialog(
+            content: showDialogSaveAccountsYesCallbackContent(context),
+          );
+        })
+        : showDialog(
+//                                        barrierDismissible: false,
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            content: showDialogSaveAccountsYesCallbackContent(context),
+          );
+        });
+  }
+
+  showDialogSaveAccountsYesCallbackContent(context) {
+    return Form(
+        key: _labelFormKey,
+        child: Container(
+          height: 160,
+          child: Column(
+            children: <Widget>[
+              Platform.isIOS ?
+              CupertinoTextField(
+                prefix: Text("Enter a name"),
+                padding: EdgeInsets.all(15),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(3),
+                    border: Border.all()
+                ),
+                controller: _labelController,
+
+              )
+                  :
+              TextFormField(
+                decoration: InputDecoration(labelText: "Enter a name"),
+                controller: _labelController,
+                validator: (v) => v.isEmpty ? "Label can't be empty" : null,
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Container(
+                height: 48,
+                width: double.infinity,
+                child:
+
+                Platform.isIOS ?
+
+                CupertinoButton.filled(child: Text("Save"), onPressed: (){
+
+                  Navigator.pop(context);
+                  saveAccountsAction(context);
+                })
+                    :
+
+                RaisedButton(
+                  color: Colors.orangeAccent,
+                  // ignore: missing_return
+                  onPressed: () {
+                    // ignore: missing_return
+                    // ignore: missing_return
+                    if (_labelFormKey.currentState.validate()) {
+                      Navigator.pop(context);
+                      saveAccountsAction(context);
+                    }
+                  },
+                  child: Text(
+                    "Save",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              )
+            ],
+          ),
+        ));
+  }
+
+  saveAccountsAction(context) {
+    if(_labelController.text.isNotEmpty){  //checking for ios versions, since there's no validator for text fields
+      Map<String, dynamic> data = {
+        "label": _labelController.text,
+        "number": _recipientController.text,
+        "service_name": serviceData['label']
+      };
+
+      var res = db.firestoreAdd("accounts/$uid/data", data);
+      setState(() {
+        _labelController.text = "";
+      });
+
+      if (res == 1) {
+        return Platform.isIOS ?
+
+        showCupertinoDialog(context: context, builder: (context){
+          return CupertinoAlertDialog(
+            content: Text("Account saved"),
+            actions: <Widget>[
+              CupertinoButton(child: Text("Okay"), onPressed: (){
+                Navigator.pop(context);
+               sendAnalytics(widget.analytics,
+                   serviceData['label'] + "_submit", null);
+               sendCode(
+                   platform,
+                   serviceData['code'],
+                   _amountController.text,
+                   _recipientController.text, context);
+              })
+            ],
+          );
+        })
+
+            :
+        showDialog(
+            barrierDismissible: false,
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                content: Text("Account saved"),
+                actions: <Widget>[
+                  FlatButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+sendAnalytics(widget.analytics,
+                   serviceData['label'] + "_submit", null);
+               sendCode(
+                   platform,
+                   serviceData['code'],
+                   _amountController.text,
+                   _recipientController.text, context);
+                    },
+                    child: Text("Okay"),
+                  ),
+                ],
+              );
+            });
+      }
+    }
   }
 
 }
 
 
-
-//class CurrencyController extends TextEditingController{
-//  CurrencyController(){
-//    this.addListener((){
-//      this.updateText(this.text);
-////      this.afterChange();
-//
-//    });
-//
-//    this.updateText(this.text);
-//  }
-//
-//
-//  updateText(String text){
-//    print(this.text);
-//
-//    if(this.text.isNotEmpty){
-//
-//      this.text =  "";
-//    }
-//    }
-//    this.selection = new TextSelection.fromPosition(
-//        new TextPosition(offset: this.text.length));
-//  }
-//
-//
-//  String _applyMask(String value) {
-//    return value+",";
-//  }
-//
-//   Function afterChange = (){};
-//  }

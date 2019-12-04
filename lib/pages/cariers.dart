@@ -2,15 +2,17 @@ import 'dart:io';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:kene/components/loader.dart';
+import 'package:kene/pages/receive.dart';
 import 'package:kene/pages/services.dart';
 import 'package:kene/pages/settings.dart';
 import 'package:kene/utils/functions.dart';
 import 'package:kene/widgets/custom_nav.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-
+import 'package:qr_flutter/qr_flutter.dart';
 
 
 class Carriers extends StatefulWidget {
@@ -29,7 +31,8 @@ class Carriers extends StatefulWidget {
 class _CarriersState extends State<Carriers> {
 
 
-bool isOlderVersion;
+  bool isOlderVersion;
+  var _qrScan;
 
   final FirebaseMessaging _fireBaseMessaging = FirebaseMessaging();
   ScrollController _scrollController;
@@ -48,7 +51,17 @@ bool isOlderVersion;
   void initState() {
     super.initState();
 
-
+    FirebaseAuth.instance.currentUser().then((f){ // Set the logged in phone number as qrCode data
+      if(f != null){
+        setState(() {
+          _qrScan = QrImage(
+            data: f.phoneNumber.toString(),
+            version: QrVersions.auto,
+            size: 200.0,
+          );
+        });
+      }
+    });
     // Scroll controller for listView
     _scrollController = ScrollController(initialScrollOffset: 0.0);
     _scrollController.addListener(listener);
@@ -102,6 +115,59 @@ bool isOlderVersion;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Color(0xfff6f7f9),
+        child: Icon(Icons.favorite, size: 30, color: Colors.orangeAccent,),
+        onPressed: (){},
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
+      bottomNavigationBar: BottomAppBar(
+        shape: CircularNotchedRectangle(),
+        color: Colors.orangeAccent,
+        elevation: 14,
+        child: Container(
+          height: 50,
+          child: Row(
+          children: <Widget>[
+            Expanded(
+              flex: 2,
+            child: GestureDetector(
+              onTap: (){},
+              child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Icon(Icons.home, color: Colors.white,),
+                // Text("Home", style: TextStyle(
+                //   color: Colors.white, fontWeight: FontWeight.bold
+                // ),)
+              ],
+            ),
+            )),
+
+
+             Expanded(
+              flex: 2,
+            child: GestureDetector(
+              onTap: (){},
+              child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Icon(Icons.more_vert, color: Colors.white,),
+                // Text("More", style: TextStyle(
+                //   color: Colors.white, fontWeight: FontWeight.bold
+                // ),)
+              ],
+            ),
+            )),
+
+            // Expanded(
+            //   flex: 2,
+            //   child: Container(),
+            // )
+
+          ],
+        ),
+        ),      ),
       body:
           NestedScrollView(
             controller: _scrollController,
@@ -184,12 +250,14 @@ bool isOlderVersion;
                   top: 0,
                   // MediaQuery.of(context).size.height * 0.35,
                   child: Padding(
-                    padding: const EdgeInsets.all(20.0),
+                    padding: const EdgeInsets.symmetric(vertical:20.0),
                     child: Container(
-                      width: MediaQuery.of(context).size.width - 40,
+                      width: MediaQuery.of(context).size.width,
                       height: MediaQuery.of(context).size.height * 0.72,
                       decoration: BoxDecoration(
-                          color: Color(0xffE3E1E1),
+                          color: Colors.white,
+                          
+                          // Color(0xffE3E1E1),
                           borderRadius: BorderRadius.circular(40)),
                       child: Padding(
                         padding: const EdgeInsets.all(20.0),
@@ -207,21 +275,54 @@ bool isOlderVersion;
                                     getServiceOrderNo(a)
                                         .compareTo(getServiceOrderNo(b)));
                             return !isOlderVersion
-                                ? ListView.builder(
-                              itemCount: snapshot.data.documents.length,
-                              itemBuilder: (context, index) {
-                                return snapshot.data.documents[index]
-                                ['isActive']
-                                    ?
-                                CarriersItem(
-                                  carrierID: snapshot.data.documents[index].documentID,
-                                  label: snapshot.data.documents[index]['label'],
-                                  analytics: widget.analytics,
-                                  color: snapshot.data.documents[index]['primaryColor'],
-                                  icon: snapshot.data.documents[index]['icon'],)
-                                    : Container();
-                              },
-                            )
+                                ? 
+                              //   Column(
+                              // children: <Widget>[
+
+                                GridView.count(
+                                  
+                                  shrinkWrap: true,
+                                  children: getActiveCariers(snapshot.data.documents), 
+                                  crossAxisCount: 2,
+                                  crossAxisSpacing: 10,
+                                  mainAxisSpacing: 10,
+                                )
+                                // ListView.builder(
+                                //   shrinkWrap: true,
+                                //   itemCount: snapshot.data.documents.length,
+                                //   itemBuilder: (context, index) {
+                                //     return snapshot.data.documents[index]
+                                //     ['isActive']
+                                //         ?
+                                //     CarriersItem(
+                                //       isReceiveButton: false,
+                                //       carrierID: snapshot.data.documents[index].documentID,
+                                //       label: snapshot.data.documents[index]['label'],
+                                //       analytics: widget.analytics,
+                                //       color: snapshot.data.documents[index]['primaryColor'],
+                                //       icon: snapshot.data.documents[index]['icon'],
+                                //       qrScan: _qrScan,
+                                //     )
+                                //         : Container();
+                                //   },
+                                // ),
+
+                                // _qrScan != null ?
+
+                                //     GestureDetector(
+                                //       onTap: (){},
+                                //       child: CarriersItem(
+                                //         isReceiveButton: true,
+                                //         icon: "",
+                                //         label: "Receive Payment",
+                                //         qrScan: _qrScan,
+                                //       ),
+                                //     )
+                                //     :
+                                //     Container()
+
+                            //   ],
+                            // )
                                 : Container(
                               child: StreamBuilder(
                                   stream: Firestore.instance.collection("settings").where("label", isEqualTo:"versioning" ).snapshots(),
@@ -274,6 +375,131 @@ bool isOlderVersion;
     );
   }
 
+getActiveCariers(list){
+  List<Widget> tmp = [];
+
+  // tmp.add(Text("ni"));
+
+  
+  for(int i = 0; i < list.length; i++){
+  if(list[i]['isActive']){
+    tmp.add(
+
+      GestureDetector(
+        onTap: (){
+          
+          print("tappeddd");
+         Navigator.push(context,  CustomPageRoute(
+                    navigateTo: Services(
+                      carrierId:list[i].documentID,
+                      primaryColor: Color(list[i]['primaryColor']),
+                      carrierTitle: list[i]['label'],
+                      analytics: widget.analytics,
+                    )
+                ));
+        },
+        child:
+      Container(
+        // height: 200,
+        padding: EdgeInsets.symmetric(horizontal:10),
+        decoration: BoxDecoration(
+          color: Color(0xfff6f7f9),
+          // border: Border.all(color: Colors.blue),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Center(child:Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+          SizedBox(
+                    height: 60,
+                    width: 60,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: CachedNetworkImage(
+                        fit: BoxFit.cover,
+                        imageUrl: list[i]['icon'],
+                        placeholder: (context, url) => new Icon(
+                          Icons.album,
+                          size: 40,
+                        ),
+                        errorWidget: (context, url, error) => new Icon(
+                          Icons.album,
+                          size: 40,
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+          Text("${list[i]['label']}", textAlign: TextAlign.center,)
+        ],),
+      ))
+      )
+    );
+  }
+  }
+
+  tmp.add(
+    GestureDetector(
+        onTap: (){
+          
+        //   print("tappeddd");
+        //  Navigator.push(context,  CustomPageRoute(
+        //             navigateTo: Services(
+        //               carrierId:list[i].documentID,
+        //               primaryColor: Color(list[i]['primaryColor']),
+        //               carrierTitle: list[i]['label'],
+        //               analytics: widget.analytics,
+        //             )
+        //         ));
+        },
+        child:
+      Container(
+        // height: 200,
+        padding: EdgeInsets.symmetric(horizontal:10),
+        decoration: BoxDecoration(
+          color: Color(0xfff6f7f9),
+          // border: Border.all(color: Colors.blue),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Center(child:Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+          SizedBox(
+                    height: 60,
+                    width: 60,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: CachedNetworkImage(
+                        fit: BoxFit.cover,
+                        imageUrl: "",
+                        placeholder: (context, url) => new Icon(
+                          Icons.favorite,
+                          size: 60,
+                          color: Colors.orangeAccent,
+                        ),
+                        errorWidget: (context, url, error) => new Icon(
+                          Icons.favorite,
+                          size: 60,
+                          color: Colors.orangeAccent,
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+          Text("Favourites", textAlign: TextAlign.center,)
+        ],),
+      ))
+      )
+  );
+
+  return tmp;
+}
+
+
   int getServiceOrderNo(x) {
     return x['orderNo'];
   }
@@ -287,13 +513,15 @@ bool isOlderVersion;
 
 /// A class for carrierItems
 class CarriersItem extends StatefulWidget{
+  final isReceiveButton;
   final label;
   final color;
   final carrierID;
   final icon;
   final analytics;
+  final qrScan;
 
-  CarriersItem({this.label, this.analytics, this.icon, this.carrierID, this.color});
+  CarriersItem({this.label, this.analytics, this.qrScan, this.icon, this.carrierID, this.isReceiveButton, this.color});
 
   @override
   _CarriersItemState createState() => _CarriersItemState();
@@ -314,12 +542,16 @@ class _CarriersItemState extends State<CarriersItem> {
             Navigator.push(
                 context,
                 CustomPageRoute(
-                    navigateTo: Services(
+                    navigateTo: !widget.isReceiveButton ? Services(
                       carrierId: widget.carrierID,
                       primaryColor: Color(widget.color),
                       carrierTitle: widget.label,
                       analytics: widget.analytics,
-                    ))).then((d){
+                    ):
+                    ReceivePage(qrImage: widget.qrScan,)
+                )
+
+            ).then((d){
                       setState(() {
                         isBtnClicked = false;
                       });

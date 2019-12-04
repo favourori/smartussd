@@ -19,7 +19,8 @@ class AdaptiveDialog extends StatefulWidget {
 class _AdaptiveDialogState extends State<AdaptiveDialog>{
   @override
   build(context){
-    return Container();
+    print("build called");
+    return show(context);
   }
 
   KDB db = KDB();
@@ -42,7 +43,8 @@ class _AdaptiveDialogState extends State<AdaptiveDialog>{
 
   TextEditingController _labelController = TextEditingController();
 
-  Future show(context){
+ show(context){
+   print("show called");
     return Platform.isIOS
         ? showCupertinoDialog(
         context: context,
