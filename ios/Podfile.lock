@@ -300,6 +300,8 @@ PODS:
   - FirebaseMLVisionTextModel (0.19.0):
     - FirebaseMLVision (~> 0.19)
   - Flutter (1.0.0)
+  - flutter_barcode_scanner (0.1.7):
+    - Flutter
   - flutter_share (0.0.1):
     - Flutter
   - FMDB (2.7.5):
@@ -406,6 +408,7 @@ DEPENDENCIES:
   - firebase_messaging (from `.symlinks/plugins/firebase_messaging/ios`)
   - firebase_ml_vision (from `.symlinks/plugins/firebase_ml_vision/ios`)
   - Flutter (from `.symlinks/flutter/ios`)
+  - flutter_barcode_scanner (from `.symlinks/plugins/flutter_barcode_scanner/ios`)
   - flutter_share (from `.symlinks/plugins/flutter_share/ios`)
   - image_picker (from `.symlinks/plugins/image_picker/ios`)
   - native_contact_picker (from `.symlinks/plugins/native_contact_picker/ios`)
@@ -465,6 +468,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/firebase_ml_vision/ios"
   Flutter:
     :path: ".symlinks/flutter/ios"
+  flutter_barcode_scanner:
+    :path: ".symlinks/plugins/flutter_barcode_scanner/ios"
   flutter_share:
     :path: ".symlinks/plugins/flutter_share/ios"
   image_picker:
@@ -491,7 +496,7 @@ SPEC CHECKSUMS:
   firebase_auth: 45f6476560c372649eba5980c58f0783b527d04f
   firebase_core: b3b02d0b5e9d01aab5e50ba7cbcf84c73cb6883c
   firebase_messaging: 0d5c04cc40f58bd4bf7f2992c91050f9bc01bec3
-  firebase_ml_vision: d09b1eb3c242cf8124db4d51c0927376e3dbd9f4
+  firebase_ml_vision: e375046a4edc975d93abd164bcae2c7b5bde03e2
   FirebaseAnalytics: 45f36d9c429fc91d206283900ab75390cd05ee8a
   FirebaseAnalyticsInterop: d48b6ab67bcf016a05e55b71fc39c61c0cb6b7f3
   FirebaseAuth: 7d0f84873926f6648bbd1391a318dfb1a26b5e4f
@@ -509,6 +514,7 @@ SPEC CHECKSUMS:
   FirebaseMLVisionLabelModel: 7638a20d27219d5baa4b534a62375fc1d5bd077d
   FirebaseMLVisionTextModel: c264caa3100ca804580bf2a7c1cb9ff390d1f471
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
+  flutter_barcode_scanner: c7d23c65b4866f5eaaa1cce1da8d2d1669b57800
   flutter_share: 4be0208963c60b537e6255ed2ce1faae61cd9ac2
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   GoogleAPIClientForREST: 4acfffd77f1c3c8741b6be9eaed0e603278efbde

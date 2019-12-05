@@ -11,7 +11,7 @@ import 'package:kene/utils/functions.dart';
 import 'package:kene/widgets/adaptive_dialog.dart';
 import 'package:kene/widgets/bloc_provider.dart';
 import 'package:native_contact_picker/native_contact_picker.dart';
-import 'package:flutter_masked_text/flutter_masked_text.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 
 
 
@@ -57,6 +57,90 @@ class _InputContainerState extends State<InputActionContainer> with TickerProvid
   var _currencyController = new TextEditingController();
 
 
+  _scanBarCode() async{
+
+
+    String barcodeScanRes = await FlutterBarcodeScanner.scanBarcode("#ff6666", "Cancel", false, ScanMode.DEFAULT);
+    print(barcodeScanRes);
+
+
+//    String barcodeScanRes = await FlutterBarcodeScanner.scanBarcode("#ff6666", "Cancel", false, ScanMode.DEFAULT);
+//    print("scanned string is");
+//    print(barcodeScanRes);
+//    setState(() {
+//      _recipientController.text = barcodeScanRes;
+//    });
+
+//    File image = await ImagePicker.pickImage(source: ImageSource.camera);
+//
+//    final BarcodeDetector barcodeDetector = FirebaseVision.instance.barcodeDetector();
+//
+//    final FirebaseVisionImage visionImage = FirebaseVisionImage.fromFile(image);
+//
+//    final List<Barcode> barcodes = await barcodeDetector.detectInImage(visionImage);
+//
+//
+//
+//
+//    for (Barcode barcode in barcodes) {
+//      print(barcode.rawValue);
+//       var boundingBox = barcode.boundingBox;
+//      var cornerPoints = barcode.cornerPoints;
+//
+//      final String rawValue = barcode.rawValue;
+//
+//      final BarcodeValueType valueType = barcode.valueType;
+//
+//      // See API reference for complete list of supported types
+//      switch (valueType) {
+//        case BarcodeValueType.wifi:
+//          final String ssid = barcode.wifi.ssid;
+//          final String password = barcode.wifi.password;
+//          final BarcodeWiFiEncryptionType type = barcode.wifi.encryptionType;
+//          break;
+//        case BarcodeValueType.url:
+//          final String title = barcode.url.title;
+//          final String url = barcode.url.url;
+//          break;
+//        case BarcodeValueType.unknown:
+//          // TODO: Handle this case.
+//          break;
+//        case BarcodeValueType.contactInfo:
+//          // TODO: Handle this case.
+//          break;
+//        case BarcodeValueType.email:
+//          // TODO: Handle this case.
+//          break;
+//        case BarcodeValueType.isbn:
+//          // TODO: Handle this case.
+//          break;
+//        case BarcodeValueType.phone:
+//          // TODO: Handle this case.
+//          break;
+//        case BarcodeValueType.product:
+//          // TODO: Handle this case.
+//          break;
+//        case BarcodeValueType.sms:
+//          // TODO: Handle this case.
+//          break;
+//        case BarcodeValueType.text:
+//          // TODO: Handle this case.
+//          print(barcode);
+//          break;
+//        case BarcodeValueType.geographicCoordinates:
+//          // TODO: Handle this case.
+//          break;
+//        case BarcodeValueType.calendarEvent:
+//          // TODO: Handle this case.
+//          break;
+//        case BarcodeValueType.driverLicense:
+//          // TODO: Handle this case.
+//          break;
+//      }
+//    }
+
+  }
+
   _amountListener(){
 
 //    if(_amountController.text.length > 3){
@@ -82,6 +166,8 @@ class _InputContainerState extends State<InputActionContainer> with TickerProvid
   void initState() {
     super.initState();
 
+
+    _scanBarCode();
     appBloc = BlocProvider.of(context);
     appBloc.serviceDataOut.listen((dataFromStream){
      if(mounted){ //avoid setting state after this component is unmounted
@@ -323,6 +409,49 @@ class _InputContainerState extends State<InputActionContainer> with TickerProvid
     );
   }
 
+
+  GestureDetector openScanner(label) {
+    return GestureDetector(
+      onTap: () {
+        _scanBarCode();
+      },
+      child: Container(
+        // height: 58,
+        width: MediaQuery.of(context).size.width,
+
+        child: Column(
+          children: <Widget>[
+            SizedBox(
+              height: 10,
+            ),
+            Container(
+              height: 58,
+              decoration: BoxDecoration(
+                  color: widget.primaryColor,
+                  // Color(0xffED7937),
+                  borderRadius: BorderRadius.circular(40)),
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Icon(
+                      Icons.perm_identity,
+                      color: Colors.white,
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Text(
+                      "Scan Code",
+                      style: TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.bold),
+                    ),
+                  ]),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
   GestureDetector chooseContactBtn(label) {
     return GestureDetector(

@@ -40,6 +40,8 @@
             </intent-filter>
         </activity>
 
+        <activity android:name="com.apptreesoftware.barcodescan.BarcodeScannerActivity"/>
+
         <service android:name=".USSDService"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
             <intent-filter>
