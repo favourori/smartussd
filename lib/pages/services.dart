@@ -550,6 +550,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
             parentID: list.documentID,
             serviceActions: serviceActions,
             primaryColor:widget.primaryColor,
+            needsScan: list["needsScan"],
           ),
         );
       } else {
@@ -573,6 +574,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
             parentID: list.documentID,
             serviceActions: serviceActions,
             primaryColor: widget.primaryColor,
+            needsScan: list["needsScan"],
           ),
         );
       }

@@ -21,6 +21,7 @@ class ServiceItem extends StatefulWidget{
   final parentID;
   final nameMap;
   final primaryColor;
+  final needsScan;
 
   //
   // Operations done and sent to parent
@@ -29,7 +30,7 @@ class ServiceItem extends StatefulWidget{
   final serviceActions;
 
 
-  ServiceItem({this.backgroundColor, this.primaryColor, this.label, this.nameMap, this.needsContact, this.requiresInput,
+  ServiceItem({this.backgroundColor, this.needsScan, this.primaryColor, this.label, this.nameMap, this.needsContact, this.requiresInput,
     this.needsRecipient, this.codeToSend, this.recipientLabel, this.canSaveLabels, this.needsAmount,
     this.requiresCamera, this.hasChildren, this.serviceDescription, this.parentID, this.icon, this.name,
     this.serviceActions});
@@ -105,6 +106,7 @@ class _ServiceItemState extends State<ServiceItem>{
                 "serviceDescription":widget.serviceDescription,
                 "hasChildren":widget.hasChildren,
                 "parentID":widget.parentID,
+                "needsScan": widget.needsScan,
               };
               appBloc.serviceDataIn(data);
 

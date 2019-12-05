@@ -70,8 +70,6 @@ class _InputContainerState extends State<InputActionContainer> with TickerProvid
       _recipientController.text = barcodeScanRes.substring(3, len);  // Trim the country code out
     });
 
-    sendAnalytics(widget.analytics,
-        widget.carrierTitle + "_" + serviceData['label'] + "_submit", null);
 
 
   }
@@ -116,7 +114,7 @@ class _InputContainerState extends State<InputActionContainer> with TickerProvid
      }
     });
 
-    _amountController.addListener(_amountListener);
+//    _amountController.addListener(_amountListener);
     _recipientController.addListener(_recipientControllerListener);
 
     FirebaseAuth.instance.currentUser().then((u) {  //setting the uid
@@ -138,10 +136,10 @@ class _InputContainerState extends State<InputActionContainer> with TickerProvid
         child: Column(
           children: <Widget>[
             serviceData['needsAmount'] == null || serviceData['needsAmount'] ?  // show amount if needed
-                 textInputContainerAmount("Amount", _currencyController)
+                 textInputContainerAmount("Amount", _amountController)
                 : Container(),
             SizedBox(
-              height: 10,
+              height:30,
             ),
         Row(
           children: <Widget>[
@@ -153,10 +151,10 @@ class _InputContainerState extends State<InputActionContainer> with TickerProvid
 
             SizedBox(width: 5,),// how contact if needed
 
-            Expanded(
+      serviceData['needsScan'] != null && serviceData['needsScan'] ?  Expanded(
               flex: 1,
-              child: scanBardCodeContainer(),
-            )
+              child:  scanBardCodeContainer(),
+            )  : Container()
           ],
         ),
 
@@ -225,19 +223,15 @@ class _InputContainerState extends State<InputActionContainer> with TickerProvid
                 flex: 2,
                 child: GestureDetector(
                   onTap: () {
-
-                    print("recipient is ");
-                    print(_recipientController.text);
+                    print("submit button clicked");
+                    print(_amountController.text);
                     if ((serviceData['canSaveLabels'] != null && serviceData['canSaveLabels']) &&
                         numberNotInSavedAccounts(
                             _recipientController.text)) {
-                              print("here 11");
 //                      bool response = false;
                       // AdaptiveDialog(serviceData: serviceData, recipientController: _recipientController);
                       show(context);
-                      print("after dialog");
                     } else {
-                      print("called here");
 
                       // push analytics to Firebase
                       sendAnalytics(widget.analytics,
