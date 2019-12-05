@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -323,7 +324,7 @@ class _MtnOptionsState extends State<MtnOptions> with TickerProviderStateMixin {
                     children: [
                       TextFormField(
                         controller: _inputController,
-                        keyboardType: TextInputType.number,
+                        keyboardType: Platform.isAndroid ? TextInputType.number: TextInputType.text,
                         obscureText: true,
                         decoration: InputDecoration(
                             labelText: "Enter mobile money pin",
@@ -424,7 +425,7 @@ class _MtnOptionsState extends State<MtnOptions> with TickerProviderStateMixin {
                         child: Column(children: [
                           TextFormField(
                             controller: _inputController,
-                            keyboardType: TextInputType.number,
+                            keyboardType: Platform.isAndroid ? TextInputType.number: TextInputType.text,
                             // obscureText: true,
                             decoration: InputDecoration(
                                 labelText: "Enter number",
@@ -532,7 +533,7 @@ class _MtnOptionsState extends State<MtnOptions> with TickerProviderStateMixin {
                         child: Column(children: [
                           TextFormField(
                             controller: _inputController,
-                            keyboardType: TextInputType.number,
+                            keyboardType:Platform.isAndroid ? TextInputType.number: TextInputType.text,
                             // obscureText: true,
                             decoration: InputDecoration(
                                 labelText: "Enter amount",
@@ -643,7 +644,7 @@ class _MtnOptionsState extends State<MtnOptions> with TickerProviderStateMixin {
                         child: Column(children: [
                           TextFormField(
                             controller: _inputController,
-                            keyboardType: TextInputType.number,
+                            keyboardType:Platform.isAndroid ? TextInputType.number: TextInputType.text,
                             // obscureText: true,
                             decoration: InputDecoration(
                                 labelText: "Enter number",
@@ -751,7 +752,7 @@ class _MtnOptionsState extends State<MtnOptions> with TickerProviderStateMixin {
                         child: Column(children: [
                           TextFormField(
                             controller: _inputController,
-                            keyboardType: TextInputType.number,
+                            keyboardType: Platform.isAndroid ? TextInputType.number: TextInputType.text,
                             // obscureText: true,
                             decoration: InputDecoration(
                                 labelText: "Enter amount",
@@ -948,7 +949,7 @@ class _MtnOptionsState extends State<MtnOptions> with TickerProviderStateMixin {
                         child: Column(children: [
                           TextFormField(
                             controller: _inputController,
-                            keyboardType: TextInputType.number,
+                            keyboardType: Platform.isAndroid ? TextInputType.number: TextInputType.text,
                             // obscureText: true,
                             decoration: InputDecoration(
                                 labelText: "Enter amount",
@@ -1059,7 +1060,7 @@ class _MtnOptionsState extends State<MtnOptions> with TickerProviderStateMixin {
                         child: Column(children: [
                           TextFormField(
                             controller: _inputController,
-                            keyboardType: TextInputType.number,
+                            keyboardType: Platform.isAndroid ? TextInputType.number: TextInputType.text,
                             // obscureText: true,
                             decoration: InputDecoration(
                                 labelText: "Enter meter number",
@@ -1175,7 +1176,7 @@ class _MtnOptionsState extends State<MtnOptions> with TickerProviderStateMixin {
                         child: Column(children: [
                           TextFormField(
                             controller: _inputController,
-                            keyboardType: TextInputType.number,
+                            keyboardType: Platform.isAndroid ? TextInputType.number: TextInputType.text,
                             // obscureText: true,
                             decoration: InputDecoration(
                                 labelText: "Enter amount",

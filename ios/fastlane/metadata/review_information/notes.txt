@@ -1,0 +1,1 @@
+This app is intended only for ios devices with a phone.  Ipad and ipod are not supported. 

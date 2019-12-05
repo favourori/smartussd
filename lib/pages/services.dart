@@ -416,15 +416,16 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                     Positioned(
                       top: 0,
                       child: Padding(
-                        padding: const EdgeInsets.all(20.0),
+                        padding: const EdgeInsets.symmetric(vertical:20.0, horizontal: 0),
                         child: Container(
-                          width: MediaQuery.of(context).size.width - 40,
+                          width: MediaQuery.of(context).size.width,
+                          // MediaQuery.of(context).size.width - 40,
                           height: MediaQuery.of(context).size.height * 0.75,
                           decoration: BoxDecoration(
-                              color: Color(0xffE3E1E1),
+                              color: Color(0xfff6f7f9),
                               borderRadius: BorderRadius.circular(40)),
                           child: Padding(
-                            padding: const EdgeInsets.all(10.0),
+                            padding: const EdgeInsets.all(20.0),
                             child: ListView(
                               controller: _listViewController,
                               children: <Widget>[
@@ -548,6 +549,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
             hasChildren: list['hasChildren'],
             parentID: list.documentID,
             serviceActions: serviceActions,
+            primaryColor:widget.primaryColor,
           ),
         );
       } else {
@@ -570,6 +572,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
             hasChildren: list['hasChildren'],
             parentID: list.documentID,
             serviceActions: serviceActions,
+            primaryColor: widget.primaryColor,
           ),
         );
       }

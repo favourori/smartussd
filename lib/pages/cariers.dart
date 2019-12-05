@@ -115,6 +115,59 @@ class _CarriersState extends State<Carriers> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Color(0xfff6f7f9),
+        child: Icon(Icons.favorite, size: 30, color: Colors.orangeAccent,),
+        onPressed: (){},
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
+      bottomNavigationBar: BottomAppBar(
+        shape: CircularNotchedRectangle(),
+        color: Colors.orangeAccent,
+        elevation: 14,
+        child: Container(
+          height: 50,
+          child: Row(
+          children: <Widget>[
+            Expanded(
+              flex: 2,
+            child: GestureDetector(
+              onTap: (){},
+              child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Icon(Icons.home, color: Colors.white,),
+                // Text("Home", style: TextStyle(
+                //   color: Colors.white, fontWeight: FontWeight.bold
+                // ),)
+              ],
+            ),
+            )),
+
+
+             Expanded(
+              flex: 2,
+            child: GestureDetector(
+              onTap: (){},
+              child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Icon(Icons.more_vert, color: Colors.white,),
+                // Text("More", style: TextStyle(
+                //   color: Colors.white, fontWeight: FontWeight.bold
+                // ),)
+              ],
+            ),
+            )),
+
+            // Expanded(
+            //   flex: 2,
+            //   child: Container(),
+            // )
+
+          ],
+        ),
+        ),      ),
       body:
           NestedScrollView(
             controller: _scrollController,
@@ -197,12 +250,14 @@ class _CarriersState extends State<Carriers> {
                   top: 0,
                   // MediaQuery.of(context).size.height * 0.35,
                   child: Padding(
-                    padding: const EdgeInsets.all(20.0),
+                    padding: const EdgeInsets.symmetric(vertical:20.0),
                     child: Container(
-                      width: MediaQuery.of(context).size.width - 40,
+                      width: MediaQuery.of(context).size.width,
                       height: MediaQuery.of(context).size.height * 0.72,
                       decoration: BoxDecoration(
-                          color: Color(0xffE3E1E1),
+                          color: Colors.white,
+                          
+                          // Color(0xffE3E1E1),
                           borderRadius: BorderRadius.circular(40)),
                       child: Padding(
                         padding: const EdgeInsets.all(20.0),
@@ -220,44 +275,54 @@ class _CarriersState extends State<Carriers> {
                                     getServiceOrderNo(a)
                                         .compareTo(getServiceOrderNo(b)));
                             return !isOlderVersion
-                                ? Column(
-                              children: <Widget>[
-                                ListView.builder(
+                                ? 
+                              //   Column(
+                              // children: <Widget>[
+
+                                GridView.count(
+                                  
                                   shrinkWrap: true,
-                                  itemCount: snapshot.data.documents.length,
-                                  itemBuilder: (context, index) {
-                                    return snapshot.data.documents[index]
-                                    ['isActive']
-                                        ?
-                                    CarriersItem(
-                                      isReceiveButton: false,
-                                      carrierID: snapshot.data.documents[index].documentID,
-                                      label: snapshot.data.documents[index]['label'],
-                                      analytics: widget.analytics,
-                                      color: snapshot.data.documents[index]['primaryColor'],
-                                      icon: snapshot.data.documents[index]['icon'],
-                                      qrScan: _qrScan,
-                                    )
-                                        : Container();
-                                  },
-                                ),
+                                  children: getActiveCarriers(snapshot.data.documents), 
+                                  crossAxisCount: 2,
+                                  crossAxisSpacing: 10,
+                                  mainAxisSpacing: 10,
+                                )
+                                // ListView.builder(
+                                //   shrinkWrap: true,
+                                //   itemCount: snapshot.data.documents.length,
+                                //   itemBuilder: (context, index) {
+                                //     return snapshot.data.documents[index]
+                                //     ['isActive']
+                                //         ?
+                                //     CarriersItem(
+                                //       isReceiveButton: false,
+                                //       carrierID: snapshot.data.documents[index].documentID,
+                                //       label: snapshot.data.documents[index]['label'],
+                                //       analytics: widget.analytics,
+                                //       color: snapshot.data.documents[index]['primaryColor'],
+                                //       icon: snapshot.data.documents[index]['icon'],
+                                //       qrScan: _qrScan,
+                                //     )
+                                //         : Container();
+                                //   },
+                                // ),
 
-                                _qrScan != null ?
+                                // _qrScan != null ?
 
-                                    GestureDetector(
-                                      onTap: (){},
-                                      child: CarriersItem(
-                                        isReceiveButton: true,
-                                        icon: "",
-                                        label: "Receive Payment",
-                                        qrScan: _qrScan,
-                                      ),
-                                    )
-                                    :
-                                    Container()
+                                //     GestureDetector(
+                                //       onTap: (){},
+                                //       child: CarriersItem(
+                                //         isReceiveButton: true,
+                                //         icon: "",
+                                //         label: "Receive Payment",
+                                //         qrScan: _qrScan,
+                                //       ),
+                                //     )
+                                //     :
+                                //     Container()
 
-                              ],
-                            )
+                            //   ],
+                            // )
                                 : Container(
                               child: StreamBuilder(
                                   stream: Firestore.instance.collection("settings").where("label", isEqualTo:"versioning" ).snapshots(),
@@ -309,6 +374,135 @@ class _CarriersState extends State<Carriers> {
 
     );
   }
+
+getActiveCarriers(list){
+  List<Widget> tmp = [];
+
+  // tmp.add(Text("ni"));
+
+  
+  for(int i = 0; i < list.length; i++){
+  if(list[i]['isActive']){
+    tmp.add(
+
+      GestureDetector(
+        onTap: (){
+          
+          print("tappeddd");
+         Navigator.push(context,  CustomPageRoute(
+                    navigateTo: Services(
+                      carrierId:list[i].documentID,
+                      primaryColor: Color(list[i]['primaryColor']),
+                      carrierTitle: list[i]['label'],
+                      analytics: widget.analytics,
+                    )
+                ));
+        },
+        child:
+      Container(
+        // height: 200,
+        padding: EdgeInsets.symmetric(horizontal:10),
+        decoration: BoxDecoration(
+          color: Color(0xfff6f7f9),
+          // border: Border.all(color: Colors.blue),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Center(child:Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+          SizedBox(
+                    height: 60,
+                    width: 60,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: CachedNetworkImage(
+                        fit: BoxFit.cover,
+                        imageUrl: list[i]['icon'],
+                        placeholder: (context, url) => new Icon(
+                          Icons.album,
+                          size: 40,
+                        ),
+                        errorWidget: (context, url, error) => new Icon(
+                          Icons.album,
+                          size: 40,
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+          Text("${list[i]['label']}", textAlign: TextAlign.center, style: TextStyle(
+              fontWeight: FontWeight.w600
+          ),)
+        ],),
+      ))
+      )
+    );
+  }
+  }
+
+  tmp.add(
+    GestureDetector(
+        onTap: (){
+          
+        //   print("tappeddd");
+        //  Navigator.push(context,  CustomPageRoute(
+        //             navigateTo: Services(
+        //               carrierId:list[i].documentID,
+        //               primaryColor: Color(list[i]['primaryColor']),
+        //               carrierTitle: list[i]['label'],
+        //               analytics: widget.analytics,
+        //             )
+        //         ));
+        },
+        child:
+      Container(
+        // height: 200,
+        padding: EdgeInsets.symmetric(horizontal:10),
+        decoration: BoxDecoration(
+          color: Color(0xfff6f7f9),
+          // border: Border.all(color: Colors.blue),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Center(child:Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+          SizedBox(
+                    height: 60,
+                    width: 60,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: CachedNetworkImage(
+                        fit: BoxFit.cover,
+                        imageUrl: "",
+                        placeholder: (context, url) => new Icon(
+                          Icons.favorite,
+                          size: 60,
+                          color: Colors.orangeAccent,
+                        ),
+                        errorWidget: (context, url, error) => new Icon(
+                          Icons.favorite,
+                          size: 60,
+                          color: Colors.orangeAccent,
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+          Text("Favourites", textAlign: TextAlign.center, style: TextStyle(
+              fontWeight: FontWeight.w600
+          ),)
+        ],),
+      ))
+      )
+  );
+
+  return tmp;
+}
+
 
   int getServiceOrderNo(x) {
     return x['orderNo'];
