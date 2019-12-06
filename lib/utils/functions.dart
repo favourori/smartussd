@@ -9,6 +9,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 import 'dart:io';
+import 'package:kene/database/db.dart';
 
 
 
@@ -68,6 +69,23 @@ String addFigureSeparator(String value){
   return value;
 
 }
+
+addToShortcut(Map<String, dynamic> service) async{
+  KDB db = KDB();
+  print(service);
+  var userID = await getUserID();
+  db.firestoreAdd("shortcuts/$userID/shortcuts", service);
+
+}
+
+
+deleteShortcut(String docID) async{
+  KDB db = KDB();
+  var userID = await getUserID();
+  db.firestoreDelete("shortcuts/$userID/shortcuts", docID);
+
+}
+
 
 
 Future getServices(String carrier) async{

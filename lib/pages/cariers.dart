@@ -9,6 +9,7 @@ import 'package:kene/components/loader.dart';
 import 'package:kene/pages/receive.dart';
 import 'package:kene/pages/services.dart';
 import 'package:kene/pages/settings.dart';
+import 'package:kene/pages/shortcuts.dart';
 import 'package:kene/utils/functions.dart';
 import 'package:kene/widgets/custom_nav.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -117,8 +118,13 @@ class _CarriersState extends State<Carriers> {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         backgroundColor: Color(0xfff6f7f9),
-        child: Icon(Icons.favorite, size: 30, color: Colors.orangeAccent,),
-        onPressed: (){},
+        child: Icon(Icons.call_received, size: 30, color: Colors.orangeAccent,),
+        onPressed: (){
+          Navigator.push(context, CustomPageRoute(
+            navigateTo: ReceivePage(qrImage: _qrScan,)
+                
+          ));
+        },
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
       bottomNavigationBar: BottomAppBar(
@@ -128,37 +134,45 @@ class _CarriersState extends State<Carriers> {
         child: Container(
           height: 50,
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Expanded(
-              flex: 2,
-            child: GestureDetector(
-              onTap: (){},
-              child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Icon(Icons.home, color: Colors.white,),
-                // Text("Home", style: TextStyle(
-                //   color: Colors.white, fontWeight: FontWeight.bold
-                // ),)
-              ],
-            ),
-            )),
-
-
-             Expanded(
-              flex: 2,
-            child: GestureDetector(
-              onTap: (){},
-              child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Icon(Icons.more_vert, color: Colors.white,),
-                // Text("More", style: TextStyle(
-                //   color: Colors.white, fontWeight: FontWeight.bold
-                // ),)
-              ],
-            ),
-            )),
+              flex: 1,
+              child: Text("Powered by Hexakomb", textAlign: TextAlign.center, style: TextStyle(
+                  color: Colors.white,
+                fontSize: 12
+              ),),
+            )
+//            Expanded(
+//              flex: 2,
+//            child: GestureDetector(
+//              onTap: (){},
+//              child: Column(
+//              mainAxisAlignment: MainAxisAlignment.center,
+//              children: <Widget>[
+//                Icon(Icons.home, color: Colors.white,),
+//                // Text("Home", style: TextStyle(
+//                //   color: Colors.white, fontWeight: FontWeight.bold
+//                // ),)
+//              ],
+//            ),
+//            )),
+//
+//
+//             Expanded(
+//              flex: 2,
+//            child: GestureDetector(
+//              onTap: (){},
+//              child: Column(
+//              mainAxisAlignment: MainAxisAlignment.center,
+//              children: <Widget>[
+//                Icon(Icons.more_vert, color: Colors.white,),
+//                // Text("More", style: TextStyle(
+//                //   color: Colors.white, fontWeight: FontWeight.bold
+//                // ),)
+//              ],
+//            ),
+//            )),
 
             // Expanded(
             //   flex: 2,
@@ -388,7 +402,6 @@ getActiveCarriers(list){
       GestureDetector(
         onTap: (){
           
-          print("tappeddd");
          Navigator.push(context,  CustomPageRoute(
                     navigateTo: Services(
                       carrierId:list[i].documentID,
@@ -444,17 +457,16 @@ getActiveCarriers(list){
 
   tmp.add(
     GestureDetector(
-        onTap: (){
-          
-        //   print("tappeddd");
-        //  Navigator.push(context,  CustomPageRoute(
-        //             navigateTo: Services(
-        //               carrierId:list[i].documentID,
-        //               primaryColor: Color(list[i]['primaryColor']),
-        //               carrierTitle: list[i]['label'],
-        //               analytics: widget.analytics,
-        //             )
-        //         ));
+        onTap: () async{
+          var uid = await getUserID();
+          Navigator.push(context,  CustomPageRoute(
+                     navigateTo: NShortcuts(
+                       userID:uid,
+                       primaryColor: Colors.orangeAccent,
+                       carrierTitle: "Shortcuts",
+                       analytics: widget.analytics,
+                     )
+                 ));
         },
         child:
       Container(
@@ -492,7 +504,7 @@ getActiveCarriers(list){
                   SizedBox(
                     height: 10,
                   ),
-          Text("Favourites", textAlign: TextAlign.center, style: TextStyle(
+          Text("Shortcuts", textAlign: TextAlign.center, style: TextStyle(
               fontWeight: FontWeight.w600
           ),)
         ],),

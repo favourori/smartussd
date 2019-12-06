@@ -6,6 +6,7 @@ import 'package:kene/components/input_container.dart';
 import 'package:kene/components/loader.dart';
 import 'package:kene/database/db.dart';
 import 'package:kene/pages/settings.dart';
+import 'package:kene/pages/shortcut_item.dart';
 import 'package:kene/utils/functions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -27,28 +28,28 @@ import 'package:flutter/cupertino.dart';
 // TODO:
 //
 
-class Services extends StatefulWidget {
-  final carrierId;
+class NShortcuts extends StatefulWidget {
+  final userID;
   final primaryColor;
   final carrierTitle;
   final analytics;
 
-  Services(
-      {this.carrierId, this.primaryColor, this.carrierTitle, this.analytics});
+  NShortcuts(
+      {this.userID, this.primaryColor, this.carrierTitle, this.analytics});
   @override
   State<StatefulWidget> createState() {
-    return _ServicesState();
+    return _NShortcutsState();
   }
 }
 
-class _ServicesState extends State<Services> with TickerProviderStateMixin {
+class _NShortcutsState extends State<NShortcuts> with TickerProviderStateMixin {
   static const platform = const MethodChannel('com.kene.momouusd');
 
   // Scroll NestedScrollView when listView is scrolled
   scrollListener() {
     var innerScrollPos = _listViewController.offset;
 //    _scrollController.animateTo(innerScrollPos/2, duration: Duration(microseconds: 10), curve: Curves.linear);
-  _scrollController.jumpTo(innerScrollPos/2);
+    _scrollController.jumpTo(innerScrollPos/2);
   }
 
   ScrollController _listViewController = new ScrollController();
@@ -128,7 +129,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
       }
     });
 
-    String initialCollection = "services/${widget.carrierId}/services";
+    String initialCollection = "shortcuts/${widget.userID}/shortcuts";
     navigationStack.add(initialCollection);
     setState(() {
       collectionURL = initialCollection;
@@ -178,42 +179,42 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                     backgroundColor: widget.primaryColor,
                     leading: navigationStack.length > 1 || showActionSection
                         ? IconButton(
-                            onPressed: () {
-                              if (!showActionSection) {
-                                navigationStack.removeLast();
+                      onPressed: () {
+                        if (!showActionSection) {
+                          navigationStack.removeLast();
 
-                                setState(() {
-                                  collectionURL = navigationStack[
-                                      navigationStack.length - 1];
-                                });
-                              }
-                              headTitleStack.removeLast();
-                              var ht2 = headTitleStack;
-                              setState(() {
-                                serviceDescription = "";
-                                headTitleStack = ht2;
-                                showActionSection = false;
-                                _amountController.text = "";
-                                _recipientController.text = "";
-                                cameraBtnClicked = false;
-                              });
-                            },
-                            icon: Icon(
-                              Icons.arrow_back_ios,
-                              color: Colors.white,
-                              size: 30,
-                            ),
-                          )
+                          setState(() {
+                            collectionURL = navigationStack[
+                            navigationStack.length - 1];
+                          });
+                        }
+                        headTitleStack.removeLast();
+                        var ht2 = headTitleStack;
+                        setState(() {
+                          serviceDescription = "";
+                          headTitleStack = ht2;
+                          showActionSection = false;
+                          _amountController.text = "";
+                          _recipientController.text = "";
+                          cameraBtnClicked = false;
+                        });
+                      },
+                      icon: Icon(
+                        Icons.arrow_back_ios,
+                        color: Colors.white,
+                        size: 30,
+                      ),
+                    )
                         : IconButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            icon: Icon(
-                              Icons.home,
-                              color: Colors.white,
-                              size: 30,
-                            ),
-                          ),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      icon: Icon(
+                        Icons.home,
+                        color: Colors.white,
+                        size: 30,
+                      ),
+                    ),
                     flexibleSpace: Container(
                       decoration: BoxDecoration(
                           color: widget.primaryColor,
@@ -228,7 +229,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                             child: Text(
                               "${headTitleStack[headTitleStack.length - 1]}",
                               style:
-                                  TextStyle(color: Colors.white, fontSize: 14),
+                              TextStyle(color: Colors.white, fontSize: 14),
                             ),
                           )
                         ],
@@ -432,9 +433,9 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                                 !showActionSection
                                     ? fetchServices()
                                     : InputActionContainer(
-                                        primaryColor: widget.primaryColor,
-                                        analytics: widget.analytics,
-                                        carrierTitle: widget.carrierTitle),
+                                    primaryColor: widget.primaryColor,
+                                    analytics: widget.analytics,
+                                    carrierTitle: widget.carrierTitle),
 //                        actionContainer(),
                                 SizedBox(
                                   height: 100,
@@ -453,21 +454,30 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
 
   /// Receives collection url and fetches children
   StreamBuilder fetchServices() {
+    print(collectionURL);
     return StreamBuilder(
       stream: Firestore.instance
           .collection("$collectionURL")
-          .where("isActive", isEqualTo: true)
           .snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return Center(child: NLoader());
         }
-        snapshot.data.documents.sort((DocumentSnapshot a, DocumentSnapshot b) =>
-            getServiceOrderNo(a).compareTo(getServiceOrderNo(b)));
+        
+        if(snapshot.data.documents.length < 1){
+          return Center(
+            child: Text("You have not added shortcuts yet. Swipe right on a service to add as shortcut",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold
+            ),),
+          );
+        }
         return Column(
             children: displayServices(
                 snapshot.data.documents) //display the services fetched
-            );
+        );
       },
     );
   }
@@ -531,7 +541,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
       if (list['label'] == "LoadAirtime" && Platform.isIOS) {
 //        continue;
         tmp.add(
-          ServiceItem(
+          ShortcutItem(
             backgroundColor: Colors.white,
             icon: list['icon'],
             name: list['name'],
@@ -551,12 +561,12 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
             serviceActions: serviceActions,
             primaryColor:widget.primaryColor,
             needsScan: list["needsScan"],
-            carrierID: widget.carrierId,
+            carrierID: list['carrier'],
           ),
         );
       } else {
         tmp.add(
-          ServiceItem(
+          ShortcutItem(
             backgroundColor: Colors.white,
             icon: list['icon'],
             name: list['name'],
@@ -576,7 +586,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
             serviceActions: serviceActions,
             primaryColor: widget.primaryColor,
             needsScan: list["needsScan"],
-            carrierID: widget.carrierId,
+            carrierID: list['carrier'],
           ),
         );
       }
