@@ -14,6 +14,7 @@ import 'package:kene/utils/functions.dart';
 import 'package:kene/widgets/custom_nav.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 
 class Carriers extends StatefulWidget {
@@ -118,10 +119,10 @@ class _CarriersState extends State<Carriers> {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         backgroundColor: Color(0xfff6f7f9),
-        child: Icon(Icons.vignette, size: 30, color: Colors.orangeAccent,),
+        child: Icon(FontAwesomeIcons.barcode, size: 30, color:  Color(0xff1C1766),),
         onPressed: (){
           Navigator.push(context, CustomPageRoute(
-            navigateTo: ReceivePage(qrImage: _qrScan,)
+            navigateTo: ReceivePage(qrImage: _qrScan, analytics: widget.analytics,)
                 
           ));
         },

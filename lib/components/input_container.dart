@@ -15,6 +15,8 @@ import 'package:native_contact_picker/native_contact_picker.dart';
 //import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 // import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:barcode_scan/barcode_scan.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 
 
@@ -60,13 +62,14 @@ class _InputContainerState extends State<InputActionContainer> with TickerProvid
   
 
   _scanBarCode() async{
-//
+
+    String barcodeScanRes =  await BarcodeScanner.scan();
 //    String barcodeScanRes = await FlutterBarcodeScanner.scanBarcode("#ff6666", "Cancel", false, ScanMode.DEFAULT);
-//    print(barcodeScanRes);
-//    int len = barcodeScanRes.length;
-//    setState(() {
-//      _recipientController.text = barcodeScanRes.substring(3, len);  // Trim the country code out
-//    });
+    print(barcodeScanRes);
+    int len = barcodeScanRes.length;
+    setState(() {
+      _recipientController.text = barcodeScanRes.substring(3, len);  // Trim the country code out
+    });
 
 
 
@@ -382,7 +385,7 @@ class _InputContainerState extends State<InputActionContainer> with TickerProvid
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Icon(
-                      Icons.perm_identity,
+                      FontAwesomeIcons.barcode,
                       color: Colors.white,
                     ),
                     SizedBox(
@@ -426,7 +429,7 @@ class _InputContainerState extends State<InputActionContainer> with TickerProvid
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Icon(
-                      Icons.perm_identity,
+                      FontAwesomeIcons.barcode,
                       color: Colors.white,
                     ),
                     SizedBox(
@@ -470,14 +473,15 @@ class _InputContainerState extends State<InputActionContainer> with TickerProvid
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Icon(
-                      Icons.perm_identity,
+                      FontAwesomeIcons.user,
                       color: Colors.white,
+                      size: 24,
                     ),
                     SizedBox(
                       width: 10,
                     ),
                     Text(
-                      "Choose Contact",
+                      "Contact",
                       style: TextStyle(
                           color: Colors.white, fontWeight: FontWeight.bold),
                     ),
