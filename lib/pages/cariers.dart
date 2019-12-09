@@ -118,7 +118,7 @@ class _CarriersState extends State<Carriers> {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         backgroundColor: Color(0xfff6f7f9),
-        child: Icon(Icons.call_received, size: 30, color: Colors.orangeAccent,),
+        child: Icon(Icons.vignette, size: 30, color: Colors.orangeAccent,),
         onPressed: (){
           Navigator.push(context, CustomPageRoute(
             navigateTo: ReceivePage(qrImage: _qrScan,)

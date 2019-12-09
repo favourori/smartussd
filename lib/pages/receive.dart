@@ -22,7 +22,7 @@ class ReceivePage extends StatelessWidget{
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Text("Your QR code for receiving payments", textAlign: TextAlign.center, style:
+              Text("Your QR code for receiving MoMo", textAlign: TextAlign.center, style:
               TextStyle(color: Colors.orange, fontSize: 18, fontWeight: FontWeight.bold),),
               SizedBox(height: 30,),
               Container(

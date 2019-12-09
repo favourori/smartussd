@@ -69,25 +69,7 @@ class _ServiceItemState extends State<ServiceItem> {
   @override
   void initState() {
     print(widget.carrierID);
-    data = {
-      "backgroundColor": widget.backgroundColor,
-      "icon": widget.icon,
-      "name": widget.name,
-      "label": widget.label,
-      "needsContact": widget.needsContact,
-      "needsRecipient": widget.needsRecipient,
-      "requiresInput": widget.requiresInput,
-      "code": widget.codeToSend,
-      "recipientLabel": widget.recipientLabel,
-      "canSaveLabels": widget.canSaveLabels,
-      "needsAmount": widget.needsAmount,
-      "requiresCamera": widget.requiresCamera,
-      "serviceDescription": widget.serviceDescription,
-      "hasChildren": widget.hasChildren,
-      "parentID": widget.parentID,
-      "needsScan": widget.needsScan,
-      "carrier": widget.carrierID,
-    };
+
 
     super.initState();
 
@@ -134,6 +116,26 @@ class _ServiceItemState extends State<ServiceItem> {
               "name": name
             });
           } else {
+
+            data = {
+              "backgroundColor": widget.backgroundColor,
+              "icon": widget.icon,
+              "name": widget.name,
+              "label": widget.label,
+              "needsContact": widget.needsContact,
+              "needsRecipient": widget.needsRecipient,
+              "requiresInput": widget.requiresInput,
+              "code": widget.codeToSend,
+              "recipientLabel": widget.recipientLabel,
+              "canSaveLabels": widget.canSaveLabels,
+              "needsAmount": widget.needsAmount,
+              "requiresCamera": widget.requiresCamera,
+              "serviceDescription": widget.serviceDescription,
+              "hasChildren": widget.hasChildren,
+              "parentID": widget.parentID,
+              "needsScan": widget.needsScan,
+              "carrier": widget.carrierID,
+            };
             appBloc.serviceDataIn(data);
 
             /// call parent to open up action center
@@ -223,6 +225,26 @@ class _ServiceItemState extends State<ServiceItem> {
 //              color: Colors.red,
                     icon: Icons.favorite,
                     onTap: () {
+                      data = {
+                        "backgroundColor": widget.backgroundColor,
+                        "icon": widget.icon,
+                        "name": widget.name,
+                        "label": widget.label,
+                        "needsContact": widget.needsContact,
+                        "needsRecipient": widget.needsRecipient,
+                        "requiresInput": widget.requiresInput,
+                        "code": widget.codeToSend,
+                        "recipientLabel": widget.recipientLabel,
+                        "canSaveLabels": widget.canSaveLabels,
+                        "needsAmount": widget.needsAmount,
+                        "requiresCamera": widget.requiresCamera,
+                        "serviceDescription": widget.serviceDescription,
+                        "hasChildren": widget.hasChildren,
+                        "parentID": widget.parentID,
+                        "needsScan": widget.needsScan,
+                        "carrier": widget.carrierID,
+                      };
+
                       var favouriteData = data;
                       favouriteData['backgroundColor'] = 1245664;
                       print(favouriteData);

@@ -12,7 +12,7 @@ import 'package:kene/utils/functions.dart';
 import 'package:kene/widgets/adaptive_dialog.dart';
 import 'package:kene/widgets/bloc_provider.dart';
 import 'package:native_contact_picker/native_contact_picker.dart';
-import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+//import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 // import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -58,17 +58,15 @@ class _InputContainerState extends State<InputActionContainer> with TickerProvid
 
   KDB db = KDB();
   
-  var _currencyController = new TextEditingController();
-
 
   _scanBarCode() async{
-
-    String barcodeScanRes = await FlutterBarcodeScanner.scanBarcode("#ff6666", "Cancel", false, ScanMode.DEFAULT);
-    print(barcodeScanRes);
-    int len = barcodeScanRes.length;
-    setState(() {
-      _recipientController.text = barcodeScanRes.substring(3, len);  // Trim the country code out
-    });
+//
+//    String barcodeScanRes = await FlutterBarcodeScanner.scanBarcode("#ff6666", "Cancel", false, ScanMode.DEFAULT);
+//    print(barcodeScanRes);
+//    int len = barcodeScanRes.length;
+//    setState(() {
+//      _recipientController.text = barcodeScanRes.substring(3, len);  // Trim the country code out
+//    });
 
 
 
@@ -78,12 +76,6 @@ class _InputContainerState extends State<InputActionContainer> with TickerProvid
 
   TextEditingController _labelController = TextEditingController();
 
-  _amountListener(){
-
-//    if(_amountController.text.length > 3){
-//      _amountController.text = _amountController.text.substring(0, _amountController.text.length-2);
-//    }
-  }
   _recipientControllerListener() {
     if (_recipientController.text == null ||
         _recipientController.text.isEmpty) {
@@ -108,6 +100,8 @@ class _InputContainerState extends State<InputActionContainer> with TickerProvid
     appBloc = BlocProvider.of(context);
     appBloc.serviceDataOut.listen((dataFromStream){
      if(mounted){ //avoid setting state after this component is unmounted
+
+       print(dataFromStream);
        setState(() {
          serviceData = dataFromStream != null ? dataFromStream : {};
        });
