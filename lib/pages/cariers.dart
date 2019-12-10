@@ -36,6 +36,8 @@ class _CarriersState extends State<Carriers> {
   bool isOlderVersion;
   var _qrScan;
 
+  var collectionsCache = [];
+
   final FirebaseMessaging _fireBaseMessaging = FirebaseMessaging();
   ScrollController _scrollController;
 
@@ -52,6 +54,9 @@ class _CarriersState extends State<Carriers> {
   @override
   void initState() {
     super.initState();
+
+    fetchAllServices();
+
 
     FirebaseAuth.instance.currentUser().then((f){ // Set the logged in phone number as qrCode data
       if(f != null){
@@ -113,6 +118,40 @@ class _CarriersState extends State<Carriers> {
 
   }
 
+
+  fetchAllServices() async{
+    String rootURL = "services";
+    var secondLevel = await Firestore.instance.collection(rootURL).getDocuments();
+
+    for (var child in secondLevel.documents){
+      await recurseLoad(rootURL + "/"+child.documentID+"/services");
+    }
+
+    print(" ----->> the length of the cache is");
+    print(collectionsCache.length);
+
+  }
+
+  recurseLoad(String url) async{
+    var root = await Firestore.instance.collection(url).getDocuments();
+    collectionsCache += root.documents;
+
+    if(root.documents.length < 1){
+      return;
+    }
+
+    else {
+      for (var child in root.documents) {
+        if (child['hasChildren'] != null && child['hasChildren']) {
+          url += "/" + child.documentID + "/children";
+          recurseLoad(url);
+        }
+      }
+    }
+
+
+
+  }
 
   @override
   Widget build(BuildContext context) {
