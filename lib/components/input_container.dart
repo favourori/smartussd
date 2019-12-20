@@ -697,7 +697,7 @@ class _InputContainerState extends State<InputActionContainer> with TickerProvid
       }
 
       String numberToStore =
-      number.contains("+250") ? number.substring(3) : number;
+      number.contains("+") ? number.substring(3) : number;
       setState(() {
         _recipientController.text = numberToStore;
         _recipientContactName = contact.fullName;

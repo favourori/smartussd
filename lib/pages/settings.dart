@@ -9,6 +9,7 @@ import 'package:kene/pages/about.dart';
 import 'package:kene/pages/faq.dart';
 import 'package:kene/pages/save_accounts.dart';
 import 'package:kene/utils/functions.dart';
+import 'package:kene/widgets/bloc_provider.dart';
 import 'package:kene/widgets/custom_nav.dart';
 import 'package:package_info/package_info.dart';
 import 'package:auto_size_text/auto_size_text.dart';
@@ -33,10 +34,31 @@ class _SettingsState extends State<Settings> {
   PackageInfo packageInfo;
   List languageList = [];
 
+  var pageData = {};
+  String locale = "en";
+
 
   @override
   void initState() {
     super.initState();
+
+    var appBloc;
+
+    appBloc = BlocProvider.of(context);
+
+    appBloc.localeOut.listen((data) {
+      setState(() {
+        locale = data != null ? data : locale;
+      });
+    });
+
+
+    getPageData("settings_page").then((data){
+      setState(() {
+        pageData = data;
+      });
+    });
+
 
     // Get language codes from database here
     Firestore.instance.collection("language_codes").getDocuments().then((data){
@@ -65,7 +87,7 @@ class _SettingsState extends State<Settings> {
     return Scaffold(
       body: Container(
           height: MediaQuery.of(context).size.height,
-          child: Column(
+          child: pageData != {} ? Column(
             children: <Widget>[
               Container(
                 height: MediaQuery.of(context).size.height*0.3,
@@ -86,7 +108,7 @@ class _SettingsState extends State<Settings> {
                       width: MediaQuery.of(context).size.width*0.1,
                     ),
 
-                    AutoSizeText("Menu", style:TextStyle(
+                    AutoSizeText(getTextFromPageData(pageData, "menu", locale), style:TextStyle(
                       color:Colors.white,
                       fontSize:28,
                       
@@ -114,9 +136,9 @@ class _SettingsState extends State<Settings> {
                             Icons.add_circle,
                             color: Colors.orangeAccent,
                           ),
-                          title: Text("Save accounts"),
+                          title: Text(getTextFromPageData(pageData, "save_accounts", locale)),
                           subtitle: Text(
-                            "Save your meter numbers etc",
+                            getTextFromPageData(pageData, "save_accounts_desc", locale),
                             style: TextStyle(fontSize: 13),
                           ),
                         ),
@@ -136,9 +158,9 @@ class _SettingsState extends State<Settings> {
                                 Icons.share,
                                 color: Colors.orangeAccent,
                               ),
-                              title: Text("Share Nokanda"),
+                              title: Text(getTextFromPageData(pageData, "share_nokanda", locale)),
                               subtitle: Text(
-                                "Share app with friends",
+                                getTextFromPageData(pageData, "share_nokanda_desc", locale),
                                 style: TextStyle(fontSize: 13),
                               ),
                             ),
@@ -156,7 +178,7 @@ class _SettingsState extends State<Settings> {
                             Icons.language,
                             color: Colors.orangeAccent,
                           ),
-                          title: Text("Change Language"),
+                          title: Text(getTextFromPageData(pageData, "change_language", locale)),
                         ),
                       ),
 
@@ -170,7 +192,7 @@ class _SettingsState extends State<Settings> {
                             Icons.info,
                             color: Colors.orangeAccent,
                           ),
-                          title: Text("About Nokanda"),
+                          title: Text(getTextFromPageData(pageData, "about_nokanda", locale)),
                         ),
                       ),
 
@@ -184,7 +206,7 @@ class _SettingsState extends State<Settings> {
                             Icons.question_answer,
                             color: Colors.orangeAccent,
                           ),
-                          title: Text("FAQ"),
+                          title: Text(getTextFromPageData(pageData, "faq", locale)),
                         ),
                       ),
 
@@ -198,7 +220,7 @@ class _SettingsState extends State<Settings> {
                             Icons.email,
                             color: Colors.orangeAccent,
                           ),
-                          title: Text("Contact us"),
+                          title: Text(getTextFromPageData(pageData, "contact_us", locale)),
                           // subtitle: Text("Save your meter numbers etc", style: TextStyle(
                           //   fontSize: 13
                           // ),),
@@ -217,7 +239,7 @@ class _SettingsState extends State<Settings> {
                             Icons.security,
                             color: Colors.orangeAccent,
                           ),
-                          title: Text("Logout"),
+                          title: Text(getTextFromPageData(pageData, "logout", locale)),
                           // subtitle: Text("Save your meter numbers etc", style: TextStyle(
                           //   fontSize: 13
                           // ),),
@@ -240,6 +262,10 @@ class _SettingsState extends State<Settings> {
                 ),
               )
             ],
+          ): Container(
+            child: Center(
+              child: CircularProgressIndicator(),
+            ),
           )),
     );
   }

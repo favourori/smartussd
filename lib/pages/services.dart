@@ -16,15 +16,15 @@ import 'package:flutter/cupertino.dart';
 
 //
 // TODO: Support country selection, multiple input and map structure of services
-// TODO: make success page same design
+// TODO: make success page same design [check]
 // TODO: add thousand separator on amount field
-// TODO: Wrap text on overflow
-// TODO: sender QR code
-// TODO: has_qrCode field for services
+// TODO: Wrap text on overflow [check]
+// TODO: sender QR code [check]
+// TODO: has_qrCode field for services [check]
 // TODO: fetch all sub-services on load
 // TODO: isActive on FAQs
 // TODO: session count for users
-// TODO:
+// TODO: trim not just +250 but all country codes
 //
 
 class Services extends StatefulWidget {

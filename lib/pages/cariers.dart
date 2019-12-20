@@ -11,6 +11,7 @@ import 'package:kene/pages/services.dart';
 import 'package:kene/pages/settings.dart';
 import 'package:kene/pages/shortcuts.dart';
 import 'package:kene/utils/functions.dart';
+import 'package:kene/widgets/bloc_provider.dart';
 import 'package:kene/widgets/custom_nav.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:qr_flutter/qr_flutter.dart';
@@ -42,6 +43,12 @@ class _CarriersState extends State<Carriers> {
   ScrollController _scrollController;
 
 
+  String locale = "en";
+
+
+  // Data to hold the pages string from fireBase for translations
+  var pageData = {};
+
   listener(){
     if(_scrollController.offset >= 45){
       _scrollController.jumpTo(45);
@@ -50,12 +57,33 @@ class _CarriersState extends State<Carriers> {
 
 
 
-
   @override
   void initState() {
     super.initState();
 
-    fetchAllServices();
+    var appBloc;
+
+    appBloc = BlocProvider.of(context);
+
+    appBloc.localeOut.listen((data) {
+      setState(() {
+        locale = data != null ? data : locale;
+      });
+    });
+
+
+    getPageData("carriers_page").then((data){
+      setState(() {
+        pageData = data;
+      });
+    });
+
+
+    fetchAllServices().then((d){
+      for(var item in collectionsCache){
+        print("item is: " + item['label']);
+      }
+    });
 
 
     FirebaseAuth.instance.currentUser().then((f){ // Set the logged in phone number as qrCode data
@@ -119,10 +147,13 @@ class _CarriersState extends State<Carriers> {
   }
 
 
+
+
   fetchAllServices() async{
     String rootURL = "services";
     var secondLevel = await Firestore.instance.collection(rootURL).getDocuments();
 
+    collectionsCache += secondLevel.documents;
     for (var child in secondLevel.documents){
       await recurseLoad(rootURL + "/"+child.documentID+"/services");
     }
@@ -144,6 +175,7 @@ class _CarriersState extends State<Carriers> {
       for (var child in root.documents) {
         if (child['hasChildren'] != null && child['hasChildren']) {
           url += "/" + child.documentID + "/children";
+          print(child['label']);
           recurseLoad(url);
         }
       }
@@ -178,46 +210,11 @@ class _CarriersState extends State<Carriers> {
           children: <Widget>[
             Expanded(
               flex: 1,
-              child: Text("Powered by Hexakomb", textAlign: TextAlign.center, style: TextStyle(
+              child: Text(getTextFromPageData(pageData, "footer_text", locale), textAlign: TextAlign.center, style: TextStyle(
                   color: Colors.white,
                 fontSize: 12
               ),),
             )
-//            Expanded(
-//              flex: 2,
-//            child: GestureDetector(
-//              onTap: (){},
-//              child: Column(
-//              mainAxisAlignment: MainAxisAlignment.center,
-//              children: <Widget>[
-//                Icon(Icons.home, color: Colors.white,),
-//                // Text("Home", style: TextStyle(
-//                //   color: Colors.white, fontWeight: FontWeight.bold
-//                // ),)
-//              ],
-//            ),
-//            )),
-//
-//
-//             Expanded(
-//              flex: 2,
-//            child: GestureDetector(
-//              onTap: (){},
-//              child: Column(
-//              mainAxisAlignment: MainAxisAlignment.center,
-//              children: <Widget>[
-//                Icon(Icons.more_vert, color: Colors.white,),
-//                // Text("More", style: TextStyle(
-//                //   color: Colors.white, fontWeight: FontWeight.bold
-//                // ),)
-//              ],
-//            ),
-//            )),
-
-            // Expanded(
-            //   flex: 2,
-            //   child: Container(),
-            // )
 
           ],
         ),
@@ -270,7 +267,8 @@ class _CarriersState extends State<Carriers> {
                       Align(
                         alignment: Alignment.center,
                         child: Text(
-                          "Choose a service",
+//                          "Choose a service"
+                          getTextFromPageData(pageData, "sub_header", locale),
                           style: TextStyle(color: Colors.white, fontSize: 14),
                         ),
                       )
@@ -485,7 +483,7 @@ getActiveCarriers(list){
                   SizedBox(
                     height: 10,
                   ),
-          Text("${list[i]['label']}", textAlign: TextAlign.center, style: TextStyle(
+          Text( list[i]['name_map'] != null ? list[i]['name_map'][locale] : list[i]['label'], textAlign: TextAlign.center, style: TextStyle(
               fontWeight: FontWeight.w600
           ),)
         ],),
@@ -503,7 +501,7 @@ getActiveCarriers(list){
                      navigateTo: NShortcuts(
                        userID:uid,
                        primaryColor: Colors.orangeAccent,
-                       carrierTitle: "Shortcuts",
+                       carrierTitle: getTextFromPageData(pageData, "shortcuts", locale),
                        analytics: widget.analytics,
                      )
                  ));
@@ -544,7 +542,7 @@ getActiveCarriers(list){
                   SizedBox(
                     height: 10,
                   ),
-          Text("Shortcuts", textAlign: TextAlign.center, style: TextStyle(
+          Text(getTextFromPageData(pageData, "shortcuts", locale), textAlign: TextAlign.center, style: TextStyle(
               fontWeight: FontWeight.w600
           ),)
         ],),
@@ -565,107 +563,3 @@ getActiveCarriers(list){
 
 }
 
-
-
-/// A class for carrierItems
-class CarriersItem extends StatefulWidget{
-  final isReceiveButton;
-  final label;
-  final color;
-  final carrierID;
-  final icon;
-  final analytics;
-  final qrScan;
-
-  CarriersItem({this.label, this.analytics, this.qrScan, this.icon, this.carrierID, this.isReceiveButton, this.color});
-
-  @override
-  _CarriersItemState createState() => _CarriersItemState();
-}
-
-class _CarriersItemState extends State<CarriersItem> {
-
-  bool isBtnClicked = false;
-
-  build(context){
-    return
-      GestureDetector(
-        onTap: () {
-          setState(() {
-            isBtnClicked  = true;
-          });
-          Future.delayed(Duration(milliseconds: 50)).then((d){
-            Navigator.push(
-                context,
-                CustomPageRoute(
-                    navigateTo: !widget.isReceiveButton ? Services(
-                      carrierId: widget.carrierID,
-                      primaryColor: Color(widget.color),
-                      carrierTitle: widget.label,
-                      analytics: widget.analytics,
-                    ):
-                    ReceivePage(qrImage: widget.qrScan,)
-                )
-
-            ).then((d){
-                      setState(() {
-                        isBtnClicked = false;
-                      });
-            });
-          });
-        },
-        child: Container(
-          margin: EdgeInsets.only(bottom: 10),
-          height: 60,
-          decoration: BoxDecoration(
-            // border: Border.all(color: mainColor),
-              color: isBtnClicked ?  Colors.black12  :  Colors.white,
-              borderRadius: BorderRadius.circular(40)),
-          child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
-              child: Row(
-                children: <Widget>[
-                  SizedBox(
-                    height: 40,
-                    width: 40,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: CachedNetworkImage(
-                        fit: BoxFit.cover,
-                        imageUrl: widget.icon,
-                        placeholder: (context, url) => new Icon(
-                          Icons.album,
-                          size: 40,
-                        ),
-                        errorWidget: (context, url, error) => new Icon(
-                          Icons.album,
-                          size: 40,
-                        ),
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    flex: 1,
-                    child: Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: ListView(
-                          shrinkWrap: true,
-                          scrollDirection: Axis.horizontal,
-                          children: <Widget>[
-                            Text(
-                              widget.label,
-                              style: TextStyle(
-                              color: Colors.black54,
-                              // mainColor,
-                              fontWeight: FontWeight.w900),
-                            ),
-                          ],
-                        )
-                    ),
-                  )
-                ],
-              )),
-        ),
-      );
-    }
-}

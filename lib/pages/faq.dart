@@ -68,7 +68,7 @@ class FAQ extends StatelessWidget{
                             );
                           return ListView(
                             shrinkWrap: true,
-                            children:populateQuestions(snapshot.data.documents)
+                            children:populateQuestions(filterActiveFAQs(snapshot.data.documents))
                           );
                   })
                 ],
@@ -136,7 +136,7 @@ class FAQ extends StatelessWidget{
                           );
                         return ListView(
                             shrinkWrap: true,
-                            children:populateQuestions(snapshot.data.documents)
+                            children:populateQuestions(filterActiveFAQs(snapshot.data.documents))
                         );
                       })
                 ],
@@ -145,6 +145,18 @@ class FAQ extends StatelessWidget{
           )
       ),
     );
+  }
+
+  filterActiveFAQs(List list){
+    var activeFilteredList = [];
+    for(var faq in list){
+      if(faq['isActive'] != null && faq['isActive']){
+        activeFilteredList.add(faq);
+      }
+    }
+
+
+    return activeFilteredList;
   }
 
   List<Widget> populateQuestions(list){
