@@ -9,6 +9,7 @@ import 'package:kene/pages/settings.dart';
 import 'package:kene/utils/functions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:kene/widgets/bloc_provider.dart';
 import 'package:kene/widgets/custom_nav.dart';
 import 'package:kene/components/service_item.dart';
 import 'package:auto_size_text/auto_size_text.dart';
@@ -60,6 +61,8 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
 
   String uid = "";
 
+  String locale;
+
   ///default values that are changed when option clicked
 
   List navigationStack = [];
@@ -104,6 +107,17 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+
+    var appBloc;
+
+    appBloc = BlocProvider.of(context);
+
+    appBloc.localeOut.listen((data) {
+      setState(() {
+        locale = data != null ? data : locale;
+      });
+    });
+
 
     _scrollController = ScrollController(initialScrollOffset: 0.0);
     _scrollController.addListener(listener);
@@ -252,164 +266,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: <Widget>[
-//                          SizedBox(
-//                            height: 40,
-//                          ),
-//                          Container(
-//                            padding: EdgeInsets.symmetric(horizontal: 10),
-//                            //  decoration: BoxDecoration(
-//                            //    border: Border.all()
-//                            //  ),
-//                            width: MediaQuery.of(context).size.width,
-//                            child: Row(
-//                              children: <Widget>[
-//                                Expanded(
-//                                  flex: 2,
-//                                  child: Align(
-//                                      alignment: Alignment.topLeft,
-//                                      child: navigationStack.length > 1 ||
-//                                              showActionSection
-//                                          ? IconButton(
-//                                              onPressed: () {
-//                                                if (!showActionSection) {
-//                                                  navigationStack.removeLast();
 //
-//                                                  setState(() {
-//                                                    collectionURL =
-//                                                        navigationStack[
-//                                                            navigationStack
-//                                                                    .length -
-//                                                                1];
-//                                                  });
-//                                                }
-//                                                headTitleStack.removeLast();
-//                                                var ht2 = headTitleStack;
-//                                                setState(() {
-//                                                  serviceDescription = "";
-//                                                  headTitleStack = ht2;
-//                                                  showActionSection = false;
-//                                                  _amountController.text = "";
-//                                                  _recipientController.text =
-//                                                      "";
-//                                                  cameraBtnClicked = false;
-//                                                });
-//                                              },
-//                                              icon: Icon(
-//                                                Icons.arrow_back_ios,
-//                                                color: Colors.white,
-//                                                size: 30,
-//                                              ),
-//                                            )
-//                                          : IconButton(
-//                                              onPressed: () {
-//                                                Navigator.pop(context);
-//                                              },
-//                                              icon: Icon(
-//                                                Icons.home,
-//                                                color: Colors.white,
-//                                                size: 30,
-//                                              ),
-//                                            )),
-//                                ),
-//                                Expanded(
-//                                  flex: 3,
-//                                  child: Align(
-//                                    alignment: Alignment.center,
-//                                    child: AutoSizeText(
-//                                      "Nokanda",
-//                                      style: TextStyle(
-//                                        color: Colors.white,
-//                                        fontSize: 24,
-//                                        fontWeight: FontWeight.w900,
-//                                      ),
-//                                      maxLines: 2,
-//                                    ),
-//                                  ),
-//                                ),
-//                                Expanded(
-//                                  flex: 2,
-//                                  child: Align(
-//                                    alignment: Alignment.topRight,
-//                                    child: IconButton(
-//                                      onPressed: () {
-//                                        Navigator.push(
-//                                            context,
-//                                            CustomPageRoute(
-//                                                navigateTo: Settings()));
-//                                      },
-//                                      icon: Icon(
-//                                        Icons.more_vert,
-//                                        color: Colors.white,
-//                                        size: 30,
-//                                      ),
-//                                    ),
-//                                  ),
-//                                ),
-//                              ],
-//                            ),
-//                          ),
-//                          Row(children: [
-//                            Expanded(
-//                              flex: 1,
-//                              child: Container(),
-//                            ),
-//                            Expanded(
-//                                flex: 4,
-//                                child: Align(
-//                                    alignment: Alignment.center,
-//                                    child: Text(
-//                                      "${headTitleStack[headTitleStack.length - 1]}",
-//                                      style: TextStyle(
-//                                          color: Colors.white, fontSize: 14),
-//                                    ))),
-//                            Expanded(
-//                              flex: 1,
-//                              child: serviceDescription != null &&
-//                                      serviceDescription.isNotEmpty
-//                                  ? GestureDetector(
-//                                      child: IconButton(
-//                                          icon: Icon(
-//                                            Icons.info_outline,
-//                                            color: Colors.white,
-//                                          ),
-//                                          onPressed: () {
-//                                            Platform.isIOS
-//                                                ? showCupertinoDialog(
-//                                                    context: context,
-//                                                    builder: (context) {
-//                                                      return CupertinoAlertDialog(
-//                                                        title: Center(
-//                                                          child: Text("Info"),
-//                                                        ),
-//                                                        content: Text(
-//                                                            "$serviceDescription "),
-//                                                        actions: <Widget>[
-//                                                          CupertinoButton(
-//                                                              child:
-//                                                                  Text("Close"),
-//                                                              onPressed: () {
-//                                                                Navigator.pop(
-//                                                                    context);
-//                                                              })
-//                                                        ],
-//                                                      );
-//                                                    })
-//                                                : showDialog(
-//                                                    context: context,
-//                                                    builder: (context) {
-//                                                      return AlertDialog(
-//                                                        title: Center(
-//                                                          child: Text("Info"),
-//                                                        ),
-//                                                        content: Text(
-//                                                            "$serviceDescription"),
-//                                                      );
-//                                                    });
-//                                          }),
-//                                    )
-//                                  : Container(),
-//                            ),
-//                          ])
                         ],
                       ),
                     ),
@@ -515,7 +372,14 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
 
     // Check for name and update the headerText
     var hT = headTitleStack;
-    if (data['name'] != null) {
+    if(data['name_map'] != null){
+      hT.add(data['name_map'][locale]);
+
+      setState(() {
+        headTitleStack = hT;
+      });
+    }
+    else if (data['name'] != null) {
       hT.add(data['name']);
 
       setState(() {
@@ -541,7 +405,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
             needsRecipient: list['needsRecipient'],
             requiresInput: list['requiresInput'],
             codeToSend: list['code'],
-            recipientLabel: list['recipientLabel'],
+            recipientLabel: list['recipientLabelMap'] != null ?  list['recipientLabelMap'][locale]: list['recipientLabel'],
             canSaveLabels: list['canSaveLabels'],
             needsAmount: list['needsAmount'],
             requiresCamera: list['requiresCamera'],
@@ -566,7 +430,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
             needsRecipient: list['needsRecipient'],
             requiresInput: list['requiresInput'],
             codeToSend: list['code'],
-            recipientLabel: list['recipientLabel'],
+            recipientLabel: list['recipientLabelMap'] != null ?  list['recipientLabelMap'][locale]: list['recipientLabel'],
             canSaveLabels: list['canSaveLabels'],
             needsAmount: list['needsAmount'],
             requiresCamera: list['requiresCamera'],

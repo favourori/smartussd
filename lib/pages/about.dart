@@ -2,18 +2,56 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:kene/utils/functions.dart';
+import 'package:kene/widgets/bloc_provider.dart';
 
 
-class About extends StatelessWidget {
+class About extends StatefulWidget {
   final analytics;
+
   About({this.analytics});
 
+  @override
+  State<StatefulWidget> createState() {
+    return _AboutState();
+  }
+
+}
+
+
+class _AboutState extends State<About>{
+
+
+  String locale = "en";
+  Map pageData = {};
+
+  @override
+  void initState() {
+    super.initState();
+
+    var appBloc;
+
+    appBloc = BlocProvider.of(context);
+
+    appBloc.localeOut.listen((data) {
+      setState(() {
+        locale = data != null ? data : locale;
+      });
+    });
+
+
+    getPageData("about_page").then((data){
+      setState(() {
+        pageData = data;
+      });
+    });
+
+  }
   @override
   Widget build(BuildContext context) {
 
 
     // Send analytics on page load/initialize
-    sendAnalytics(analytics, "AboutPage_Open", null);
+    sendAnalytics(widget.analytics, "AboutPage_Open", null);
     return Scaffold(
       body: Container(
           height: MediaQuery.of(context).size.height,
@@ -38,7 +76,7 @@ class About extends StatelessWidget {
                       width: MediaQuery.of(context).size.width*0.1,
                     ),
 
-                    AutoSizeText("About", style:TextStyle(
+                    AutoSizeText(getTextFromPageData(pageData, "title", locale), style:TextStyle(
                       color:Colors.white,
                       fontSize:28,
 
@@ -54,19 +92,8 @@ class About extends StatelessWidget {
                   width: MediaQuery.of(context).size.width - 40,
                   height: MediaQuery.of(context).size.height * 0.68,
                   child: Center(
-                    child: StreamBuilder(
-                      stream: Firestore.instance.collection("settings").snapshots(),
-                        builder: (context, snapshot){
-                          String aboutText="";
-                          for(var item in snapshot.data.documents){
-                            print(item.documentID);
-                            if(item.documentID == "about"){
-                              aboutText = item['text'];
-
-                            }
-                          }
-                      return Text("$aboutText", textAlign: TextAlign.justify,);
-                    }),
+                    child:  Text(getTextFromPageData(pageData, "page_text", locale), textAlign: TextAlign.justify,)
+                    ,
                   )
                 ),
               )

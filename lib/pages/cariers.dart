@@ -339,42 +339,6 @@ class _CarriersState extends State<Carriers> {
                                   crossAxisSpacing: 10,
                                   mainAxisSpacing: 10,
                                 )
-                                // ListView.builder(
-                                //   shrinkWrap: true,
-                                //   itemCount: snapshot.data.documents.length,
-                                //   itemBuilder: (context, index) {
-                                //     return snapshot.data.documents[index]
-                                //     ['isActive']
-                                //         ?
-                                //     CarriersItem(
-                                //       isReceiveButton: false,
-                                //       carrierID: snapshot.data.documents[index].documentID,
-                                //       label: snapshot.data.documents[index]['label'],
-                                //       analytics: widget.analytics,
-                                //       color: snapshot.data.documents[index]['primaryColor'],
-                                //       icon: snapshot.data.documents[index]['icon'],
-                                //       qrScan: _qrScan,
-                                //     )
-                                //         : Container();
-                                //   },
-                                // ),
-
-                                // _qrScan != null ?
-
-                                //     GestureDetector(
-                                //       onTap: (){},
-                                //       child: CarriersItem(
-                                //         isReceiveButton: true,
-                                //         icon: "",
-                                //         label: "Receive Payment",
-                                //         qrScan: _qrScan,
-                                //       ),
-                                //     )
-                                //     :
-                                //     Container()
-
-                            //   ],
-                            // )
                                 : Container(
                               child: StreamBuilder(
                                   stream: Firestore.instance.collection("settings").where("label", isEqualTo:"versioning" ).snapshots(),
@@ -444,7 +408,7 @@ getActiveCarriers(list){
                     navigateTo: Services(
                       carrierId:list[i].documentID,
                       primaryColor: Color(list[i]['primaryColor']),
-                      carrierTitle: list[i]['label'],
+                      carrierTitle: list[i]['name_map'] != null ? list[i]['name_map'][locale] : list[i]['label'],
                       analytics: widget.analytics,
                     )
                 ));

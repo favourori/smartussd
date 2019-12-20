@@ -284,14 +284,14 @@ class _SettingsState extends State<Settings> {
         showCupertinoDialog(context: context, builder: (context) => CupertinoAlertDialog(
           content: ChooseLanguage(languageList: languageList,),
           actions: <Widget>[
-            CupertinoButton(child: Text("Close"), onPressed: (){
+            CupertinoButton(child: Text(getTextFromPageData(pageData, "close", locale)), onPressed: (){
               Navigator.pop(context);
             })
           ],
         ))
         :
     showDialog(context: context, builder: (context)=> AlertDialog(
-      title: Text("Select Language", style: TextStyle(
+      title: Text(getTextFromPageData(pageData, "select_language", locale), style: TextStyle(
           color: Colors.orange
       ),),
 

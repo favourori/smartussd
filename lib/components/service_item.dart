@@ -104,7 +104,8 @@ class _ServiceItemState extends State<ServiceItem> {
             String newURL = "/" + widget.parentID + "/children";
             widget.serviceActions(newURL, 0, {
               "label": widget.label,
-              "name": name
+              "name": name,
+              "name_map":widget.nameMap,
             }); //motive of 0, when it has children, and empty data
           }
 
@@ -113,7 +114,8 @@ class _ServiceItemState extends State<ServiceItem> {
             widget.serviceActions(null, 1, {
               "code": widget.codeToSend,
               "label": widget.label,
-              "name": name
+              "name": name,
+              "name_map":widget.nameMap,
             });
           } else {
 
@@ -121,6 +123,7 @@ class _ServiceItemState extends State<ServiceItem> {
               "backgroundColor": widget.backgroundColor,
               "icon": widget.icon,
               "name": widget.name,
+              "name_map":widget.nameMap,
               "label": widget.label,
               "needsContact": widget.needsContact,
               "needsRecipient": widget.needsRecipient,
@@ -140,7 +143,7 @@ class _ServiceItemState extends State<ServiceItem> {
 
             /// call parent to open up action center
             widget
-                .serviceActions(null, 2, {"label": widget.label, "name": name});
+                .serviceActions(null, 2, {"label": widget.label, "name": name, "name_map":widget.nameMap});
           }
         });
 
