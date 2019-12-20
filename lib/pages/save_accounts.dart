@@ -5,6 +5,7 @@ import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:kene/database/db.dart';
 import 'package:kene/utils/functions.dart';
+import 'package:kene/widgets/bloc_provider.dart';
 
 class SaveAccount extends StatefulWidget {
   final String label;
@@ -21,6 +22,9 @@ class _SaveAccountState extends State<SaveAccount> {
   static String category = "Select";
   String uid = "path";
   KDB db = KDB();
+  
+  String locale = "en";
+  Map pageData = {};
 
   TextEditingController _numberController = TextEditingController();
   TextEditingController _labelController = TextEditingController();
@@ -28,6 +32,25 @@ class _SaveAccountState extends State<SaveAccount> {
   @override
   void initState() {
     super.initState();
+
+    var appBloc;
+
+    appBloc = BlocProvider.of(context);
+
+    appBloc.localeOut.listen((data) {
+      setState(() {
+        locale = data != null ? data : locale;
+      });
+    });
+
+
+    getPageData("save_accounts").then((data){
+      setState(() {
+        pageData = data;
+      });
+    });
+
+    
 
     // Send analytics on page load/initialize
     sendAnalytics(widget.analytics, "AccountPage_Open", null);
@@ -76,7 +99,7 @@ class _SaveAccountState extends State<SaveAccount> {
                   width: MediaQuery.of(context).size.width * 0.1,
                 ),
                 AutoSizeText(
-                  "Save Accounts",
+                  getTextFromPageData(pageData, "title", locale),
                   style: TextStyle(color: Colors.white, fontSize: 28),
                   maxLines: 2,
                 )
@@ -92,14 +115,14 @@ class _SaveAccountState extends State<SaveAccount> {
                 children: <Widget>[
                   Row(
                     children: <Widget>[
-                      Expanded(flex: 3, child: Text("Number")),
+                      Expanded(flex: 3, child: Text(getTextFromPageData(pageData, "number", locale))),
                       Expanded(
                           flex: 8,
                           child: TextField(
                             keyboardType: TextInputType.number,
                             controller: _numberController,
                             decoration: InputDecoration(
-                                hintText: "Enter number",
+                                hintText: getTextFromPageData(pageData, "number_hint", locale),
                                 hintStyle: TextStyle(fontSize: 14),
                                 border: InputBorder.none),
                           )),
@@ -108,13 +131,13 @@ class _SaveAccountState extends State<SaveAccount> {
 
                   Row(
                     children: <Widget>[
-                      Expanded(flex: 3, child: Text("Label")),
+                      Expanded(flex: 3, child: Text(getTextFromPageData(pageData, "label", locale))),
                       Expanded(
                           flex: 8,
                           child: TextField(
                             controller: _labelController,
                             decoration: InputDecoration(
-                                hintText: "Enter label e.g home",
+                                hintText: getTextFromPageData(pageData, "label_hint", locale),
                                 hintStyle: TextStyle(fontSize: 14),
                                 border: InputBorder.none),
                           )),
@@ -123,7 +146,7 @@ class _SaveAccountState extends State<SaveAccount> {
 
                   Row(
                     children: <Widget>[
-                      Expanded(flex: 3, child: Text("Category")),
+                      Expanded(flex: 3, child: Text(getTextFromPageData(pageData, "category", locale))),
                       StreamBuilder(
                           stream: Firestore.instance
                               .collection("account_labels")
@@ -199,7 +222,7 @@ class _SaveAccountState extends State<SaveAccount> {
                           borderRadius: BorderRadius.circular(30)),
                       child: Center(
                         child: Text(
-                          "Save",
+                          getTextFromPageData(pageData, "save", locale),
                           style: TextStyle(
                               fontWeight: FontWeight.bold, color: Colors.white),
                         ),
@@ -227,7 +250,7 @@ class _SaveAccountState extends State<SaveAccount> {
                                 Align(
                                   alignment: Alignment.center,
                                   child: Text(
-                                    "Saved Accounts",
+                                    getTextFromPageData(pageData, "saved_account", locale),
                                     style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 16),
