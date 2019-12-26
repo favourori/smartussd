@@ -2,9 +2,11 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:kene/pages/cariers.dart';
 import 'package:kene/pages/settings.dart';
+import 'package:kene/widgets/bloc_provider.dart';
 import 'package:kene/widgets/custom_nav.dart';
 import 'package:rate_my_app/rate_my_app.dart';
 import 'package:kene/utils/functions.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SuccessPage extends StatefulWidget {
   @override
@@ -14,6 +16,12 @@ class SuccessPage extends StatefulWidget {
 class _SuccessPageState extends State<SuccessPage> {
   ScrollController _scrollController;
   RateMyApp _rateMyApp;
+
+
+  String locale = "en";
+
+  Map pageData = {};
+
 
   @override
   void initState() {
@@ -27,6 +35,24 @@ class _SuccessPageState extends State<SuccessPage> {
       remindDays: 1000000,
       remindLaunches: 1000000,
     );
+
+
+
+    var appBloc = BlocProvider.of(context);
+
+    appBloc.localeOut.listen((data) {
+      setState(() {
+        locale = data != null ? data : locale;
+      });
+    });
+
+
+    getPageData("success_page").then((data){
+      setState(() {
+        pageData = data;
+      });
+    });
+
   }
 
   handleRate() {
@@ -43,6 +69,24 @@ class _SuccessPageState extends State<SuccessPage> {
         dialogStyle: DialogStyle(),
       );
     });
+  }
+
+
+ String makeTweetText(){
+    String tweet = getTextFromPageData(pageData, "tweet", locale);
+    String tweetToSend = "";
+
+    for(int i=0; i < tweet.length; i++){
+      if(tweet[i] == " "){
+        tweetToSend += "%20";
+      }
+      else{
+        tweetToSend += tweet[i];
+      }
+    }
+
+    return tweetToSend;
+
   }
 
   @override
@@ -97,7 +141,7 @@ class _SuccessPageState extends State<SuccessPage> {
                   Align(
                     alignment: Alignment.center,
                     child: Text(
-                      "Thanks for using Nokanda",
+                      getTextFromPageData(pageData, "title", locale),
                       style: TextStyle(color: Colors.white, fontSize: 14),
                     ),
                   )
@@ -146,7 +190,7 @@ class _SuccessPageState extends State<SuccessPage> {
                           height: 30,
                         ),
                         Text(
-                          "Thanks for using Nokanda, please share with friends and family",
+                          getTextFromPageData(pageData, "sub_title", locale),
                           textAlign: TextAlign.center,
                           style: TextStyle(
                               color: Colors.black,
@@ -154,20 +198,20 @@ class _SuccessPageState extends State<SuccessPage> {
                               fontWeight: FontWeight.bold),
                         ),
                         SizedBox(
-                          height: 30,
+                          height: 30, 
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
-                            pageButtons("Home", () {
+                            pageButtons(getTextFromPageData(pageData, "home", locale), () {
                               Navigator.pushReplacement(context, CustomPageRoute(navigateTo: Carriers()));
-                            }, Icons.home, context),
+                            }, Icons.home, context, false),
                             SizedBox(
                               width: 15,
                             ),
-                            pageButtons("Redo", () {
+                            pageButtons(getTextFromPageData(pageData, "redo", locale), () {
                               Navigator.pop(context);
-                            }, Icons.loop, context)
+                            }, Icons.loop, context, false)
                           ],
                         ),
                         SizedBox(
@@ -176,19 +220,44 @@ class _SuccessPageState extends State<SuccessPage> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
-                            pageButtons("Share", () {
+                            pageButtons(getTextFromPageData(pageData, "share", locale), () {
                               share();
-                            }, Icons.share, context),
+                            }, Icons.share, context, false),
                             SizedBox(
                               width: 15,
                             ),
-                            pageButtons("Rate", () {
+                            pageButtons(getTextFromPageData(pageData, "rate", locale), () {
                               handleRate();
-                            }, Icons.rate_review, context)
+                            }, Icons.rate_review, context, false)
                           ],
                         ),
                         SizedBox(
                           height: 20,
+                        ),
+
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            pageButtons("Tweet Nokanda", () async{
+                              var url =
+                                  'https://twitter.com/intent/tweet?hashtags=Nokanda&text=${makeTweetText()}';
+                              if (await canLaunch(url)) {
+                              if (await launch(
+                              url,
+                              forceSafariVC: false,
+                              universalLinksOnly: true,
+                              )) {
+                              // print("tweeted");
+                              } else {
+                              // print("no apppp");
+                              await launch(url);
+                              }
+                              } else {
+                              throw 'Could not launch $url';
+                              }
+                            }, Icons.share, context, true),
+
+                          ],
                         ),
                       ],
                     ),
@@ -202,27 +271,31 @@ class _SuccessPageState extends State<SuccessPage> {
     ));
   }
 
-  RaisedButton pageButtons(
-      String label, Function onPressedAction, IconData icon, context) {
-    return RaisedButton(
-      color: Color(0xff1C1766),
-      splashColor: Colors.orangeAccent,
-      padding: EdgeInsets.symmetric(
-          vertical: 5, horizontal: MediaQuery.of(context).size.width * 0.15),
-      onPressed: onPressedAction,
-      child: Column(
-        children: <Widget>[
-          Icon(
-            icon,
-            color: Colors.white,
-          ),
-          Text(
-            label,
-            style: TextStyle(
+  Widget pageButtons(
+      String label, Function onPressedAction, IconData icon, context, bool fullWidth) {
+    return Container(
+      height: 55,
+      width: fullWidth ? MediaQuery.of(context).size.width * 0.88 : MediaQuery.of(context).size.width * 0.42,
+      child: RaisedButton(
+        color: Color(0xff1C1766),
+        splashColor: Colors.orangeAccent,
+        padding: EdgeInsets.symmetric(
+            vertical: 5, horizontal: MediaQuery.of(context).size.width * 0.15),
+        onPressed: onPressedAction,
+        child: Column(
+          children: <Widget>[
+            Icon(
+              icon,
               color: Colors.white,
             ),
-          )
-        ],
+            Text(
+              label,
+              style: TextStyle(
+                color: Colors.white,
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
