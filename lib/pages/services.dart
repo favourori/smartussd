@@ -61,7 +61,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
 
   String uid = "";
 
-  String locale;
+  String locale = "en";
 
   ///default values that are changed when option clicked
 
@@ -108,15 +108,9 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
   void initState() {
     super.initState();
 
-    var appBloc;
 
-    appBloc = BlocProvider.of(context);
 
-    appBloc.localeOut.listen((data) {
-      setState(() {
-        locale = data != null ? data : locale;
-      });
-    });
+
 
 
     _scrollController = ScrollController(initialScrollOffset: 0.0);
@@ -151,6 +145,19 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+
+
+    var appBloc;
+
+    appBloc = BlocProvider.of(context);
+
+    appBloc.localeOut.listen((data) {
+      setState(() {
+        locale = data != null ? data : locale;
+      });
+    });
+
+
     return Scaffold(
         body: GestureDetector(
             onTap: () {
