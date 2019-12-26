@@ -17,6 +17,7 @@ import 'package:native_contact_picker/native_contact_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:kene/utils/stylesguide.dart' as styleguide;
 
 
 
@@ -267,7 +268,7 @@ class _InputContainerState extends State<InputActionContainer> with TickerProvid
                             child: AutoSizeText(
                               "Submit",
                               style: TextStyle(
-                                color: Colors.white,
+                                color: styleguide.accentColor,
                               ),
                               minFontSize: 11,
                               maxLines: 2,
@@ -280,7 +281,7 @@ class _InputContainerState extends State<InputActionContainer> with TickerProvid
                             padding: const EdgeInsets.only(right: 8.0),
                             child: Icon(
                               Icons.send,
-                              color: Colors.white,
+                              color: styleguide.accentColor,
                             ),
                           ),
                         )
@@ -385,8 +386,8 @@ class _InputContainerState extends State<InputActionContainer> with TickerProvid
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Icon(
-                      FontAwesomeIcons.barcode,
-                      color: Colors.white,
+                      FontAwesomeIcons.qrcode,
+                      color: styleguide.accentColor,
                     ),
                     SizedBox(
                       width: 10,
@@ -394,7 +395,7 @@ class _InputContainerState extends State<InputActionContainer> with TickerProvid
                     Text(
                       "Scan Code",
                       style: TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.bold),
+                          color: styleguide.accentColor, fontWeight: FontWeight.bold),
                     ),
                   ]),
             ),
@@ -429,8 +430,8 @@ class _InputContainerState extends State<InputActionContainer> with TickerProvid
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Icon(
-                      FontAwesomeIcons.barcode,
-                      color: Colors.white,
+                      FontAwesomeIcons.qrcode,
+                      color: styleguide.accentColor,
                     ),
                     SizedBox(
                       width: 10,
@@ -438,7 +439,7 @@ class _InputContainerState extends State<InputActionContainer> with TickerProvid
                     Text(
                       "Scan Code",
                       style: TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.bold),
+                          color: styleguide.accentColor, fontWeight: FontWeight.bold),
                     ),
                   ]),
             ),
@@ -474,7 +475,7 @@ class _InputContainerState extends State<InputActionContainer> with TickerProvid
                   children: <Widget>[
                     Icon(
                       FontAwesomeIcons.user,
-                      color: Colors.white,
+                      color: styleguide.accentColor,
                       size: 24,
                     ),
                     SizedBox(
@@ -483,7 +484,7 @@ class _InputContainerState extends State<InputActionContainer> with TickerProvid
                     Text(
                       "Contact",
                       style: TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.bold),
+                          color: styleguide.accentColor, fontWeight: FontWeight.bold),
                     ),
                   ]),
             ),
@@ -665,6 +666,7 @@ class _InputContainerState extends State<InputActionContainer> with TickerProvid
           });
         },
         child: Container(
+          
           width: MediaQuery.of(context).size.width*0.35,
           margin: EdgeInsets.only(bottom: 10, right: 10),
           decoration: BoxDecoration(
@@ -677,6 +679,7 @@ class _InputContainerState extends State<InputActionContainer> with TickerProvid
                   "$label",
                   minFontSize: 11,
                   maxLines: 3,
+                  style: TextStyle(color: Colors.orangeAccent, fontWeight: FontWeight.w500, fontStyle: FontStyle.normal),
                 )),
           ),
         ));

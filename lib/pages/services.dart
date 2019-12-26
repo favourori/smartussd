@@ -13,6 +13,7 @@ import 'package:kene/widgets/custom_nav.dart';
 import 'package:kene/components/service_item.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:kene/utils/stylesguide.dart' as styleguide;
 
 //
 // TODO: Support country selection, multiple input and map structure of services
@@ -161,7 +162,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                         },
                         icon: Icon(
                           Icons.more_vert,
-                          color: Colors.white,
+                          color: styleguide.accentColor,
                           size: 30,
                         ),
                       ),
@@ -169,7 +170,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                     title: AutoSizeText(
                       "Nokanda",
                       style: TextStyle(
-                        color: Colors.white,
+                        color: styleguide.accentColor,
                         fontSize: 24,
                         fontWeight: FontWeight.w900,
                       ),
@@ -200,7 +201,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                             },
                             icon: Icon(
                               Icons.arrow_back_ios,
-                              color: Colors.white,
+                              color: styleguide.accentColor,
                               size: 30,
                             ),
                           )
@@ -210,7 +211,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                             },
                             icon: Icon(
                               Icons.home,
-                              color: Colors.white,
+                              color: styleguide.accentColor,
                               size: 30,
                             ),
                           ),
@@ -228,7 +229,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                             child: Text(
                               "${headTitleStack[headTitleStack.length - 1]}",
                               style:
-                                  TextStyle(color: Colors.white, fontSize: 14),
+                                  TextStyle(color: styleguide.accentColor, fontSize: 14),
                             ),
                           )
                         ],

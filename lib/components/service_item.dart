@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:kene/widgets/bloc_provider.dart';
 import 'package:kene/utils/functions.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:kene/utils/stylesguide.dart' as styleguide;
+
 
 class ServiceItem extends StatefulWidget {
   final backgroundColor;
@@ -193,12 +195,12 @@ class _ServiceItemState extends State<ServiceItem> {
                                 ? Text(
                                     widget.name,
                                     style:
-                                        TextStyle(fontWeight: FontWeight.w600),
+                                        TextStyle(fontWeight: FontWeight.w600, color: styleguide.accentColor),
                                   )
                                 : Text(
                                     widget.nameMap[locale],
                                     style:
-                                        TextStyle(fontWeight: FontWeight.w600),
+                                        TextStyle(fontWeight: FontWeight.w600, color: styleguide.accentColor),
                                   )),
                       ),
                       (widget.hasChildren != null && widget.hasChildren) ||
@@ -294,11 +296,11 @@ class _ServiceItemState extends State<ServiceItem> {
                           child: widget.nameMap == null
                               ? Text(
                                   widget.name,
-                                  style: TextStyle(fontWeight: FontWeight.w600),
+                                  style: TextStyle(fontWeight: FontWeight.w600, color: styleguide.accentColor),
                                 )
                               : Text(
                                   widget.nameMap[locale],
-                                  style: TextStyle(fontWeight: FontWeight.w600),
+                                  style: TextStyle(fontWeight: FontWeight.w600, color: styleguide.accentColor),
                                 )
 
                           // ListView(

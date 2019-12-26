@@ -15,6 +15,8 @@ import 'package:kene/widgets/custom_nav.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:kene/utils/stylesguide.dart' as styleguide;
+
 
 
 class Carriers extends StatefulWidget {
@@ -140,8 +142,10 @@ class _CarriersState extends State<Carriers> {
             Expanded(
               flex: 1,
               child: Text("Powered by Hexakomb", textAlign: TextAlign.center, style: TextStyle(
-                  color: Colors.white,
-                fontSize: 12
+                  color: styleguide.accentColor,
+                fontSize: 12,
+                fontWeight: FontWeight.bold
+
               ),),
             )
 //            Expanded(
@@ -203,7 +207,7 @@ class _CarriersState extends State<Carriers> {
                     },
                     icon: Icon(
                       Icons.more_vert,
-                      color: Colors.white,
+                      color: styleguide.accentColor,
                       size: 30,
                     ),
                   ),
@@ -211,9 +215,9 @@ class _CarriersState extends State<Carriers> {
                 title: AutoSizeText(
                   "Nokanda",
                   style: TextStyle(
-                    color: Colors.white,
+                    color: Colors.black,
                     fontSize: 24,
-                    fontWeight: FontWeight.w900,
+                    fontWeight: FontWeight.w800,
                   ),
                   maxLines: 2,
                 ),
@@ -232,7 +236,7 @@ class _CarriersState extends State<Carriers> {
                         alignment: Alignment.center,
                         child: Text(
                           "Choose a service",
-                          style: TextStyle(color: Colors.white, fontSize: 14),
+                          style: TextStyle(color: styleguide.accentColor, fontSize: 14),
                         ),
                       )
                     ],
@@ -366,7 +370,7 @@ class _CarriersState extends State<Carriers> {
                                               upDateButtonAction();
                                             },
                                             child: Text("Click to update", style: TextStyle(
-                                              color: Colors.white
+                                              color: Colors.black
                                             ),),
                                           )
                                         ],
@@ -406,7 +410,7 @@ getActiveCarriers(list){
          Navigator.push(context,  CustomPageRoute(
                     navigateTo: Services(
                       carrierId:list[i].documentID,
-                      primaryColor: Color(list[i]['primaryColor']),
+                      primaryColor: Colors.orange,
                       carrierTitle: list[i]['label'],
                       analytics: widget.analytics,
                     )
@@ -447,7 +451,7 @@ getActiveCarriers(list){
                     height: 10,
                   ),
           Text("${list[i]['label']}", textAlign: TextAlign.center, style: TextStyle(
-              fontWeight: FontWeight.w600
+              fontWeight: FontWeight.w600, color: styleguide.accentColor
           ),)
         ],),
       ))
