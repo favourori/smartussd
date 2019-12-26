@@ -7,6 +7,7 @@ import 'package:kene/widgets/custom_nav.dart';
 import 'package:rate_my_app/rate_my_app.dart';
 import 'package:kene/utils/functions.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class SuccessPage extends StatefulWidget {
   @override
@@ -255,7 +256,7 @@ class _SuccessPageState extends State<SuccessPage> {
                               } else {
                               throw 'Could not launch $url';
                               }
-                            }, Icons.share, context, true),
+                            }, FontAwesomeIcons.twitter, context, true),
 
                           ],
                         ),
