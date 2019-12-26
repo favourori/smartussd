@@ -39,6 +39,7 @@ dependencies:
   flutter_slidable: ^0.5.4
   barcode_scan: ^1.0.0
   font_awesome_flutter: ^8.5.0
+  rate_my_app: ^0.4.0
 
 
 dev_dependencies:
