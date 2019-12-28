@@ -2,9 +2,41 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:kene/widgets/bloc_provider.dart';
 import 'package:kene/widgets/collapsible_widget.dart';
 
-class FAQ extends StatelessWidget{
+class FAQ extends StatefulWidget{
+  @override
+  State<StatefulWidget> createState() {
+    return _FAQState();
+  }
+}
+
+
+
+
+class _FAQState extends State<FAQ>{
+
+  String locale;
+
+  @override
+  void initState() {
+    super.initState();
+
+
+    var appBloc;
+
+    appBloc = BlocProvider.of(context);
+
+    appBloc.localeOut.listen((data) {
+      setState(() {
+        locale = data != null ? data : locale;
+      });
+    });
+
+  }
+
+
   @override
   Widget build(context){
     return Platform.isIOS ?
@@ -68,7 +100,7 @@ class FAQ extends StatelessWidget{
                             );
                           return ListView(
                             shrinkWrap: true,
-                            children:populateQuestions(snapshot.data.documents)
+                            children:populateQuestions(filterActiveFAQs(snapshot.data.documents))
                           );
                   })
                 ],
@@ -136,7 +168,7 @@ class FAQ extends StatelessWidget{
                           );
                         return ListView(
                             shrinkWrap: true,
-                            children:populateQuestions(snapshot.data.documents)
+                            children:populateQuestions(filterActiveFAQs(snapshot.data.documents))
                         );
                       })
                 ],
@@ -147,12 +179,25 @@ class FAQ extends StatelessWidget{
     );
   }
 
+  filterActiveFAQs(List list){
+    var activeFilteredList = [];
+    for(var faq in list){
+      if(faq['isActive'] != null && faq['isActive']){
+        activeFilteredList.add(faq);
+      }
+    }
+
+
+    return activeFilteredList;
+  }
+
   List<Widget> populateQuestions(list){
     List<Widget> tmp = [];
 
     for(var item in list){
       tmp.add(
-        CollapsibleWidget(question: item["question"], answer: item['answer'],),
+        CollapsibleWidget(question: item['question_map'] != null ? item['question_map'][locale] :  item["question"],
+          answer: item['answer_map'] != null ? item['answer_map'][locale] : item['answer'],),
       );
     }
 

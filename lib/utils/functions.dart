@@ -398,3 +398,24 @@ updateVersion() async{
 
   }
 }
+
+Future<Map> getPageData(String pageName) async{
+  var pages =  await Firestore.instance.collection("/pages").getDocuments();
+  for(var doc in pages.documents){
+    if(doc.documentID == pageName){
+      return doc.data;
+    }
+  }
+
+  return {};
+}
+
+String getTextFromPageData(Map pageData, String str, String locale){
+  print(pageData);
+  if(pageData.containsKey(str)){
+    print(pageData[str][locale]);
+    return pageData[str][locale];
+  }
+
+  return "";
+}

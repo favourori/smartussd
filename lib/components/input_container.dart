@@ -60,6 +60,11 @@ class _InputContainerState extends State<InputActionContainer> with TickerProvid
   List<dynamic> savedAccounts = [];
 
   KDB db = KDB();
+
+
+  String locale = "en";
+
+  Map pageData = {};
   
 
   _scanBarCode() async{
@@ -100,6 +105,20 @@ class _InputContainerState extends State<InputActionContainer> with TickerProvid
     super.initState();
 
 
+    appBloc = BlocProvider.of(context);
+
+    appBloc.localeOut.listen((data) {
+      setState(() {
+        locale = data != null ? data : locale;
+      });
+    });
+
+
+    getPageData("input_container").then((data){
+      setState(() {
+        pageData = data;
+      });
+    });
 
     appBloc = BlocProvider.of(context);
     appBloc.serviceDataOut.listen((dataFromStream){
@@ -134,7 +153,7 @@ class _InputContainerState extends State<InputActionContainer> with TickerProvid
         child: Column(
           children: <Widget>[
             serviceData['needsAmount'] == null || serviceData['needsAmount'] ?  // show amount if needed
-                 textInputContainerAmount("Amount", _amountController)
+                 textInputContainerAmount(getTextFromPageData(pageData, "amount", locale), _amountController)
                 : Container(),
             SizedBox(
               height:30,
@@ -210,7 +229,7 @@ class _InputContainerState extends State<InputActionContainer> with TickerProvid
                     keyboardType:label == "Amount" ? TextInputType.number : TextInputType.text,
                     controller: controller,
                     decoration: InputDecoration(
-                        labelText: "Enter $label",
+                        labelText: "${getTextFromPageData(pageData, "enter", locale)} $label",
                         border: InputBorder.none,
                         contentPadding: EdgeInsets.symmetric(horizontal: 20)),
                   ),
@@ -266,7 +285,7 @@ class _InputContainerState extends State<InputActionContainer> with TickerProvid
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: AutoSizeText(
-                              "Submit",
+                              getTextFromPageData(pageData, "submit", locale),
                               style: TextStyle(
                                 color: styleguide.accentColor,
                               ),
@@ -393,7 +412,7 @@ class _InputContainerState extends State<InputActionContainer> with TickerProvid
                       width: 10,
                     ),
                     Text(
-                      "Scan Code",
+                      getTextFromPageData(pageData, "scan_code", locale),
                       style: TextStyle(
                           color: styleguide.accentColor, fontWeight: FontWeight.bold),
                     ),
@@ -437,7 +456,7 @@ class _InputContainerState extends State<InputActionContainer> with TickerProvid
                       width: 10,
                     ),
                     Text(
-                      "Scan Code",
+                      getTextFromPageData(pageData, "scan_code", locale),
                       style: TextStyle(
                           color: styleguide.accentColor, fontWeight: FontWeight.bold),
                     ),
@@ -482,7 +501,7 @@ class _InputContainerState extends State<InputActionContainer> with TickerProvid
                       width: 10,
                     ),
                     Text(
-                      "Contact",
+                      getTextFromPageData(pageData, "contact", locale),
                       style: TextStyle(
                           color: styleguide.accentColor, fontWeight: FontWeight.bold),
                     ),
@@ -700,7 +719,7 @@ class _InputContainerState extends State<InputActionContainer> with TickerProvid
       }
 
       String numberToStore =
-      number.contains("+250") ? number.substring(3) : number;
+      number.contains("+") ? number.substring(3) : number;
       setState(() {
         _recipientController.text = numberToStore;
         _recipientContactName = contact.fullName;
