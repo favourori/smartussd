@@ -87,6 +87,8 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
   String parentID = "";
   List<dynamic> savedAccounts = [];
 
+  Firestore fireStoreInstance;
+
 //  var _labelFormKey = GlobalKey<FormState>();
 //  TextEditingController _labelController = TextEditingController();
   KDB db = KDB();
@@ -110,8 +112,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
 
 
 
-
-
+    fireStoreInstance = Firestore.instance;
 
     _scrollController = ScrollController(initialScrollOffset: 0.0);
     _scrollController.addListener(listener);
@@ -318,7 +319,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
   /// Receives collection url and fetches children
   StreamBuilder fetchServices() {
     return StreamBuilder(
-      stream: Firestore.instance
+      stream: fireStoreInstance
           .collection("$collectionURL")
           .where("isActive", isEqualTo: true)
           .snapshots(),

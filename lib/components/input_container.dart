@@ -69,8 +69,6 @@ class _InputContainerState extends State<InputActionContainer> with TickerProvid
   _scanBarCode() async{
 
     String barcodeScanRes =  await BarcodeScanner.scan();
-//    String barcodeScanRes = await FlutterBarcodeScanner.scanBarcode("#ff6666", "Cancel", false, ScanMode.DEFAULT);
-    print(barcodeScanRes);
     int len = barcodeScanRes.length;
     setState(() {
       _recipientController.text = barcodeScanRes.substring(3, len);  // Trim the country code out
@@ -122,8 +120,6 @@ class _InputContainerState extends State<InputActionContainer> with TickerProvid
     appBloc = BlocProvider.of(context);
     appBloc.serviceDataOut.listen((dataFromStream){
      if(mounted){ //avoid setting state after this component is unmounted
-
-       print(dataFromStream);
        setState(() {
          serviceData = dataFromStream != null ? dataFromStream : {};
        });
@@ -152,7 +148,7 @@ class _InputContainerState extends State<InputActionContainer> with TickerProvid
         child: Column(
           children: <Widget>[
             serviceData['needsAmount'] == null || serviceData['needsAmount'] ?  // show amount if needed
-                 textInputContainerAmount(getTextFromPageData(pageData, "amount", locale), _amountController)
+                 textInputContainerAmount(getTextFromPageData(pageData, "amount", locale), _amountController, true)
                 : Container(),
             SizedBox(
               height:30,
@@ -202,12 +198,11 @@ class _InputContainerState extends State<InputActionContainer> with TickerProvid
 
 
   Column textInputContainerAmount(
-      String label, TextEditingController controller) {
+      String label, TextEditingController controller, isAmount) {
     return Column(
       children: <Widget>[
         Container(
           height: 60,
-          // padding: EdgeInsets.symmetric(vertical: 10),
           decoration: BoxDecoration(
               color: Colors.white, borderRadius: BorderRadius.circular(40)),
           child: Row(
@@ -221,7 +216,7 @@ class _InputContainerState extends State<InputActionContainer> with TickerProvid
                       if (serviceData['needsContact']) {
                       }
                     },
-                    keyboardType:label == "Amount" ? TextInputType.number : TextInputType.text,
+                    keyboardType:isAmount ? TextInputType.number : TextInputType.text,
                     controller: controller,
                     decoration: InputDecoration(
                         labelText: "${getTextFromPageData(pageData, "enter", locale)} $label",
@@ -230,7 +225,7 @@ class _InputContainerState extends State<InputActionContainer> with TickerProvid
                   ),
                 ),
               ),
-              label != "Amount" && showSubmit
+              !isAmount && showSubmit
                   ? Expanded(
                 flex: 2,
                 child: GestureDetector(
@@ -240,8 +235,6 @@ class _InputContainerState extends State<InputActionContainer> with TickerProvid
                     if ((serviceData['canSaveLabels'] != null && serviceData['canSaveLabels']) &&
                         numberNotInSavedAccounts(
                             _recipientController.text)) {
-//                      bool response = false;
-                      // AdaptiveDialog(serviceData: serviceData, recipientController: _recipientController);
                       show(context);
                     } else {
 
@@ -340,7 +333,7 @@ class _InputContainerState extends State<InputActionContainer> with TickerProvid
           SizedBox(
             height: 20,
           ),
-          textInputContainerAmount(label, _recipientController),
+          textInputContainerAmount(label, _recipientController, false),
           SizedBox(
             height: 20,
           ),
@@ -603,18 +596,6 @@ class _InputContainerState extends State<InputActionContainer> with TickerProvid
   }
 
   mlKit(_image) async {
-    print("====>> flutter[]: mlkit called");
-
-//    FirebaseVisionTextDetector firebaseVisionTextDetector = FirebaseVisionTextDetector.instance;
-//
-//    print("before labels");
-//    var labels = await firebaseVisionTextDetector.detectFromPath(_image.path);
-//    print(labels.length);
-//    for(var text in labels){
-//      print(text.text+"xx");
-//    }
-//    print("after labels");
-
     final FirebaseVisionImage visionImage = FirebaseVisionImage.fromFile(_image);
     final TextRecognizer textRecognizer = FirebaseVision.instance.textRecognizer();
 
@@ -706,7 +687,6 @@ class _InputContainerState extends State<InputActionContainer> with TickerProvid
 
 
   getContact() async {
-    print("ger contact called");
     final NativeContactPicker _contactPicker = new NativeContactPicker();
     Contact contact = await _contactPicker.selectContact();
     if (contact != null) {
@@ -729,7 +709,6 @@ class _InputContainerState extends State<InputActionContainer> with TickerProvid
 
 
   show(context){
-   print("show called");
     return Platform.isIOS
         ? showCupertinoDialog(
         context: context,

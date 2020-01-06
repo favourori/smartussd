@@ -176,17 +176,9 @@ class _ServiceItemState extends State<ServiceItem> {
                                 Icons.album,
                                 size: 50,
                               )
-                            : CachedNetworkImage(
-                                imageUrl: widget.icon,
-                                placeholder: (context, url) => new Icon(
-                                  Icons.album,
-                                  size: 50,
-                                ),
-                                errorWidget: (context, url, error) => new Icon(
-                                  Icons.album,
-                                  size: 50,
-                                ),
-                              ),
+                            :
+                        showCachedImage(widget.icon)
+                    
                       ),
                       Expanded(
                         child: Padding(
@@ -278,17 +270,10 @@ class _ServiceItemState extends State<ServiceItem> {
                               Icons.album,
                               size: 50,
                             )
-                          : CachedNetworkImage(
-                              imageUrl: widget.icon,
-                              placeholder: (context, url) => new Icon(
-                                Icons.album,
-                                size: 50,
-                              ),
-                              errorWidget: (context, url, error) => new Icon(
-                                Icons.album,
-                                size: 50,
-                              ),
-                            ),
+                          :
+
+
+                      showCachedImage(widget.icon)
                     ),
                     Expanded(
                       child: Padding(
@@ -333,5 +318,24 @@ class _ServiceItemState extends State<ServiceItem> {
               ),
             ),
     );
+  }
+
+
+  showCachedImage(String imageUrl){
+    return imageUrl.contains("https://") ? 
+                      CachedNetworkImage(
+                              imageUrl: imageUrl,
+                              placeholder: (context, url) => new Icon(
+                                Icons.album,
+                                size: 50,
+                              ),
+                              errorWidget: (context, url, error) => new Icon(
+                                Icons.album,
+                                size: 50,
+                              ),
+                            ) 
+    :
+    
+    Icon(Icons.album, size: 50,);
   }
 }

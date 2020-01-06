@@ -42,8 +42,9 @@ class _CarriersState extends State<Carriers> {
   final FirebaseMessaging _fireBaseMessaging = FirebaseMessaging();
   ScrollController _scrollController;
 
-
   String locale = "en";
+
+  Firestore firestoreInstance;
 
 
   // Data to hold the pages string from fireBase for translations
@@ -62,6 +63,8 @@ class _CarriersState extends State<Carriers> {
     super.initState();
 
     var appBloc;
+
+    firestoreInstance = Firestore.instance;
 
     appBloc = BlocProvider.of(context);
 
@@ -176,6 +179,7 @@ class _CarriersState extends State<Carriers> {
         if (child['hasChildren'] != null && child['hasChildren']) {
           url += "/" + child.documentID + "/children";
           print(child['label']);
+          print(url);
           recurseLoad(url);
         }
       }
@@ -315,7 +319,7 @@ class _CarriersState extends State<Carriers> {
                         padding: const EdgeInsets.all(20.0),
                         child: StreamBuilder(
                           stream:
-                          Firestore.instance.collection("services").snapshots(),
+                          firestoreInstance.collection("services").snapshots(),
                           builder: (context, snapshot) {
                             if (!snapshot.hasData || isOlderVersion == null)
                               return Center(
@@ -326,11 +330,9 @@ class _CarriersState extends State<Carriers> {
                                     (DocumentSnapshot a, DocumentSnapshot b) =>
                                     getServiceOrderNo(a)
                                         .compareTo(getServiceOrderNo(b)));
-                            return !isOlderVersion
-                                ? 
-                              //   Column(
-                              // children: <Widget>[
 
+                            return !isOlderVersion
+                                ?
                                 GridView.count(
                                   
                                   shrinkWrap: true,
@@ -341,7 +343,7 @@ class _CarriersState extends State<Carriers> {
                                 )
                                 : Container(
                               child: StreamBuilder(
-                                  stream: Firestore.instance.collection("settings").where("label", isEqualTo:"versioning" ).snapshots(),
+                                  stream: firestoreInstance.collection("settings").where("label", isEqualTo:"versioning" ).snapshots(),
                                   builder: (context, snapshot) {
                                     return snapshot.hasData ? Center(
                                       child: Column(
