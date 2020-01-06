@@ -491,12 +491,12 @@ getActiveCarriers(list){
                         fit: BoxFit.cover,
                         imageUrl: "",
                         placeholder: (context, url) => new Icon(
-                          Icons.favorite,
+                          Icons.favorite_border,
                           size: 60,
                           color: Colors.orangeAccent,
                         ),
                         errorWidget: (context, url, error) => new Icon(
-                          Icons.favorite,
+                          Icons.favorite_border,
                           size: 60,
                           color: Colors.orangeAccent,
                         ),

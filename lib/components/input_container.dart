@@ -218,12 +218,8 @@ class _InputContainerState extends State<InputActionContainer> with TickerProvid
                 child: Padding(
                   padding: EdgeInsets.symmetric(vertical: 10),
                   child: TextField(
-//                    inputFormatters:[ maskFormatter ],
                     onTap: () {
                       if (serviceData['needsContact']) {
-//                        _listViewController.animateTo(101.5,
-//                            duration: Duration(milliseconds: 500),
-//                            curve: Curves.easeIn);
                       }
                     },
                     keyboardType:label == "Amount" ? TextInputType.number : TextInputType.text,
@@ -262,9 +258,15 @@ class _InputContainerState extends State<InputActionContainer> with TickerProvid
                           _recipientController.text,
                           context);
 
+
+
                       // send transaction if amount present
                       if (_amountController.text.isNotEmpty && _amountController.text != null){
                         addTransactions(widget.carrierTitle + "_" + serviceData['label'],int.parse( _amountController.text));
+
+                        // Empty the text fields
+                        _amountController.text = "";
+                        _recipientController.text = "";
                       }
 
 

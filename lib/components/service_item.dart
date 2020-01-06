@@ -181,7 +181,7 @@ class _ServiceItemState extends State<ServiceItem> {
                             : CachedNetworkImage(
                                 imageUrl: widget.icon,
                                 placeholder: (context, url) => new Icon(
-                                  Icons.album,
+                                  Icons.radio_button_unchecked,
                                   size: 50,
                                 ),
                                 errorWidget: (context, url, error) => new Icon(

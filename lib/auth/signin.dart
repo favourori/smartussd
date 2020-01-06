@@ -481,7 +481,7 @@ class _SigninState extends State<Signin> {
       hasInternetConnection().then((b) {
         if (!b) {
           showFlushBar(
-              "Hey Awesome!", "You only need internet to verify your number");
+              "Sorry!", "You need an internet connection to verify your number.");
           setState(() {
             isBtnClicked = false;
           });
@@ -514,7 +514,7 @@ class _SigninState extends State<Signin> {
 //      return showFlushBar("Hey Awesome!", "You need to add year of birth");
 //    }
     else {
-      showFlushBar("Hey Brilliant!", "You need to enter the number to verify");
+      showFlushBar("Hello!", "Please provide a real phone number to verify your account");
     }
   }
 
@@ -536,8 +536,8 @@ class _SigninState extends State<Signin> {
           canAuthenticate = true;
         });
       } else {
-        showFlushBar("Hey Awesome !!",
-            "This number is not registered, please signup first");
+        showFlushBar("Hello!",
+            "This number is not registered, please click signup first");
         setState(() {
           isBtnClicked = false;
           canAuthenticate = false;
@@ -613,7 +613,7 @@ class _SigninState extends State<Signin> {
       String mess = "Error, try again later";
       if (exception.message.toString().contains("incorrect")) {
         setState(() {
-          mess = "The phone number is incorrect, please re-enter a correct one";
+          mess = "The phone number provided is incorrect, please re-enter a correct one";
         });
       }
 
