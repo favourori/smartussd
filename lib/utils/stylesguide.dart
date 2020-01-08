@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 
 
 //colors
-Color primaryColor = Colors.orange;
+Color primaryColor = Colors.purple;
 Color primaryColorDark = Colors.black;
 Color secondaryColor = Colors.red;
-Color accentColor = Colors.black;
+Color accentColor = Color(0xff0B1A4E);
 Color pageBackground = Colors.grey[300];
-Color mainColor = Color(0xffED7937);
+Color mainColor = Color(0xffFF9800);
 
 
 

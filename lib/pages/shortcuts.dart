@@ -6,12 +6,13 @@ import 'package:kene/components/input_container.dart';
 import 'package:kene/components/loader.dart';
 import 'package:kene/database/db.dart';
 import 'package:kene/pages/settings.dart';
+import 'package:kene/pages/shortcut_add.dart';
 import 'package:kene/pages/shortcut_item.dart';
 import 'package:kene/utils/functions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:kene/utils/stylesguide.dart';
 import 'package:kene/widgets/custom_nav.dart';
-import 'package:kene/components/service_item.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -49,7 +50,7 @@ class _NShortcutsState extends State<NShortcuts> with TickerProviderStateMixin {
   scrollListener() {
     var innerScrollPos = _listViewController.offset;
 //    _scrollController.animateTo(innerScrollPos/2, duration: Duration(microseconds: 10), curve: Curves.linear);
-    _scrollController.jumpTo(innerScrollPos/2);
+    _scrollController.jumpTo(innerScrollPos / 2);
   }
 
   ScrollController _listViewController = new ScrollController();
@@ -85,6 +86,7 @@ class _NShortcutsState extends State<NShortcuts> with TickerProviderStateMixin {
   String parentID = "";
   List<dynamic> savedAccounts = [];
 
+
 //  var _labelFormKey = GlobalKey<FormState>();
 //  TextEditingController _labelController = TextEditingController();
   KDB db = KDB();
@@ -114,7 +116,6 @@ class _NShortcutsState extends State<NShortcuts> with TickerProviderStateMixin {
 
     // Send analytics on page load/initialize
     sendAnalytics(widget.analytics, "ServicesPage_Open", null);
-
 
     var tmpHeader = [widget.carrierTitle];
     setState(() {
@@ -158,7 +159,11 @@ class _NShortcutsState extends State<NShortcuts> with TickerProviderStateMixin {
                       IconButton(
                         onPressed: () {
                           Navigator.push(
-                              context, CustomPageRoute(navigateTo: Settings(analytics: widget.analytics,)));
+                              context,
+                              CustomPageRoute(
+                                  navigateTo: Settings(
+                                analytics: widget.analytics,
+                              )));
                         },
                         icon: Icon(
                           Icons.more_vert,
@@ -179,42 +184,42 @@ class _NShortcutsState extends State<NShortcuts> with TickerProviderStateMixin {
                     backgroundColor: widget.primaryColor,
                     leading: navigationStack.length > 1 || showActionSection
                         ? IconButton(
-                      onPressed: () {
-                        if (!showActionSection) {
-                          navigationStack.removeLast();
+                            onPressed: () {
+                              if (!showActionSection) {
+                                navigationStack.removeLast();
 
-                          setState(() {
-                            collectionURL = navigationStack[
-                            navigationStack.length - 1];
-                          });
-                        }
-                        headTitleStack.removeLast();
-                        var ht2 = headTitleStack;
-                        setState(() {
-                          serviceDescription = "";
-                          headTitleStack = ht2;
-                          showActionSection = false;
-                          _amountController.text = "";
-                          _recipientController.text = "";
-                          cameraBtnClicked = false;
-                        });
-                      },
-                      icon: Icon(
-                        Icons.arrow_back_ios,
-                        color: Colors.white,
-                        size: 30,
-                      ),
-                    )
+                                setState(() {
+                                  collectionURL = navigationStack[
+                                      navigationStack.length - 1];
+                                });
+                              }
+                              headTitleStack.removeLast();
+                              var ht2 = headTitleStack;
+                              setState(() {
+                                serviceDescription = "";
+                                headTitleStack = ht2;
+                                showActionSection = false;
+                                _amountController.text = "";
+                                _recipientController.text = "";
+                                cameraBtnClicked = false;
+                              });
+                            },
+                            icon: Icon(
+                              Icons.arrow_back_ios,
+                              color: Colors.white,
+                              size: 30,
+                            ),
+                          )
                         : IconButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      icon: Icon(
-                        Icons.home,
-                        color: Colors.white,
-                        size: 30,
-                      ),
-                    ),
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            icon: Icon(
+                              Icons.home,
+                              color: Colors.white,
+                              size: 30,
+                            ),
+                          ),
                     flexibleSpace: Container(
                       decoration: BoxDecoration(
                           color: widget.primaryColor,
@@ -229,7 +234,7 @@ class _NShortcutsState extends State<NShortcuts> with TickerProviderStateMixin {
                             child: Text(
                               "${headTitleStack[headTitleStack.length - 1]}",
                               style:
-                              TextStyle(color: Colors.white, fontSize: 14),
+                                  TextStyle(color: Colors.white, fontSize: 14),
                             ),
                           )
                         ],
@@ -252,172 +257,14 @@ class _NShortcutsState extends State<NShortcuts> with TickerProviderStateMixin {
                               bottomRight: Radius.circular(40))),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
-                        children: <Widget>[
-//                          SizedBox(
-//                            height: 40,
-//                          ),
-//                          Container(
-//                            padding: EdgeInsets.symmetric(horizontal: 10),
-//                            //  decoration: BoxDecoration(
-//                            //    border: Border.all()
-//                            //  ),
-//                            width: MediaQuery.of(context).size.width,
-//                            child: Row(
-//                              children: <Widget>[
-//                                Expanded(
-//                                  flex: 2,
-//                                  child: Align(
-//                                      alignment: Alignment.topLeft,
-//                                      child: navigationStack.length > 1 ||
-//                                              showActionSection
-//                                          ? IconButton(
-//                                              onPressed: () {
-//                                                if (!showActionSection) {
-//                                                  navigationStack.removeLast();
-//
-//                                                  setState(() {
-//                                                    collectionURL =
-//                                                        navigationStack[
-//                                                            navigationStack
-//                                                                    .length -
-//                                                                1];
-//                                                  });
-//                                                }
-//                                                headTitleStack.removeLast();
-//                                                var ht2 = headTitleStack;
-//                                                setState(() {
-//                                                  serviceDescription = "";
-//                                                  headTitleStack = ht2;
-//                                                  showActionSection = false;
-//                                                  _amountController.text = "";
-//                                                  _recipientController.text =
-//                                                      "";
-//                                                  cameraBtnClicked = false;
-//                                                });
-//                                              },
-//                                              icon: Icon(
-//                                                Icons.arrow_back_ios,
-//                                                color: Colors.white,
-//                                                size: 30,
-//                                              ),
-//                                            )
-//                                          : IconButton(
-//                                              onPressed: () {
-//                                                Navigator.pop(context);
-//                                              },
-//                                              icon: Icon(
-//                                                Icons.home,
-//                                                color: Colors.white,
-//                                                size: 30,
-//                                              ),
-//                                            )),
-//                                ),
-//                                Expanded(
-//                                  flex: 3,
-//                                  child: Align(
-//                                    alignment: Alignment.center,
-//                                    child: AutoSizeText(
-//                                      "Nokanda",
-//                                      style: TextStyle(
-//                                        color: Colors.white,
-//                                        fontSize: 24,
-//                                        fontWeight: FontWeight.w900,
-//                                      ),
-//                                      maxLines: 2,
-//                                    ),
-//                                  ),
-//                                ),
-//                                Expanded(
-//                                  flex: 2,
-//                                  child: Align(
-//                                    alignment: Alignment.topRight,
-//                                    child: IconButton(
-//                                      onPressed: () {
-//                                        Navigator.push(
-//                                            context,
-//                                            CustomPageRoute(
-//                                                navigateTo: Settings()));
-//                                      },
-//                                      icon: Icon(
-//                                        Icons.more_vert,
-//                                        color: Colors.white,
-//                                        size: 30,
-//                                      ),
-//                                    ),
-//                                  ),
-//                                ),
-//                              ],
-//                            ),
-//                          ),
-//                          Row(children: [
-//                            Expanded(
-//                              flex: 1,
-//                              child: Container(),
-//                            ),
-//                            Expanded(
-//                                flex: 4,
-//                                child: Align(
-//                                    alignment: Alignment.center,
-//                                    child: Text(
-//                                      "${headTitleStack[headTitleStack.length - 1]}",
-//                                      style: TextStyle(
-//                                          color: Colors.white, fontSize: 14),
-//                                    ))),
-//                            Expanded(
-//                              flex: 1,
-//                              child: serviceDescription != null &&
-//                                      serviceDescription.isNotEmpty
-//                                  ? GestureDetector(
-//                                      child: IconButton(
-//                                          icon: Icon(
-//                                            Icons.info_outline,
-//                                            color: Colors.white,
-//                                          ),
-//                                          onPressed: () {
-//                                            Platform.isIOS
-//                                                ? showCupertinoDialog(
-//                                                    context: context,
-//                                                    builder: (context) {
-//                                                      return CupertinoAlertDialog(
-//                                                        title: Center(
-//                                                          child: Text("Info"),
-//                                                        ),
-//                                                        content: Text(
-//                                                            "$serviceDescription "),
-//                                                        actions: <Widget>[
-//                                                          CupertinoButton(
-//                                                              child:
-//                                                                  Text("Close"),
-//                                                              onPressed: () {
-//                                                                Navigator.pop(
-//                                                                    context);
-//                                                              })
-//                                                        ],
-//                                                      );
-//                                                    })
-//                                                : showDialog(
-//                                                    context: context,
-//                                                    builder: (context) {
-//                                                      return AlertDialog(
-//                                                        title: Center(
-//                                                          child: Text("Info"),
-//                                                        ),
-//                                                        content: Text(
-//                                                            "$serviceDescription"),
-//                                                      );
-//                                                    });
-//                                          }),
-//                                    )
-//                                  : Container(),
-//                            ),
-//                          ])
-                        ],
+                        children: <Widget>[],
                       ),
                     ),
                     Positioned(
                       top: 0,
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical:20.0, horizontal: 0),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 20.0, horizontal: 0),
                         child: Container(
                           width: MediaQuery.of(context).size.width,
                           // MediaQuery.of(context).size.width - 40,
@@ -433,9 +280,9 @@ class _NShortcutsState extends State<NShortcuts> with TickerProviderStateMixin {
                                 !showActionSection
                                     ? fetchServices()
                                     : InputActionContainer(
-                                    primaryColor: widget.primaryColor,
-                                    analytics: widget.analytics,
-                                    carrierTitle: widget.carrierTitle),
+                                        primaryColor: widget.primaryColor,
+                                        analytics: widget.analytics,
+                                        carrierTitle: widget.carrierTitle),
 //                        actionContainer(),
                                 SizedBox(
                                   height: 100,
@@ -456,28 +303,39 @@ class _NShortcutsState extends State<NShortcuts> with TickerProviderStateMixin {
   StreamBuilder fetchServices() {
     print(collectionURL);
     return StreamBuilder(
-      stream: Firestore.instance
-          .collection("$collectionURL")
-          .snapshots(),
+      stream: Firestore.instance.collection("$collectionURL").snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return Center(child: NLoader());
         }
-        
-        if(snapshot.data.documents.length < 1){
+
+        if (snapshot.data.documents.length < 1) {
           return Center(
-            child: Text("You have not added shortcuts yet. Swipe right on a service to add as shortcut",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold
-            ),),
+            child: Column(
+              children: <Widget>[
+                SizedBox(height: 50,),
+                Text(
+                  "You have not added shortcuts yet.",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 30,),
+                RaisedButton(
+                  color: accentColor,
+                  onPressed: (){
+
+                  setState(() {
+                    Navigator.pushReplacement(context, CustomPageRoute(navigateTo: ShortcutAdd(userID: widget.userID, analytics: widget.analytics,)));
+                  });
+                }, child: Text("Add Shortcut", style: TextStyle(color: Colors.white),),)
+              ],
+            )
           );
         }
         return Column(
             children: displayServices(
                 snapshot.data.documents) //display the services fetched
-        );
+            );
       },
     );
   }
@@ -490,7 +348,6 @@ class _NShortcutsState extends State<NShortcuts> with TickerProviderStateMixin {
 // Receives motive from child and performs actions accordingly
   serviceActions(String url, int motive, Map<String, dynamic> data) {
     if (motive == 0) {
-
       // If service has children, this condition is met
       if (url.isNotEmpty) {
         var tmp = navigationStack;
@@ -498,21 +355,18 @@ class _NShortcutsState extends State<NShortcuts> with TickerProviderStateMixin {
         setState(() {
           collectionURL = collectionURL + url;
           navigationStack = tmp;
-
         });
       }
     }
 
     // If service has no input and no children, condition is met
     else if (motive == 1) {
-
       sendCode(platform, data['code'], _amountController.text,
           _recipientController.text, context);
     }
 
     // If leaf service [has input and no children], condition is met
     else {
-
       setState(() {
         showActionSection = true;
       });
@@ -559,7 +413,7 @@ class _NShortcutsState extends State<NShortcuts> with TickerProviderStateMixin {
             hasChildren: list['hasChildren'],
             parentID: list.documentID,
             serviceActions: serviceActions,
-            primaryColor:widget.primaryColor,
+            primaryColor: widget.primaryColor,
             needsScan: list["needsScan"],
             carrierID: list['carrier'],
           ),

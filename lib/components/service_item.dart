@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:kene/widgets/bloc_provider.dart';
 import 'package:kene/utils/functions.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:kene/utils/stylesguide.dart' as styleguide;
-
 
 class ServiceItem extends StatefulWidget {
   final backgroundColor;
@@ -178,17 +176,9 @@ class _ServiceItemState extends State<ServiceItem> {
                                 Icons.album,
                                 size: 50,
                               )
-                            : CachedNetworkImage(
-                                imageUrl: widget.icon,
-                                placeholder: (context, url) => new Icon(
-                                  Icons.radio_button_unchecked,
-                                  size: 50,
-                                ),
-                                errorWidget: (context, url, error) => new Icon(
-                                  Icons.album,
-                                  size: 50,
-                                ),
-                              ),
+                            :
+                        showCachedImage(widget.icon)
+                    
                       ),
                       Expanded(
                         child: Padding(
@@ -198,12 +188,12 @@ class _ServiceItemState extends State<ServiceItem> {
                                 ? Text(
                                     widget.name,
                                     style:
-                                        TextStyle(fontWeight: FontWeight.w600, color: styleguide.accentColor),
+                                        TextStyle(fontWeight: FontWeight.w600),
                                   )
                                 : Text(
                                     widget.nameMap[locale],
                                     style:
-                                        TextStyle(fontWeight: FontWeight.w600, color: styleguide.accentColor),
+                                        TextStyle(fontWeight: FontWeight.w600),
                                   )),
                       ),
                       (widget.hasChildren != null && widget.hasChildren) ||
@@ -280,17 +270,10 @@ class _ServiceItemState extends State<ServiceItem> {
                               Icons.album,
                               size: 50,
                             )
-                          : CachedNetworkImage(
-                              imageUrl: widget.icon,
-                              placeholder: (context, url) => new Icon(
-                                Icons.album,
-                                size: 50,
-                              ),
-                              errorWidget: (context, url, error) => new Icon(
-                                Icons.album,
-                                size: 50,
-                              ),
-                            ),
+                          :
+
+
+                      showCachedImage(widget.icon)
                     ),
                     Expanded(
                       child: Padding(
@@ -299,11 +282,11 @@ class _ServiceItemState extends State<ServiceItem> {
                           child: widget.nameMap == null
                               ? Text(
                                   widget.name,
-                                  style: TextStyle(fontWeight: FontWeight.w600, color: styleguide.accentColor),
+                                  style: TextStyle(fontWeight: FontWeight.w600),
                                 )
                               : Text(
                                   widget.nameMap[locale],
-                                  style: TextStyle(fontWeight: FontWeight.w600, color: styleguide.accentColor),
+                                  style: TextStyle(fontWeight: FontWeight.w600),
                                 )
 
                           // ListView(
@@ -335,5 +318,24 @@ class _ServiceItemState extends State<ServiceItem> {
               ),
             ),
     );
+  }
+
+
+  showCachedImage(String imageUrl){
+    return imageUrl.contains("https://") ? 
+                      CachedNetworkImage(
+                              imageUrl: imageUrl,
+                              placeholder: (context, url) => new Icon(
+                                Icons.album,
+                                size: 50,
+                              ),
+                              errorWidget: (context, url, error) => new Icon(
+                                Icons.album,
+                                size: 50,
+                              ),
+                            ) 
+    :
+    
+    Icon(Icons.album, size: 50,);
   }
 }
