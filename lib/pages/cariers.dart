@@ -11,6 +11,7 @@ import 'package:kene/pages/services.dart';
 import 'package:kene/pages/settings.dart';
 import 'package:kene/pages/shortcuts.dart';
 import 'package:kene/utils/functions.dart';
+import 'package:kene/utils/stylesguide.dart';
 import 'package:kene/widgets/bloc_provider.dart';
 import 'package:kene/widgets/custom_nav.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -82,11 +83,11 @@ class _CarriersState extends State<Carriers> {
     });
 
 
-    fetchAllServices().then((d){
-      for(var item in collectionsCache){
-        print("item is: " + item['label']);
-      }
-    });
+//    fetchAllServices().then((d){
+//      for(var item in collectionsCache){
+//        print("item is: " + item['label']);
+//      }
+//    });
 
 
     FirebaseAuth.instance.currentUser().then((f){ // Set the logged in phone number as qrCode data
@@ -184,9 +185,6 @@ class _CarriersState extends State<Carriers> {
         }
       }
     }
-
-
-
   }
 
   @override
@@ -194,18 +192,27 @@ class _CarriersState extends State<Carriers> {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         backgroundColor: Color(0xfff6f7f9),
-        child: Icon(FontAwesomeIcons.barcode, size: 30, color:  Color(0xff1C1766),),
-        onPressed: (){
-          Navigator.push(context, CustomPageRoute(
-            navigateTo: ReceivePage(qrImage: _qrScan, analytics: widget.analytics,)
+        child: Icon(Icons.favorite, size: 30, color:  mainColor,),
+        onPressed: () async{
+                  var uid = await getUserID();
+                    Navigator.push(context,  CustomPageRoute(
+                     navigateTo: NShortcuts(
+                       userID:uid,
+                       primaryColor: Colors.orangeAccent,
+                       carrierTitle: getTextFromPageData(pageData, "shortcuts", locale),
+                       analytics: widget.analytics,
+                     )
+                 ));
+//          Navigator.push(context, CustomPageRoute(
+//            navigateTo: ReceivePage(qrImage: _qrScan, analytics: widget.analytics,)
                 
-          ));
+//          ));
         },
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
       bottomNavigationBar: BottomAppBar(
         shape: CircularNotchedRectangle(),
-        color: Colors.orangeAccent,
+//        color: Colors.orangeAccent,
         elevation: 14,
         child: Container(
           height: 50,
@@ -214,11 +221,34 @@ class _CarriersState extends State<Carriers> {
           children: <Widget>[
             Expanded(
               flex: 1,
-              child: Text(getTextFromPageData(pageData, "footer_text", locale), textAlign: TextAlign.center, style: TextStyle(
-                  color: Colors.white,
-                fontSize: 12
-              ),),
-            )
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Icon(Icons.home, color: accentColor, size: 20,),
+                  SizedBox(width: 3,),
+                  Text("Home", style: TextStyle(color: accentColor, fontSize: 12),)
+                ],
+              ),
+            ),
+
+          Expanded(
+          flex: 1,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Icon(Icons.aspect_ratio, color: mainColor, size: 20,),
+              Text("Hexakomb", style: TextStyle(color: mainColor, fontSize: 12),)
+            ],
+          ),
+        ),
+
+        Expanded(
+        flex: 1,
+        child: Text("", textAlign: TextAlign.center, style: TextStyle(
+            color: Colors.white,
+            fontSize: 12
+        ),),
+      )
 
           ],
         ),
@@ -459,62 +489,62 @@ getActiveCarriers(list){
   }
   }
 
-  tmp.add(
-    GestureDetector(
-        onTap: () async{
-          var uid = await getUserID();
-          Navigator.push(context,  CustomPageRoute(
-                     navigateTo: NShortcuts(
-                       userID:uid,
-                       primaryColor: Colors.orangeAccent,
-                       carrierTitle: getTextFromPageData(pageData, "shortcuts", locale),
-                       analytics: widget.analytics,
-                     )
-                 ));
-        },
-        child:
-      Container(
-        // height: 200,
-        padding: EdgeInsets.symmetric(horizontal:10),
-        decoration: BoxDecoration(
-          color: Color(0xfff6f7f9),
-          // border: Border.all(color: Colors.blue),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Center(child:Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-          SizedBox(
-                    height: 60,
-                    width: 60,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: CachedNetworkImage(
-                        fit: BoxFit.cover,
-                        imageUrl: "",
-                        placeholder: (context, url) => new Icon(
-                          Icons.favorite,
-                          size: 60,
-                          color: Colors.orangeAccent,
-                        ),
-                        errorWidget: (context, url, error) => new Icon(
-                          Icons.favorite,
-                          size: 60,
-                          color: Colors.orangeAccent,
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-          Text(getTextFromPageData(pageData, "shortcuts", locale), textAlign: TextAlign.center, style: TextStyle(
-              fontWeight: FontWeight.w600
-          ),)
-        ],),
-      ))
-      )
-  );
+//  tmp.add(
+//    GestureDetector(
+//        onTap: () async{
+//          var uid = await getUserID();
+//          Navigator.push(context,  CustomPageRoute(
+//                     navigateTo: NShortcuts(
+//                       userID:uid,
+//                       primaryColor: Colors.orangeAccent,
+//                       carrierTitle: getTextFromPageData(pageData, "shortcuts", locale),
+//                       analytics: widget.analytics,
+//                     )
+//                 ));
+//        },
+//        child:
+//      Container(
+//        // height: 200,
+//        padding: EdgeInsets.symmetric(horizontal:10),
+//        decoration: BoxDecoration(
+//          color: Color(0xfff6f7f9),
+//          // border: Border.all(color: Colors.blue),
+//          borderRadius: BorderRadius.circular(8),
+//        ),
+//        child: Center(child:Column(
+//          mainAxisAlignment: MainAxisAlignment.center,
+//          children: <Widget>[
+//          SizedBox(
+//                    height: 60,
+//                    width: 60,
+//                    child: ClipRRect(
+//                      borderRadius: BorderRadius.circular(10),
+//                      child: CachedNetworkImage(
+//                        fit: BoxFit.cover,
+//                        imageUrl: "",
+//                        placeholder: (context, url) => new Icon(
+//                          Icons.favorite,
+//                          size: 60,
+//                          color: Colors.orangeAccent,
+//                        ),
+//                        errorWidget: (context, url, error) => new Icon(
+//                          Icons.favorite,
+//                          size: 60,
+//                          color: Colors.orangeAccent,
+//                        ),
+//                      ),
+//                    ),
+//                  ),
+//                  SizedBox(
+//                    height: 10,
+//                  ),
+//          Text(getTextFromPageData(pageData, "shortcuts", locale), textAlign: TextAlign.center, style: TextStyle(
+//              fontWeight: FontWeight.w600
+//          ),)
+//        ],),
+//      ))
+//      )
+//  );
 
   return tmp;
 }

@@ -40,6 +40,7 @@ dependencies:
   barcode_scan: ^1.0.0
   font_awesome_flutter: ^8.5.0
   rate_my_app: ^0.4.0
+  google_fonts: ^0.3.2
 
 
 dev_dependencies:
