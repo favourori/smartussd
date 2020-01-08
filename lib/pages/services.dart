@@ -9,6 +9,7 @@ import 'package:kene/pages/settings.dart';
 import 'package:kene/utils/functions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:kene/utils/stylesguide.dart';
 import 'package:kene/widgets/bloc_provider.dart';
 import 'package:kene/widgets/custom_nav.dart';
 import 'package:kene/components/service_item.dart';
@@ -193,6 +194,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 24,
+                        fontFamily: buttonTextFamily,
                         fontWeight: FontWeight.w900,
                       ),
                       maxLines: 2,

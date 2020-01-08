@@ -40,7 +40,7 @@ dependencies:
   barcode_scan: ^1.0.0
   font_awesome_flutter: ^8.5.0
   rate_my_app: ^0.4.0
-  google_fonts: ^0.3.2
+#  google_fonts: ^0.3.2
 
 
 dev_dependencies:
@@ -56,6 +56,7 @@ flutter:
   uses-material-design: true
 
   assets:
+    - "assets/images/hexakomb_full_logo.png"
     - "assets/images/nokanda.png"
     - "assets/images/nokanda_full.png"
     - "assets/images/sendmoney.png"
@@ -73,9 +74,9 @@ flutter:
       fonts:
         - asset: assets/fonts/RobotoMono-Regular.ttf
 
-    - family: Livvic
+    - family: DINPro
       fonts:
-        - asset: assets/fonts/Livvic-Regular.ttf
+        - asset: assets/fonts/dinpro_font/DINPro-Medium.otf
 
     - family: Roboto
       fonts:

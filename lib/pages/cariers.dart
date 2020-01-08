@@ -226,20 +226,21 @@ class _CarriersState extends State<Carriers> {
                 children: <Widget>[
                   Icon(Icons.home, color: accentColor, size: 20,),
                   SizedBox(width: 3,),
-                  Text("Home", style: TextStyle(color: accentColor, fontSize: 12),)
+                  Text("Home", style: TextStyle(color: accentColor, fontSize: 12, fontFamily: buttonTextFamily, fontWeight: FontWeight.bold),)
                 ],
               ),
             ),
 
           Expanded(
           flex: 1,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Icon(Icons.aspect_ratio, color: mainColor, size: 20,),
-              Text("Hexakomb", style: TextStyle(color: mainColor, fontSize: 12),)
-            ],
-          ),
+
+          child: Container(
+            height: 50,
+            width: 40,
+            decoration: BoxDecoration(
+              image: DecorationImage(image: AssetImage("assets/images/hexakomb_full_logo.png"))
+            ),
+          )
         ),
 
         Expanded(
@@ -283,6 +284,7 @@ class _CarriersState extends State<Carriers> {
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 24,
+                    fontFamily: buttonTextFamily,
                     fontWeight: FontWeight.w900,
                   ),
                   maxLines: 2,

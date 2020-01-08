@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kene/utils/stylesguide.dart';
 
 class CollapsibleWidget extends StatefulWidget{
   final question;
@@ -36,7 +37,7 @@ class _CollapsibleWidget extends State<CollapsibleWidget>{
                     width: MediaQuery.of(context).size.width * 0.8,
                     child: Text("${widget.question}", style: TextStyle(
                       color: Colors.white,
-                      fontFamily: "Poppins",
+                      fontFamily: regularTextFamily,
                     ),),
                   )
                 ],
@@ -59,7 +60,7 @@ class _CollapsibleWidget extends State<CollapsibleWidget>{
                 child: Center(
                   child: Text("${widget.answer}", style: TextStyle(
                     color: Colors.black,
-                    fontFamily: "Poppins",
+                    fontFamily: regularTextFamily,
                   ),),
                 ),
               ),),
