@@ -2,6 +2,8 @@ import 'dart:core';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:kene/components/CustomFloatingButton.dart';
+import 'package:kene/components/bottom_navigation.dart';
 import 'package:kene/components/input_container.dart';
 import 'package:kene/components/loader.dart';
 import 'package:kene/database/db.dart';
@@ -88,6 +90,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
   String parentID = "";
   List<dynamic> savedAccounts = [];
 
+  List<DocumentSnapshot> backupServicesList = [];
   Firestore fireStoreInstance;
 
 //  var _labelFormKey = GlobalKey<FormState>();
@@ -161,6 +164,9 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
 
 
     return Scaffold(
+        bottomNavigationBar: CustomBottomNavigation(),
+        floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
+        floatingActionButton: CustomFloatingButton(pageData: {}, analytics: widget.analytics, locale: locale,),
         body: GestureDetector(
             onTap: () {
               FocusScope.of(context).unfocus();
@@ -223,7 +229,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                               });
                             },
                             icon: Icon(
-                              Icons.arrow_back_ios,
+                              Icons.arrow_back,
                               color: Colors.white,
                               size: 30,
                             ),
@@ -233,7 +239,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                               Navigator.pop(context);
                             },
                             icon: Icon(
-                              Icons.home,
+                              Icons.arrow_back,
                               color: Colors.white,
                               size: 30,
                             ),
@@ -241,6 +247,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                     flexibleSpace: Container(
                       decoration: BoxDecoration(
                           color: widget.primaryColor,
+//                          border: Border.all(),
                           borderRadius: BorderRadius.only(
                               bottomLeft: Radius.circular(40),
                               bottomRight: Radius.circular(40))),
@@ -331,16 +338,52 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
         }
         snapshot.data.documents.sort((DocumentSnapshot a, DocumentSnapshot b) =>
             getServiceOrderNo(a).compareTo(getServiceOrderNo(b)));
-        return Column(
+        return snapshot.data.documents.length > 0 ? Column(
             children: displayServices(
                 snapshot.data.documents) //display the services fetched
-            );
+            )
+            : backupServicesList.length > 0 ? Column(
+            children: displayServices(
+                backupServicesList) //display the services fetched
+        ):
+
+        GestureDetector(
+          onTap: (){
+            getServices();
+          },
+          child: Container(
+            decoration: BoxDecoration(
+//              border: Border.all()
+            ),
+            height: MediaQuery.of(context).size.height * 0.4,
+            width: MediaQuery.of(context).size.width * 0.4,
+            child: Icon(Icons.refresh, size: 40),
+          ),
+        );
       },
     );
   }
 
   int getServiceOrderNo(x) {
     return x['orderNo'];
+  }
+
+  getServices() async{
+    print("get new services refresh hit");
+    var res = await fireStoreInstance
+        .collection("$collectionURL")
+        .where("isActive", isEqualTo: true)
+        .getDocuments();
+
+    if(res.documents.length > 0){
+
+      res.documents.sort((DocumentSnapshot a, DocumentSnapshot b) =>
+          getServiceOrderNo(a).compareTo(getServiceOrderNo(b)));
+
+      setState(() {
+        backupServicesList = res.documents;
+      });
+    }
   }
 
 // Function called from serviceItem class

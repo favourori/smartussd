@@ -2,6 +2,8 @@ import 'dart:core';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:kene/components/CustomFloatingButton.dart';
+import 'package:kene/components/bottom_navigation.dart';
 import 'package:kene/components/input_container.dart';
 import 'package:kene/components/loader.dart';
 import 'package:kene/database/db.dart';
@@ -140,6 +142,9 @@ class _NShortcutsState extends State<NShortcuts> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        bottomNavigationBar: CustomBottomNavigation(),
+        floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
+        floatingActionButton: CustomFloatingButton(pageData: {}, analytics: widget.analytics, locale: "en",),
         body: GestureDetector(
             onTap: () {
               FocusScope.of(context).unfocus();
@@ -205,7 +210,7 @@ class _NShortcutsState extends State<NShortcuts> with TickerProviderStateMixin {
                               });
                             },
                             icon: Icon(
-                              Icons.arrow_back_ios,
+                              Icons.arrow_back,
                               color: Colors.white,
                               size: 30,
                             ),
@@ -215,7 +220,7 @@ class _NShortcutsState extends State<NShortcuts> with TickerProviderStateMixin {
                               Navigator.pop(context);
                             },
                             icon: Icon(
-                              Icons.home,
+                              Icons.arrow_back,
                               color: Colors.white,
                               size: 30,
                             ),
