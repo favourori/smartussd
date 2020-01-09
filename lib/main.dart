@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kene/control.dart';
-
+import 'package:kene/utils/stylesguide.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:kene/widgets/bloc_provider.dart';
@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
           title: 'Nokanda',
           theme: ThemeData(
             primaryColor: Colors.black,
-            fontFamily: "Poppins",
+            fontFamily: regularTextFamily
             // brightness: Brightness.darkxs
           ),
           navigatorObservers: [

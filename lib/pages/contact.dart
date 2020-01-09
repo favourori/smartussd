@@ -2,6 +2,8 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:kene/utils/stylesguide.dart';
+
 
 class ContactUs extends StatelessWidget{
   @override
@@ -40,7 +42,7 @@ class ContactUs extends StatelessWidget{
                         child: Center(
                           child: Text("Send us a message", style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 20,
-                              fontFamily: "Poppins",
+                              fontFamily: regularTextFamily,
                               color: CupertinoColors.white
                           ),),
                         ),),
@@ -61,7 +63,7 @@ class ContactUs extends StatelessWidget{
                           return Container(
                             child: Text("Loading ...", style: TextStyle(
                               color: Colors.white,
-                              fontFamily: "Poppins",
+                              fontFamily: regularTextFamily,
                             ),),
                           );
                         return ListView(
@@ -137,7 +139,7 @@ class _CollapsibleWidget extends State<CollapsibleWidget>{
                     width: MediaQuery.of(context).size.width * 0.8,
                     child: Text("${widget.question}", style: TextStyle(
                       color: Colors.white,
-                      fontFamily: "Poppins",
+                      fontFamily: regularTextFamily,
                     ),),
                   )
                 ],
@@ -160,7 +162,7 @@ class _CollapsibleWidget extends State<CollapsibleWidget>{
                 child: Center(
                   child: Text("${widget.answer}", style: TextStyle(
                     color: Colors.black,
-                    fontFamily: "Poppins",
+                    fontFamily: regularTextFamily,
                   ),),
                 ),
               ),),

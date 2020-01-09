@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:kene/widgets/bloc_provider.dart';
 import 'package:kene/widgets/collapsible_widget.dart';
+import 'package:kene/utils/stylesguide.dart';
 
 class FAQ extends StatefulWidget{
   @override
@@ -74,7 +75,7 @@ class _FAQState extends State<FAQ>{
                         child: Center(
                           child: Text("FAQ", style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 20,
-                              fontFamily: "Poppins",
+                              fontFamily: regularTextFamily,
                               color: CupertinoColors.white
                           ),),
                         ),),
@@ -95,7 +96,7 @@ class _FAQState extends State<FAQ>{
                             return Container(
                               child: Text("Loading ...", style: TextStyle(
                                 color: Colors.white,
-                                fontFamily: "Poppins",
+                                fontFamily: regularTextFamily,
                               ),),
                             );
                           return ListView(
@@ -142,7 +143,7 @@ class _FAQState extends State<FAQ>{
                         child: Center(
                           child: Text("FAQ", style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 20,
-                              fontFamily: "Poppins",
+                              fontFamily: regularTextFamily,
                               color: CupertinoColors.white
                           ),),
                         ),),
@@ -163,7 +164,7 @@ class _FAQState extends State<FAQ>{
                           return Container(
                             child: Text("Loading ...", style: TextStyle(
                               color: Colors.white,
-                              fontFamily: "Poppins",
+                              fontFamily: regularTextFamily,
                             ),),
                           );
                         return ListView(

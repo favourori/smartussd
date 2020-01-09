@@ -2,6 +2,8 @@ import 'dart:core';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:kene/components/CustomFloatingButton.dart';
+import 'package:kene/components/bottom_navigation.dart';
 import 'package:kene/components/input_container.dart';
 import 'package:kene/components/loader.dart';
 import 'package:kene/database/db.dart';
@@ -9,12 +11,12 @@ import 'package:kene/pages/settings.dart';
 import 'package:kene/utils/functions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:kene/utils/stylesguide.dart';
 import 'package:kene/widgets/bloc_provider.dart';
 import 'package:kene/widgets/custom_nav.dart';
 import 'package:kene/components/service_item.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:kene/utils/stylesguide.dart' as styleguide;
 
 //
 // TODO: Support country selection, multiple input and map structure of services
@@ -88,6 +90,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
   String parentID = "";
   List<dynamic> savedAccounts = [];
 
+  List<DocumentSnapshot> backupServicesList = [];
   Firestore fireStoreInstance;
 
 //  var _labelFormKey = GlobalKey<FormState>();
@@ -161,6 +164,9 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
 
 
     return Scaffold(
+        bottomNavigationBar: CustomBottomNavigation(),
+        floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
+        floatingActionButton: CustomFloatingButton(pageData: {}, analytics: widget.analytics, locale: locale,),
         body: GestureDetector(
             onTap: () {
               FocusScope.of(context).unfocus();
@@ -184,7 +190,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                         },
                         icon: Icon(
                           Icons.more_vert,
-                          color: styleguide.accentColor,
+                          color: Colors.white,
                           size: 30,
                         ),
                       ),
@@ -192,8 +198,9 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                     title: AutoSizeText(
                       "Nokanda",
                       style: TextStyle(
-                        color: styleguide.accentColor,
+                        color: Colors.white,
                         fontSize: 24,
+                        fontFamily: buttonTextFamily,
                         fontWeight: FontWeight.w900,
                       ),
                       maxLines: 2,
@@ -222,8 +229,8 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                               });
                             },
                             icon: Icon(
-                              Icons.arrow_back_ios,
-                              color: styleguide.accentColor,
+                              Icons.arrow_back,
+                              color: Colors.white,
                               size: 30,
                             ),
                           )
@@ -232,14 +239,15 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                               Navigator.pop(context);
                             },
                             icon: Icon(
-                              Icons.home,
-                              color: styleguide.accentColor,
+                              Icons.arrow_back,
+                              color: Colors.white,
                               size: 30,
                             ),
                           ),
                     flexibleSpace: Container(
                       decoration: BoxDecoration(
                           color: widget.primaryColor,
+//                          border: Border.all(),
                           borderRadius: BorderRadius.only(
                               bottomLeft: Radius.circular(40),
                               bottomRight: Radius.circular(40))),
@@ -251,7 +259,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
                             child: Text(
                               "${headTitleStack[headTitleStack.length - 1]}",
                               style:
-                                  TextStyle(color: styleguide.accentColor, fontSize: 14),
+                                  TextStyle(color: Colors.white, fontSize: 14),
                             ),
                           )
                         ],
@@ -330,16 +338,52 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
         }
         snapshot.data.documents.sort((DocumentSnapshot a, DocumentSnapshot b) =>
             getServiceOrderNo(a).compareTo(getServiceOrderNo(b)));
-        return Column(
+        return snapshot.data.documents.length > 0 ? Column(
             children: displayServices(
                 snapshot.data.documents) //display the services fetched
-            );
+            )
+            : backupServicesList.length > 0 ? Column(
+            children: displayServices(
+                backupServicesList) //display the services fetched
+        ):
+
+        GestureDetector(
+          onTap: (){
+            getServices();
+          },
+          child: Container(
+            decoration: BoxDecoration(
+//              border: Border.all()
+            ),
+            height: MediaQuery.of(context).size.height * 0.4,
+            width: MediaQuery.of(context).size.width * 0.4,
+            child: Icon(Icons.refresh, size: 40),
+          ),
+        );
       },
     );
   }
 
   int getServiceOrderNo(x) {
     return x['orderNo'];
+  }
+
+  getServices() async{
+    print("get new services refresh hit");
+    var res = await fireStoreInstance
+        .collection("$collectionURL")
+        .where("isActive", isEqualTo: true)
+        .getDocuments();
+
+    if(res.documents.length > 0){
+
+      res.documents.sort((DocumentSnapshot a, DocumentSnapshot b) =>
+          getServiceOrderNo(a).compareTo(getServiceOrderNo(b)));
+
+      setState(() {
+        backupServicesList = res.documents;
+      });
+    }
   }
 
 // Function called from serviceItem class

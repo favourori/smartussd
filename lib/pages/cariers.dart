@@ -5,6 +5,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:kene/components/CustomFloatingButton.dart';
+import 'package:kene/components/bottom_navigation.dart';
 import 'package:kene/components/loader.dart';
 import 'package:kene/pages/receive.dart';
 import 'package:kene/pages/services.dart';
@@ -190,69 +192,9 @@ class _CarriersState extends State<Carriers> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Color(0xfff6f7f9),
-        child: Icon(Icons.favorite, size: 30, color:  mainColor,),
-        onPressed: () async{
-                  var uid = await getUserID();
-                    Navigator.push(context,  CustomPageRoute(
-                     navigateTo: NShortcuts(
-                       userID:uid,
-                       primaryColor: Colors.orangeAccent,
-                       carrierTitle: getTextFromPageData(pageData, "shortcuts", locale),
-                       analytics: widget.analytics,
-                     )
-                 ));
-//          Navigator.push(context, CustomPageRoute(
-//            navigateTo: ReceivePage(qrImage: _qrScan, analytics: widget.analytics,)
-                
-//          ));
-        },
-      ),
+      floatingActionButton: CustomFloatingButton(pageData: pageData, analytics: widget.analytics, locale: locale,),
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
-      bottomNavigationBar: BottomAppBar(
-        shape: CircularNotchedRectangle(),
-//        color: Colors.orangeAccent,
-        elevation: 14,
-        child: Container(
-          height: 50,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Expanded(
-              flex: 1,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Icon(Icons.home, color: accentColor, size: 20,),
-                  SizedBox(width: 3,),
-                  Text("Home", style: TextStyle(color: accentColor, fontSize: 12),)
-                ],
-              ),
-            ),
-
-          Expanded(
-          flex: 1,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Icon(Icons.aspect_ratio, color: mainColor, size: 20,),
-              Text("Hexakomb", style: TextStyle(color: mainColor, fontSize: 12),)
-            ],
-          ),
-        ),
-
-        Expanded(
-        flex: 1,
-        child: Text("", textAlign: TextAlign.center, style: TextStyle(
-            color: Colors.white,
-            fontSize: 12
-        ),),
-      )
-
-          ],
-        ),
-        ),      ),
+      bottomNavigationBar: CustomBottomNavigation(),
       body:
           NestedScrollView(
             controller: _scrollController,
@@ -283,6 +225,7 @@ class _CarriersState extends State<Carriers> {
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 24,
+                    fontFamily: buttonTextFamily,
                     fontWeight: FontWeight.w900,
                   ),
                   maxLines: 2,

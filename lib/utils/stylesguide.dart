@@ -10,6 +10,9 @@ Color pageBackground = Colors.grey[300];
 Color mainColor = Color(0xffFF9800);
 
 
+// fonts family
+var regularTextFamily = "DINPro";
+var buttonTextFamily = "Poppins";
 
 
 //fonts

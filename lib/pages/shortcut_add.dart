@@ -5,7 +5,6 @@ import 'package:kene/pages/settings.dart';
 import 'package:kene/utils/functions.dart';
 import 'package:kene/utils/stylesguide.dart';
 import 'package:kene/widgets/custom_nav.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class ShortcutAdd extends StatefulWidget {
   final userID;
@@ -293,8 +292,7 @@ class _ShortcutAddState extends State<ShortcutAdd> {
               }
             },
             child: Text(
-              item['name'],
-              style: GoogleFonts.poppins(textStyle: TextStyle(fontWeight: FontWeight.w700)),
+              item['name'], style: TextStyle(fontFamily: regularTextFamily),
             ),
           ),
           trailing: item['hasChildren'] != null && item['hasChildren']
