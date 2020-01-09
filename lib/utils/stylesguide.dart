@@ -15,6 +15,18 @@ var regularTextFamily = "DINPro";
 var buttonTextFamily = "Poppins";
 
 
+// Border radius
+double serviceItemBorderRadius =  8.0;
+
+
+// box Shadow
+
+BoxShadow buttonBoxShadow =  BoxShadow(
+  color: Colors.grey.withOpacity(0.8),
+  offset: Offset(1.5, 1.5),
+  blurRadius: 1.5,
+);
+
 //fonts
 var bigTitle = TextStyle(color: Colors.black, fontSize: 28, fontWeight: FontWeight.bold);
 var appBarheading = TextStyle(color: Colors.white, fontSize: 20);

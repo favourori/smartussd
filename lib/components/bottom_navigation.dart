@@ -7,6 +7,10 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 class CustomBottomNavigation extends StatelessWidget {
 
+  final isCurrentPage;
+
+  CustomBottomNavigation({this.isCurrentPage});
+
   final Widget svgIcon = SvgPicture.asset(
       "assets/images/hexakomb_full_logo.svg",
       color: mainColor,
@@ -30,7 +34,9 @@ class CustomBottomNavigation extends StatelessWidget {
               flex: 1,
               child: GestureDetector(
                 onTap: (){
-                  Navigator.pushReplacement(context, CustomPageRoute(navigateTo: Carriers()));
+                  if(isCurrentPage ==  null || !isCurrentPage){
+                    Navigator.pushReplacement(context, CustomPageRoute(navigateTo: Carriers()));
+                  }
                 },
                 child: Row(
 //                  mainAxisAlignment: MainAxisAlignment.center,

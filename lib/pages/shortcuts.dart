@@ -144,7 +144,7 @@ class _NShortcutsState extends State<NShortcuts> with TickerProviderStateMixin {
     return Scaffold(
         bottomNavigationBar: CustomBottomNavigation(),
         floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
-        floatingActionButton: CustomFloatingButton(pageData: {}, analytics: widget.analytics, locale: "en",),
+        floatingActionButton: CustomFloatingButton(pageData: {}, analytics: widget.analytics, locale: "en", isCurrentPage: true,),
         body: GestureDetector(
             onTap: () {
               FocusScope.of(context).unfocus();
@@ -328,10 +328,7 @@ class _NShortcutsState extends State<NShortcuts> with TickerProviderStateMixin {
                 RaisedButton(
                   color: accentColor,
                   onPressed: (){
-
-                  setState(() {
                     Navigator.pushReplacement(context, CustomPageRoute(navigateTo: ShortcutAdd(userID: widget.userID, analytics: widget.analytics,)));
-                  });
                 }, child: Text("Add Shortcut", style: TextStyle(color: Colors.white),),)
               ],
             )

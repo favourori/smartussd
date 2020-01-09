@@ -414,7 +414,8 @@ String getTextFromPageData(Map pageData, String str, String locale){
 //  print(pageData);
   if(pageData.containsKey(str)){
 //    print(pageData[str][locale]);
-    return pageData[str][locale];
+    var data = pageData[str][locale];
+    return data != null ? data : pageData[str]['en'];  // Default to english if the locale is not available
   }
 
   return "";

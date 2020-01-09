@@ -66,7 +66,7 @@ class _AboutState extends State<About>{
                       padding: const EdgeInsets.only(left:0),
                       child: IconButton(
                         icon: Icon(
-                          Icons.arrow_back_ios,
+                          Icons.arrow_back,
                           color: Colors.white,
                         ),
                         onPressed: () => Navigator.pop(context),

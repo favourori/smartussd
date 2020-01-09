@@ -20,15 +20,13 @@ import 'package:flutter/cupertino.dart';
 
 //
 // TODO: Support country selection, multiple input and map structure of services
-// TODO: make success page same design [check]
-// TODO: add thousand separator on amount field
-// TODO: Wrap text on overflow [check]
-// TODO: sender QR code [check]
-// TODO: has_qrCode field for services [check]
 // TODO: fetch all sub-services on load
-// TODO: isActive on FAQs
 // TODO: session count for users
-// TODO: trim not just +250 but all country codes
+// TODO: language locale null on french
+// TODO: make swipe for items with children open the children
+// TODO: submit button inactive when fields are empty
+// TODO: signup, signin and welcome pages design
+// TODO: edit saved accounts
 //
 
 class Services extends StatefulWidget {
@@ -93,6 +91,8 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
   List<DocumentSnapshot> backupServicesList = [];
   Firestore fireStoreInstance;
 
+
+
 //  var _labelFormKey = GlobalKey<FormState>();
 //  TextEditingController _labelController = TextEditingController();
   KDB db = KDB();
@@ -113,7 +113,6 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-
 
 
     fireStoreInstance = Firestore.instance;
@@ -157,9 +156,11 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
     appBloc = BlocProvider.of(context);
 
     appBloc.localeOut.listen((data) {
-      setState(() {
-        locale = data != null ? data : locale;
-      });
+      if(mounted){
+        setState(() {
+          locale = data != null ? data : locale;
+        });
+      }
     });
 
 
@@ -426,7 +427,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
     // Check for name and update the headerText
     var hT = headTitleStack;
     if(data['name_map'] != null){
-      hT.add(data['name_map'][locale]);
+      hT.add(data['name_map'][locale] != null ? data['name_map'][locale]:data['name_map']["en"]);
 
       setState(() {
         headTitleStack = hT;
@@ -458,7 +459,8 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
             needsRecipient: list['needsRecipient'],
             requiresInput: list['requiresInput'],
             codeToSend: list['code'],
-            recipientLabel: list['recipientLabelMap'] != null ?  list['recipientLabelMap'][locale]: list['recipientLabel'],
+            recipientLabel: list['recipientLabelMap'] != null && list['recipientLabelMap'][locale] ==  null ? list['recipientLabelMap']["en"]
+                : list['recipientLabelMap'] != null && list['recipientLabelMap'][locale] !=  null ? list['recipientLabelMap'][locale] : list['recipientLabel'],
             canSaveLabels: list['canSaveLabels'],
             needsAmount: list['needsAmount'],
             requiresCamera: list['requiresCamera'],
@@ -469,6 +471,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
             primaryColor:widget.primaryColor,
             needsScan: list["needsScan"],
             carrierID: widget.carrierId,
+//            favouritesMap: _favouritesMap,
           ),
         );
       } else {
@@ -483,7 +486,8 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
             needsRecipient: list['needsRecipient'],
             requiresInput: list['requiresInput'],
             codeToSend: list['code'],
-            recipientLabel: list['recipientLabelMap'] != null ?  list['recipientLabelMap'][locale]: list['recipientLabel'],
+            recipientLabel: list['recipientLabelMap'] != null && list['recipientLabelMap'][locale] ==  null ? list['recipientLabelMap']["en"]
+                : list['recipientLabelMap'] != null && list['recipientLabelMap'][locale] !=  null ? list['recipientLabelMap'][locale] : list['recipientLabel'],
             canSaveLabels: list['canSaveLabels'],
             needsAmount: list['needsAmount'],
             requiresCamera: list['requiresCamera'],
@@ -494,6 +498,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
             primaryColor: widget.primaryColor,
             needsScan: list["needsScan"],
             carrierID: widget.carrierId,
+//            favouritesMap: _favouritesMap,
           ),
         );
       }
@@ -501,4 +506,7 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
 
     return tmp;
   }
+
+
+
 }

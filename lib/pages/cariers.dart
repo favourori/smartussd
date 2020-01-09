@@ -8,17 +8,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:kene/components/CustomFloatingButton.dart';
 import 'package:kene/components/bottom_navigation.dart';
 import 'package:kene/components/loader.dart';
-import 'package:kene/pages/receive.dart';
 import 'package:kene/pages/services.dart';
 import 'package:kene/pages/settings.dart';
-import 'package:kene/pages/shortcuts.dart';
 import 'package:kene/utils/functions.dart';
 import 'package:kene/utils/stylesguide.dart';
 import 'package:kene/widgets/bloc_provider.dart';
 import 'package:kene/widgets/custom_nav.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:qr_flutter/qr_flutter.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 
 class Carriers extends StatefulWidget {
@@ -194,7 +191,7 @@ class _CarriersState extends State<Carriers> {
     return Scaffold(
       floatingActionButton: CustomFloatingButton(pageData: pageData, analytics: widget.analytics, locale: locale,),
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
-      bottomNavigationBar: CustomBottomNavigation(),
+      bottomNavigationBar: CustomBottomNavigation(isCurrentPage: true,),
       body:
           NestedScrollView(
             controller: _scrollController,
@@ -230,14 +227,12 @@ class _CarriersState extends State<Carriers> {
                   ),
                   maxLines: 2,
                 ),
-                backgroundColor: Colors.orange,
+                backgroundColor: mainColor,
                 leading: Text(""),
                 flexibleSpace: Container(
                   decoration: BoxDecoration(
-                      color: Colors.orange,
-                      borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(40),
-                          bottomRight: Radius.circular(40))),
+
+                  ),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: <Widget>[
@@ -264,10 +259,9 @@ class _CarriersState extends State<Carriers> {
                   width: double.infinity,
                   height: MediaQuery.of(context).size.height * 0.175,
                   decoration: BoxDecoration(
-                      color: Colors.orange,
-                      borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(40),
-                          bottomRight: Radius.circular(40))),
+                      color: mainColor,
+
+                  ),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
@@ -382,8 +376,12 @@ getActiveCarriers(list){
          Navigator.push(context,  CustomPageRoute(
                     navigateTo: Services(
                       carrierId:list[i].documentID,
-                      primaryColor: Color(list[i]['primaryColor']),
-                      carrierTitle: list[i]['name_map'] != null ? list[i]['name_map'][locale] : list[i]['label'],
+                      primaryColor: mainColor,
+                      carrierTitle: list[i]['name_map'] != null && list[i]['name_map'][locale] == null ? list[i]['name_map']["en"]
+
+                          : list[i]['name_map'] != null && list[i]['name_map'][locale] != null
+
+                          ?list[i]['name_map'][locale]  :  list[i]['label'],
                       analytics: widget.analytics,
                     )
                 ));
@@ -422,8 +420,12 @@ getActiveCarriers(list){
                   SizedBox(
                     height: 10,
                   ),
-          Text( list[i]['name_map'] != null ? list[i]['name_map'][locale] : list[i]['label'], textAlign: TextAlign.center, style: TextStyle(
-              fontWeight: FontWeight.w600
+          Text( list[i]['name_map'] != null && list[i]['name_map'][locale] == null ? list[i]['name_map']["en"]
+
+              : list[i]['name_map'] != null && list[i]['name_map'][locale] != null
+
+              ?list[i]['name_map'][locale]  :  list[i]['label'], textAlign: TextAlign.center, style: TextStyle(
+              fontWeight: FontWeight.w600,
           ),)
         ],),
       ))

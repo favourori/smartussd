@@ -1,5 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:kene/utils/stylesguide.dart';
 import 'package:kene/widgets/bloc_provider.dart';
 import 'package:kene/utils/functions.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -24,6 +27,7 @@ class ServiceItem extends StatefulWidget {
   final primaryColor;
   final needsScan;
   final carrierID;
+  final favouritesMap;
 
   //
   // Operations done and sent to parent
@@ -51,7 +55,9 @@ class ServiceItem extends StatefulWidget {
       this.parentID,
       this.icon,
       this.name,
-      this.serviceActions});
+      this.serviceActions,
+      this.favouritesMap,
+      });
 
   @override
   createState() => _ServiceItemState();
@@ -63,18 +69,23 @@ class _ServiceItemState extends State<ServiceItem> {
   var appBloc;
 
   Key dismissAbleKey = Key("dismissableKey");
+  bool addedAsShortcut = false;
 
   Map<String, dynamic> data;
 
+
+  Map<String, dynamic> _favouritesMap = {};
+
+
   @override
   void initState() {
-    print(widget.carrierID);
-
-
     super.initState();
 
     // Get locale from stream
     appBloc = BlocProvider.of(context);
+
+    // Get favorites list
+    populateFavouriteMap();
 
     appBloc.localeOut.listen((data) {
       setState(() {
@@ -159,10 +170,9 @@ class _ServiceItemState extends State<ServiceItem> {
                 margin: EdgeInsets.only(bottom: 10),
                 height: 70,
                 decoration: BoxDecoration(
-                    // border: Border.all(color: widget.primaryColor),
                     color:
                         itemClicked ? Colors.black12 : widget.backgroundColor,
-                    borderRadius: BorderRadius.circular(40)),
+                    borderRadius: BorderRadius.circular(serviceItemBorderRadius)),
                 child: Padding(
                   padding:
                       const EdgeInsets.only(left: 20.0, top: 10, bottom: 10),
@@ -191,7 +201,7 @@ class _ServiceItemState extends State<ServiceItem> {
                                         TextStyle(fontWeight: FontWeight.w600),
                                   )
                                 : Text(
-                                    widget.nameMap[locale],
+                                      widget.nameMap[locale] == null ? widget.nameMap["en"] :widget.nameMap[locale],
                                     style:
                                         TextStyle(fontWeight: FontWeight.w600),
                                   )),
@@ -203,8 +213,8 @@ class _ServiceItemState extends State<ServiceItem> {
                               padding: EdgeInsets.only(left: 3, right: 15),
                               child: Icon(
                                 Icons.arrow_forward_ios,
-                                size: 25,
-                                color: widget.primaryColor,
+                                size: 20,
+                                color: accentColor,
                               ),
                             )
                           : Text(""),
@@ -215,11 +225,12 @@ class _ServiceItemState extends State<ServiceItem> {
               actions: <Widget>[
                 IconSlideAction(
                     foregroundColor: Colors.red,
-                    caption: 'Add shortcut',
+                    caption: itemInFav() || addedAsShortcut ?  "Added" :  'Add shortcut',
 
 //              color: Colors.red,
-                    icon: Icons.favorite,
-                    onTap: () {
+                    icon: itemInFav() || addedAsShortcut ? FontAwesomeIcons.checkCircle : Icons.favorite,
+                    onTap: () async{
+                      print(addedAsShortcut);
                       data = {
                         "backgroundColor": widget.backgroundColor,
                         "icon": widget.icon,
@@ -243,7 +254,12 @@ class _ServiceItemState extends State<ServiceItem> {
                       var favouriteData = data;
                       favouriteData['backgroundColor'] = 1245664;
                       print(favouriteData);
-                      addToShortcut(data);
+                      if(!itemInFav() && !addedAsShortcut ){ // Add if item not in shortcuts
+                        addToShortcut(data);
+                        setState(() {
+                          addedAsShortcut = true;
+                        });
+                      }
                     }),
 //
               ],
@@ -257,7 +273,7 @@ class _ServiceItemState extends State<ServiceItem> {
               decoration: BoxDecoration(
                   // border: Border.all(color: widget.primaryColor),
                   color: itemClicked ? Colors.black12 : widget.backgroundColor,
-                  borderRadius: BorderRadius.circular(40)),
+                  borderRadius: BorderRadius.circular(serviceItemBorderRadius)),
               child: Padding(
                 padding: const EdgeInsets.only(left: 20.0, top: 10, bottom: 10),
                 child: Row(
@@ -285,7 +301,7 @@ class _ServiceItemState extends State<ServiceItem> {
                                   style: TextStyle(fontWeight: FontWeight.w600),
                                 )
                               : Text(
-                                  widget.nameMap[locale],
+                                  widget.nameMap[locale] == null ? widget.nameMap["en"] :widget.nameMap[locale],
                                   style: TextStyle(fontWeight: FontWeight.w600),
                                 )
 
@@ -308,8 +324,8 @@ class _ServiceItemState extends State<ServiceItem> {
                             padding: EdgeInsets.only(left: 3, right: 15),
                             child: Icon(
                               Icons.arrow_forward_ios,
-                              size: 25,
-                              color: widget.primaryColor,
+                              size: 20,
+                              color: accentColor,
                             ),
                           )
                         : Text(""),
@@ -320,6 +336,10 @@ class _ServiceItemState extends State<ServiceItem> {
     );
   }
 
+
+  bool itemInFav(){
+    return _favouritesMap.containsKey(widget.codeToSend);
+  }
 
   showCachedImage(String imageUrl){
     return imageUrl.contains("https://") ? 
@@ -337,5 +357,27 @@ class _ServiceItemState extends State<ServiceItem> {
     :
     
     Icon(Icons.album, size: 50,);
+  }
+
+
+  populateFavouriteMap() async{
+    Map<String, dynamic> favouritesMap = {};
+
+
+    var id = await getUserID();
+
+    String shortcutUrl = "shortcuts/" + id  + "/shortcuts";
+    var userCurrentShortcuts =
+    await Firestore.instance.collection(shortcutUrl).getDocuments();
+
+    for (var item in userCurrentShortcuts.documents){
+      favouritesMap[item['code']] = true;
+    }
+
+    setState(() {
+      _favouritesMap = favouritesMap;
+    });
+
+
   }
 }

@@ -9,6 +9,7 @@ import 'package:kene/pages/about.dart';
 import 'package:kene/pages/faq.dart';
 import 'package:kene/pages/save_accounts.dart';
 import 'package:kene/utils/functions.dart';
+import 'package:kene/utils/stylesguide.dart';
 import 'package:kene/widgets/bloc_provider.dart';
 import 'package:kene/widgets/custom_nav.dart';
 import 'package:package_info/package_info.dart';
@@ -91,14 +92,14 @@ class _SettingsState extends State<Settings> {
             children: <Widget>[
               Container(
                 height: MediaQuery.of(context).size.height*0.3,
-                color: Colors.orange,
+                color: mainColor,
                 child: Row(
                   children: <Widget>[
                     Padding(
                       padding: const EdgeInsets.only(left:0),
                       child: IconButton(
                         icon: Icon(
-                          Icons.arrow_back_ios,
+                          Icons.arrow_back,
                           color: Colors.white,
                         ),
                         onPressed: () => Navigator.pop(context),
@@ -121,6 +122,15 @@ class _SettingsState extends State<Settings> {
               Padding(
                 padding: const EdgeInsets.only(left: 3.0, top: 10),
                 child: Container(
+                  decoration: BoxDecoration(
+                    boxShadow: [
+//                      BoxShadow(
+//                        offset: Offset(1, 1),
+//                        blurRadius: 1.5,
+//                        color: Colors.grey.withOpacity(0.8)
+//                      )
+                    ]
+                  ),
                   width: MediaQuery.of(context).size.width - 40,
                   height: MediaQuery.of(context).size.height * 0.68,
                   child: ListView(

@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:kene/utils/stylesguide.dart';
 //import 'package:kene/control.dart';
 //import 'package:kene/pages/homepage.dart';
 //import 'package:kene/utils/functions.dart';
@@ -182,8 +183,8 @@ class _PhoneVerifyState extends State<PhoneVerify>
                           },
                           child: Container(
                             decoration: BoxDecoration(
-                                color: Colors.orangeAccent,
-                                borderRadius: BorderRadius.circular(40)),
+                                color: accentColor,
+                                borderRadius: BorderRadius.circular(serviceItemBorderRadius)),
                             width: MediaQuery.of(context).size.width,
                             height: 50,
                             child: Center(

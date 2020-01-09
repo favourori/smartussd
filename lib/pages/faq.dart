@@ -64,7 +64,7 @@ class _FAQState extends State<FAQ>{
                         flex: 1,
                           child: Align(
                             alignment: Alignment.centerLeft,
-                            child: GestureDetector(child: Icon(Icons.arrow_back_ios, size: 24, color: Colors.white,), onTap: (){
+                            child: GestureDetector(child: Icon(Icons.arrow_back, size: 24, color: Colors.white,), onTap: (){
                               Navigator.pop(context);
                             }),
                           )
