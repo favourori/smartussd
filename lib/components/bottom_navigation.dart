@@ -7,6 +7,10 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 class CustomBottomNavigation extends StatelessWidget {
 
+  final isCurrentPage;
+
+  CustomBottomNavigation({this.isCurrentPage});
+
   final Widget svgIcon = SvgPicture.asset(
       "assets/images/hexakomb_full_logo.svg",
       color: mainColor,
@@ -30,7 +34,24 @@ class CustomBottomNavigation extends StatelessWidget {
               flex: 1,
               child: GestureDetector(
                 onTap: (){
-                  Navigator.pushReplacement(context, CustomPageRoute(navigateTo: Carriers()));
+                  if(isCurrentPage ==  null || !isCurrentPage){
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        PageRouteBuilder(pageBuilder: (BuildContext context, Animation animation,
+                            Animation secondaryAnimation) {
+                          return Carriers();
+                        }, transitionsBuilder: (BuildContext context, Animation<double> animation,
+                            Animation<double> secondaryAnimation, Widget child) {
+                          return new SlideTransition(
+                            position: new Tween<Offset>(
+                              begin: const Offset(1.0, 0.0),
+                              end: Offset.zero,
+                            ).animate(animation),
+                            child: child,
+                          );
+                        }),
+                            (Route route) => false);
+                  }
                 },
                 child: Row(
 //                  mainAxisAlignment: MainAxisAlignment.center,

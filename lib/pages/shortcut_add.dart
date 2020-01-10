@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:kene/pages/settings.dart';
 import 'package:kene/utils/functions.dart';
 import 'package:kene/utils/stylesguide.dart';
+import 'package:kene/widgets/bloc_provider.dart';
 import 'package:kene/widgets/custom_nav.dart';
 
 class ShortcutAdd extends StatefulWidget {
@@ -23,7 +24,12 @@ class _ShortcutAddState extends State<ShortcutAdd> {
   String currentId = "";
   bool isLoading = false;
 
+  // Data to hold the pages string from fireBase for translations
+  var pageData = {};
+  String locale = "en";
+
   ScrollController _scrollController;
+  ScrollController _listViewController = new ScrollController();
 
   listener() {
     if (_scrollController.offset >= 45) {
@@ -34,6 +40,24 @@ class _ShortcutAddState extends State<ShortcutAdd> {
   @override
   void initState() {
     super.initState();
+
+    var appBloc;
+
+    appBloc = BlocProvider.of(context);
+
+    appBloc.localeOut.listen((data) {
+      setState(() {
+        locale = data != null ? data : locale;
+      });
+    });
+
+
+    getPageData("shortcuts").then((data){
+      setState(() {
+        pageData = data;
+      });
+    });
+
 
     _scrollController = ScrollController(initialScrollOffset: 0.0);
     _scrollController.addListener(listener);
@@ -124,7 +148,7 @@ class _ShortcutAddState extends State<ShortcutAdd> {
                       Align(
                         alignment: Alignment.center,
                         child: Text(
-                          "Add Shortcuts",
+                          getTextFromPageData(pageData, "sub_title", locale),
                           style: TextStyle(color: Colors.white, fontSize: 14),
                         ),
                       )
@@ -142,57 +166,65 @@ class _ShortcutAddState extends State<ShortcutAdd> {
                 height: MediaQuery.of(context).size.height * 0.175,
                 decoration: BoxDecoration(
                     color: mainColor,
-                    borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(40),
-                        bottomRight: Radius.circular(40))),
+
+                ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[],
                 ),
               ),
               Positioned(
-                  top: 0,
+//                  top: 0.0,
+//                  left: 0.0,
+//                  bottom: 0.0,
+//                  right: 0.0,
                   child: Padding(
                       padding: const EdgeInsets.symmetric(
                           vertical: 20.0, horizontal: 0),
                       child: Container(
                           width: MediaQuery.of(context).size.width,
                           // MediaQuery.of(context).size.width - 40,
-                          height: MediaQuery.of(context).size.height * 0.75,
+                          height: MediaQuery.of(context).size.height * 0.9,
                           decoration: BoxDecoration(
                               color: Color(0xfff6f7f9),
                               borderRadius: BorderRadius.circular(40)),
                           child:
                           Container(
-                            child: Column(
+                            child:
+                            Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
                                 SizedBox(height: 40,),
 
-                                !isLoading ?
-                                DropdownButton(value:carrierName, items: list, onChanged: (v){
-                                  setState(() {
-                                    carrierName = v;
-                                  });
+                                Expanded(
+                                  flex: 1,
+                                  child: !isLoading ?
+                                  DropdownButton(value:carrierName, items: list, onChanged: (v){
+                                    setState(() {
+                                      carrierName = v;
+                                    });
 
-                                  getServices();
-                                }):
+                                    getServices();
+                                  }):
 
-                                Align(
-                                  alignment: Alignment.bottomCenter,
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: <Widget>[
-                                      CircularProgressIndicator(backgroundColor: Colors.black87, strokeWidth: 4,),
-                                      SizedBox(width: 15,),
-                                      Text("Loading"),
-                                    ],
+                                  Align(
+                                    alignment: Alignment.bottomCenter,
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        CircularProgressIndicator(backgroundColor: Colors.black87, strokeWidth: 4,),
+                                        SizedBox(width: 15,),
+                                        Text("Loading"),
+                                      ],
+                                    ),
                                   ),
                                 ),
 
-                                Expanded(child: ListView(
+                                Expanded(
+                                  child: ListView(
+                                    controller: _listViewController,
                                   children: subservices,
-                                ), flex: 1,)
+                                ), flex: 8,)
                               ],
                             ),
                           ),
@@ -221,6 +253,8 @@ class _ShortcutAddState extends State<ShortcutAdd> {
     String id = await getCarrierID(carrierName);
 
     print("id is =============> $id");
+
+
     getSubServices(id, "fetch_carier_children");
   }
 
@@ -228,7 +262,7 @@ class _ShortcutAddState extends State<ShortcutAdd> {
     print("called");
     String url = "";
 
-    if (intent == "fetch_carier_children" && currentId.isEmpty) {
+    if (intent == "fetch_carier_children") {
       url = "/services/" + id + "/services";
     } else {
       url = id;
@@ -298,7 +332,7 @@ class _ShortcutAddState extends State<ShortcutAdd> {
           trailing: item['hasChildren'] != null && item['hasChildren']
               ? null
               : IconButton(
-                  icon: Icon(Icons.add),
+                  icon: Icon(Icons.add_circle),
                   onPressed: () {
                     var data = {
                       "backgroundColor": item[''],
@@ -323,9 +357,8 @@ class _ShortcutAddState extends State<ShortcutAdd> {
                     var favouriteData = data;
                     favouriteData['backgroundColor'] = 1245664;
                     print(favouriteData);
-                    addToShortcut(data).then((d) {
-                      getSubServices(id, "fetch_carier_children");
-                    });
+                    addToShortcut(data);
+                    getSubServices(currentId, "fetch_services_children");
                   }),
         ));
       }

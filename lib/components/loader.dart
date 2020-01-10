@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kene/utils/stylesguide.dart';
 
 
 class NLoader extends StatefulWidget {
@@ -70,7 +71,7 @@ class _NLoaderState extends State<NLoader>  with SingleTickerProviderStateMixin 
       width: double.infinity,
       decoration: BoxDecoration(
         color: Colors.black12,
-        borderRadius: BorderRadius.circular(40),
+        borderRadius: BorderRadius.circular(serviceItemBorderRadius),
 //        border: Border.all(color: Colors.grey)
 
       ),

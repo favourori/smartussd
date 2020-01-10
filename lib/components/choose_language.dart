@@ -45,7 +45,6 @@ AppBloc appBloc;
       child:
       Platform.isIOS ?
       CupertinoPicker(itemExtent: 40, onSelectedItemChanged: (v){
-        // TODO: handle Cupertino language picker onSelect
         languageAction(widget.languageList[v-1]['locale']);
       }, children: displayIOSPickerChildren())
           :

@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:kene/utils/stylesguide.dart';
 import 'package:kene/widgets/bloc_provider.dart';
 import 'package:kene/utils/functions.dart';
 
@@ -134,7 +135,7 @@ class _ShortcutItemState extends State<ShortcutItem>{
           decoration: BoxDecoration(
             // border: Border.all(color: widget.primaryColor),
               color: itemClicked ? Colors.black12 : widget.backgroundColor,
-              borderRadius: BorderRadius.circular(40)),
+              borderRadius: BorderRadius.circular(serviceItemBorderRadius)),
           child: Padding(
             padding: const EdgeInsets.only(left: 20.0, top: 10, bottom: 10),
             child: Row(
@@ -192,7 +193,7 @@ class _ShortcutItemState extends State<ShortcutItem>{
                   ),
                 ),
 
-                IconButton(icon: Icon(Icons.delete, color: Colors.redAccent, size: 25,), onPressed: (){
+                IconButton(icon: Icon(Icons.delete_outline, color: Colors.redAccent, size: 25,), onPressed: (){
                   deleteShortcut(widget.parentID);
 
                 }),

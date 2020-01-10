@@ -5,6 +5,7 @@ import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:kene/database/db.dart';
 import 'package:kene/utils/functions.dart';
+import 'package:kene/utils/stylesguide.dart';
 import 'package:kene/widgets/bloc_provider.dart';
 
 class SaveAccount extends StatefulWidget {
@@ -89,7 +90,7 @@ class _SaveAccountState extends State<SaveAccount> {
                   padding: const EdgeInsets.only(left: 0),
                   child: IconButton(
                     icon: Icon(
-                      Icons.arrow_back_ios,
+                      Icons.arrow_back,
                       color: Colors.white,
                     ),
                     onPressed: () => Navigator.pop(context),
@@ -98,11 +99,11 @@ class _SaveAccountState extends State<SaveAccount> {
                 SizedBox(
                   width: MediaQuery.of(context).size.width * 0.1,
                 ),
-                AutoSizeText(
+                Expanded(child: AutoSizeText(
                   getTextFromPageData(pageData, "title", locale),
                   style: TextStyle(color: Colors.white, fontSize: 28),
                   maxLines: 2,
-                )
+                )),
               ],
             ),
           ),
@@ -218,8 +219,8 @@ class _SaveAccountState extends State<SaveAccount> {
                       height: 48,
                       width: MediaQuery.of(context).size.width * 0.2,
                       decoration: BoxDecoration(
-                          color: Colors.orangeAccent,
-                          borderRadius: BorderRadius.circular(30)),
+                          color: accentColor,
+                          borderRadius: BorderRadius.circular(serviceItemBorderRadius)),
                       child: Center(
                         child: Text(
                           getTextFromPageData(pageData, "save", locale),
@@ -309,7 +310,7 @@ class _SaveAccountState extends State<SaveAccount> {
             Spacer(),
             IconButton(
               icon: Icon(
-                Icons.delete,
+                Icons.delete_outline,
                 color: Colors.red,
               ),
               onPressed: () {

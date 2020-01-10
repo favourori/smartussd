@@ -1,7 +1,13 @@
+import 'dart:io';
+
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
+import 'package:kene/components/CustomFloatingButton.dart';
+import 'package:kene/components/bottom_navigation.dart';
 import 'package:kene/pages/cariers.dart';
 import 'package:kene/pages/settings.dart';
+import 'package:kene/utils/stylesguide.dart';
 import 'package:kene/widgets/bloc_provider.dart';
 import 'package:kene/widgets/custom_nav.dart';
 import 'package:rate_my_app/rate_my_app.dart';
@@ -18,6 +24,8 @@ class _SuccessPageState extends State<SuccessPage> {
   ScrollController _scrollController;
   RateMyApp _rateMyApp;
 
+
+  var analytics = FirebaseAnalytics();
 
   String locale = "en";
 
@@ -57,19 +65,24 @@ class _SuccessPageState extends State<SuccessPage> {
   }
 
   handleRate() {
-    _rateMyApp.init().then((_) {
-      _rateMyApp.showRateDialog(
-        context,
-        title: 'Rate this app',
-        message:
-        'If you like this app, please take a little bit of your time to review it !\nIt really helps us and it shouldn\'t take you more than one minute.',
-        rateButton: 'RATE',
-        noButton: 'NO THANKS',
-        laterButton: '',
-        ignoreIOS: false,
-        dialogStyle: DialogStyle(),
-      );
-    });
+    if(Platform.isIOS){
+      upDateButtonAction();
+    }
+    else {
+      _rateMyApp.init().then((_) {
+        _rateMyApp.showRateDialog(
+          context,
+          title: 'Rate this app',
+          message:
+          'If you like this app, please take a little bit of your time to review it !\nIt really helps us and it shouldn\'t take you more than one minute.',
+          rateButton: 'RATE',
+          noButton: 'NO THANKS',
+          laterButton: '',
+          ignoreIOS: false,
+          dialogStyle: DialogStyle(),
+        );
+      });
+    }
   }
 
 
@@ -93,6 +106,9 @@ class _SuccessPageState extends State<SuccessPage> {
   @override
   build(context) {
     return Scaffold(
+        bottomNavigationBar: CustomBottomNavigation(),
+        floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
+        floatingActionButton: CustomFloatingButton(pageData: {}, analytics: analytics, locale: locale,),
         body: NestedScrollView(
       controller: _scrollController,
       headerSliverBuilder: (context, bool isScrolled) {
@@ -161,9 +177,8 @@ class _SuccessPageState extends State<SuccessPage> {
               height: MediaQuery.of(context).size.height * 0.175,
               decoration: BoxDecoration(
                   color: Colors.orange,
-                  borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(40),
-                      bottomRight: Radius.circular(40))),
+
+              ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[],
@@ -201,20 +216,54 @@ class _SuccessPageState extends State<SuccessPage> {
                         SizedBox(
                           height: 30, 
                         ),
+//                        Row(
+////                          mainAxisAlignment: MainAxisAlignment.center,
+////                          children: <Widget>[
+////
+////                            SizedBox(
+////                              width: 15,
+////                            ),
+//////                            pageButtons(getTextFromPageData(pageData, "redo", locale), () {
+//////                              Navigator.pop(context);
+//////                            }, Icons.loop, context, true)
+////
+////                            Row(
+////                              mainAxisAlignment: MainAxisAlignment.center,
+////                              children: <Widget>[
+////                                pageButtons("Tweet Nokanda", () async{
+////                                  var url =
+////                                      'https://twitter.com/intent/tweet?hashtags=Nokanda&text=${makeTweetText()}';
+////                                  if (await canLaunch(url)) {
+////                                    if (await launch(
+////                                      url,
+////                                      forceSafariVC: false,
+////                                      universalLinksOnly: true,
+////                                    )) {
+////                                      // print("tweeted");
+////                                    } else {
+////                                      // print("no apppp");
+////                                      await launch(url);
+////                                    }
+////                                  } else {
+////                                    throw 'Could not launch $url';
+////                                  }
+////                                }, FontAwesomeIcons.twitter, context, true),
+////
+////                              ],
+////                            ),
+////
+////                          ],
+////                        ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
-                            pageButtons(getTextFromPageData(pageData, "home", locale), () {
-                              Navigator.pushReplacement(context, CustomPageRoute(navigateTo: Carriers()));
-                            }, Icons.home, context, false),
-                            SizedBox(
-                              width: 15,
-                            ),
-                            pageButtons(getTextFromPageData(pageData, "redo", locale), () {
+                            pageButtons(getTextFromPageData(pageData, "redo", locale), () async{
                               Navigator.pop(context);
-                            }, Icons.loop, context, false)
+                            }, Icons.loop, context, true),
+
                           ],
                         ),
+
                         SizedBox(
                           height: 15,
                         ),
@@ -239,7 +288,7 @@ class _SuccessPageState extends State<SuccessPage> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
-                            pageButtons("Tweet Nokanda", () async{
+                            pageButtons(getTextFromPageData(pageData, "tweet", locale), () async{
                               var url =
                                   'https://twitter.com/intent/tweet?hashtags=Nokanda&text=${makeTweetText()}';
                               if (await canLaunch(url)) {
@@ -275,26 +324,34 @@ class _SuccessPageState extends State<SuccessPage> {
   Widget pageButtons(
       String label, Function onPressedAction, IconData icon, context, bool fullWidth) {
     return Container(
+      padding: EdgeInsets.symmetric(
+          vertical: 5, horizontal: MediaQuery.of(context).size.width * 0.15),
+      decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(serviceItemBorderRadius),
+          boxShadow: [
+          buttonBoxShadow
+        ]
+      ),
       height: 55,
       width: fullWidth ? MediaQuery.of(context).size.width * 0.88 : MediaQuery.of(context).size.width * 0.42,
-      child: RaisedButton(
-        color: Color(0xff1C1766),
-        splashColor: Colors.orangeAccent,
-        padding: EdgeInsets.symmetric(
-            vertical: 5, horizontal: MediaQuery.of(context).size.width * 0.15),
-        onPressed: onPressedAction,
+      child: GestureDetector(
+        onTap: onPressedAction,
         child: Column(
           children: <Widget>[
             Icon(
               icon,
-              color: Colors.white,
+              color: accentColor,
             ),
-            Text(
+
+            Expanded(child: Text(
               label,
+//              maxFontSize: 14,
+//              minFontSize: 11,
               style: TextStyle(
-                color: Colors.white,
+                color: accentColor,
               ),
-            )
+            ))
           ],
         ),
       ),

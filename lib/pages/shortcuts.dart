@@ -7,6 +7,7 @@ import 'package:kene/components/bottom_navigation.dart';
 import 'package:kene/components/input_container.dart';
 import 'package:kene/components/loader.dart';
 import 'package:kene/database/db.dart';
+import 'package:kene/pages/receive.dart';
 import 'package:kene/pages/settings.dart';
 import 'package:kene/pages/shortcut_add.dart';
 import 'package:kene/pages/shortcut_item.dart';
@@ -14,22 +15,13 @@ import 'package:kene/utils/functions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:kene/utils/stylesguide.dart';
+import 'package:kene/widgets/bloc_provider.dart';
 import 'package:kene/widgets/custom_nav.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:qr_flutter/qr_flutter.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-//
-// TODO: Support country selection, multiple input and map structure of services
-// TODO: make success page same design
-// TODO: add thousand separator on amount field
-// TODO: Wrap text on overflow
-// TODO: sender QR code
-// TODO: has_qrCode field for services
-// TODO: fetch all sub-services on load
-// TODO: isActive on FAQs
-// TODO: session count for users
-// TODO:
-//
 
 class NShortcuts extends StatefulWidget {
   final userID;
@@ -64,6 +56,8 @@ class _NShortcutsState extends State<NShortcuts> with TickerProviderStateMixin {
 
   String uid = "";
 
+  var _qrScan;
+
   ///default values that are changed when option clicked
 
   List navigationStack = [];
@@ -88,6 +82,9 @@ class _NShortcutsState extends State<NShortcuts> with TickerProviderStateMixin {
   String parentID = "";
   List<dynamic> savedAccounts = [];
 
+  // Data to hold the pages string from fireBase for translations
+  var pageData = {};
+  String locale = "en";
 
 //  var _labelFormKey = GlobalKey<FormState>();
 //  TextEditingController _labelController = TextEditingController();
@@ -109,6 +106,35 @@ class _NShortcutsState extends State<NShortcuts> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+
+    var appBloc;
+
+    appBloc = BlocProvider.of(context);
+
+    appBloc.localeOut.listen((data) {
+      setState(() {
+        locale = data != null ? data : locale;
+      });
+    });
+
+    getPageData("shortcuts").then((data) {
+      setState(() {
+        pageData = data;
+      });
+    });
+
+    FirebaseAuth.instance.currentUser().then((f){ // Set the logged in phone number as qrCode data
+      if(f != null){
+        setState(() {
+          _qrScan = QrImage(
+            data: f.phoneNumber.toString(),
+            version: QrVersions.auto,
+            size: 200.0,
+          );
+        });
+      }
+    });
+
 
     _scrollController = ScrollController(initialScrollOffset: 0.0);
     _scrollController.addListener(listener);
@@ -144,7 +170,12 @@ class _NShortcutsState extends State<NShortcuts> with TickerProviderStateMixin {
     return Scaffold(
         bottomNavigationBar: CustomBottomNavigation(),
         floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
-        floatingActionButton: CustomFloatingButton(pageData: {}, analytics: widget.analytics, locale: "en",),
+        floatingActionButton: CustomFloatingButton(
+          pageData: {},
+          analytics: widget.analytics,
+          locale: "en",
+          isCurrentPage: true,
+        ),
         body: GestureDetector(
             onTap: () {
               FocusScope.of(context).unfocus();
@@ -305,43 +336,87 @@ class _NShortcutsState extends State<NShortcuts> with TickerProviderStateMixin {
   }
 
   /// Receives collection url and fetches children
-  StreamBuilder fetchServices() {
-    print(collectionURL);
-    return StreamBuilder(
-      stream: Firestore.instance.collection("$collectionURL").snapshots(),
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) {
-          return Center(child: NLoader());
-        }
+  Column fetchServices() {
+    return Column(
+      children: <Widget>[
+        GestureDetector(
+          onTap: (){
+          Navigator.push(context, CustomPageRoute(
+              navigateTo: ReceivePage(qrImage: _qrScan, analytics: widget.analytics,
+                title: getTextFromPageData(pageData, "qrcode_receive_title", locale,),
+                text: getTextFromPageData(pageData, "qrcode_receive_text", locale)
+                ,)
 
-        if (snapshot.data.documents.length < 1) {
-          return Center(
-            child: Column(
-              children: <Widget>[
-                SizedBox(height: 50,),
-                Text(
-                  "You have not added shortcuts yet.",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-                SizedBox(height: 30,),
-                RaisedButton(
-                  color: accentColor,
-                  onPressed: (){
-
-                  setState(() {
-                    Navigator.pushReplacement(context, CustomPageRoute(navigateTo: ShortcutAdd(userID: widget.userID, analytics: widget.analytics,)));
-                  });
-                }, child: Text("Add Shortcut", style: TextStyle(color: Colors.white),),)
+          ));
+          },
+          child: Container(
+            margin: EdgeInsets.only(bottom: 10),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              boxShadow: [
+                buttonBoxShadow
               ],
-            )
-          );
-        }
-        return Column(
-            children: displayServices(
-                snapshot.data.documents) //display the services fetched
-            );
-      },
+              borderRadius: BorderRadius.circular(serviceItemBorderRadius),
+            ),
+            height: 50,
+            width: double.infinity,
+            child: Row(
+              children: <Widget>[
+                Expanded(flex: 2, child: Icon(FontAwesomeIcons.qrcode),),
+                Expanded(flex: 8, child: Text(getTextFromPageData(pageData, "show_qrcode", locale)),)
+              ],
+            ),
+
+          ),
+        ),
+        StreamBuilder(
+          stream: Firestore.instance.collection("$collectionURL").snapshots(),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return Center(child: NLoader());
+            }
+
+            if (snapshot.data.documents.length < 1) {
+              return Center(
+                  child: Column(
+                children: <Widget>[
+                  SizedBox(
+                    height: 50,
+                  ),
+                  Text(
+                    getTextFromPageData(pageData, "no_shortcuts_text", locale),
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(
+                    height: 30,
+                  ),
+                  RaisedButton(
+                    color: accentColor,
+                    onPressed: () {
+                      Navigator.pushReplacement(
+                          context,
+                          CustomPageRoute(
+                              navigateTo: ShortcutAdd(
+                            userID: widget.userID,
+                            analytics: widget.analytics,
+                          )));
+                    },
+                    child: Text(
+                      getTextFromPageData(pageData, "add_shortcut", locale),
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  )
+                ],
+              ));
+            }
+            return Column(
+                children: displayServices(
+                    snapshot.data.documents) //display the services fetched
+                );
+          },
+        ),
+      ],
     );
   }
 

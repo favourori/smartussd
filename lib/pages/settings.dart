@@ -9,6 +9,7 @@ import 'package:kene/pages/about.dart';
 import 'package:kene/pages/faq.dart';
 import 'package:kene/pages/save_accounts.dart';
 import 'package:kene/utils/functions.dart';
+import 'package:kene/utils/stylesguide.dart';
 import 'package:kene/widgets/bloc_provider.dart';
 import 'package:kene/widgets/custom_nav.dart';
 import 'package:package_info/package_info.dart';
@@ -91,14 +92,14 @@ class _SettingsState extends State<Settings> {
             children: <Widget>[
               Container(
                 height: MediaQuery.of(context).size.height*0.3,
-                color: Colors.orange,
+                color: mainColor,
                 child: Row(
                   children: <Widget>[
                     Padding(
                       padding: const EdgeInsets.only(left:0),
                       child: IconButton(
                         icon: Icon(
-                          Icons.arrow_back_ios,
+                          Icons.arrow_back,
                           color: Colors.white,
                         ),
                         onPressed: () => Navigator.pop(context),
@@ -121,6 +122,15 @@ class _SettingsState extends State<Settings> {
               Padding(
                 padding: const EdgeInsets.only(left: 3.0, top: 10),
                 child: Container(
+                  decoration: BoxDecoration(
+                    boxShadow: [
+//                      BoxShadow(
+//                        offset: Offset(1, 1),
+//                        blurRadius: 1.5,
+//                        color: Colors.grey.withOpacity(0.8)
+//                      )
+                    ]
+                  ),
                   width: MediaQuery.of(context).size.width - 40,
                   height: MediaQuery.of(context).size.height * 0.68,
                   child: ListView(
@@ -230,8 +240,26 @@ class _SettingsState extends State<Settings> {
                       GestureDetector(
                         onTap: () {
                           FirebaseAuth.instance.signOut().then((_) {
-                            Navigator.pushReplacement(context,
-                                CustomPageRoute(navigateTo: Control()));
+//                            Navigator.pushReplacement(context,
+//                                CustomPageRoute(navigateTo: Control()));
+
+
+                            Navigator.pushAndRemoveUntil(
+                                context,
+                                PageRouteBuilder(pageBuilder: (BuildContext context, Animation animation,
+                                    Animation secondaryAnimation) {
+                                  return Control();
+                                }, transitionsBuilder: (BuildContext context, Animation<double> animation,
+                                    Animation<double> secondaryAnimation, Widget child) {
+                                  return new SlideTransition(
+                                    position: new Tween<Offset>(
+                                      begin: const Offset(1.0, 0.0),
+                                      end: Offset.zero,
+                                    ).animate(animation),
+                                    child: child,
+                                  );
+                                }),
+                                    (Route route) => false);
                           });
                         },
                         child: ListTile(

@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:kene/utils/functions.dart';
@@ -66,7 +65,7 @@ class _AboutState extends State<About>{
                       padding: const EdgeInsets.only(left:0),
                       child: IconButton(
                         icon: Icon(
-                          Icons.arrow_back_ios,
+                          Icons.arrow_back,
                           color: Colors.white,
                         ),
                         onPressed: () => Navigator.pop(context),

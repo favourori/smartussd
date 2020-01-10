@@ -1,7 +1,7 @@
 name: kene
 description: A USSD UI app for Mobile Money services.
 
-version: 1.0.4+15
+version: 1.0.5+1
 
 environment:
   sdk: ">=2.1.0 <3.0.0"
@@ -63,6 +63,7 @@ flutter:
     - "assets/images/nokanda.png"
     - "assets/images/nokanda_full.png"
     - "assets/images/sendmoney.png"
+    - "assets/images/hexagon.svg"
 
   fonts:
     - family: OpenSans
