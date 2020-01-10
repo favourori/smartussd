@@ -444,33 +444,33 @@ class _ServicesState extends State<Services> with TickerProviderStateMixin {
     List<Widget> tmp = [];
     for (var list in lists) {
       if (list['label'] == "LoadAirtime" && Platform.isIOS) {
-//        continue;
-        tmp.add(
-          ServiceItem(
-            backgroundColor: Colors.white,
-            icon: list['icon'],
-            name: list['name'],
-            nameMap: list['name_map'],
-            label: list['label'],
-            needsContact: list['needsContact'],
-            needsRecipient: list['needsRecipient'],
-            requiresInput: list['requiresInput'],
-            codeToSend: list['code'],
-            recipientLabel: list['recipientLabelMap'] != null && list['recipientLabelMap'][locale] ==  null ? list['recipientLabelMap']["en"]
-                : list['recipientLabelMap'] != null && list['recipientLabelMap'][locale] !=  null ? list['recipientLabelMap'][locale] : list['recipientLabel'],
-            canSaveLabels: list['canSaveLabels'],
-            needsAmount: list['needsAmount'],
-            requiresCamera: list['requiresCamera'],
-            serviceDescription: list['serviceDescription'],
-            hasChildren: list['hasChildren'],
-            parentID: list.documentID,
-            serviceActions: serviceActions,
-            primaryColor:widget.primaryColor,
-            needsScan: list["needsScan"],
-            carrierID: widget.carrierId,
-//            favouritesMap: _favouritesMap,
-          ),
-        );
+        continue;
+//        tmp.add(
+//          ServiceItem(
+//            backgroundColor: Colors.white,
+//            icon: list['icon'],
+//            name: list['name'],
+//            nameMap: list['name_map'],
+//            label: list['label'],
+//            needsContact: list['needsContact'],
+//            needsRecipient: list['needsRecipient'],
+//            requiresInput: list['requiresInput'],
+//            codeToSend: list['code'],
+//            recipientLabel: list['recipientLabelMap'] != null && list['recipientLabelMap'][locale] ==  null ? list['recipientLabelMap']["en"]
+//                : list['recipientLabelMap'] != null && list['recipientLabelMap'][locale] !=  null ? list['recipientLabelMap'][locale] : list['recipientLabel'],
+//            canSaveLabels: list['canSaveLabels'],
+//            needsAmount: list['needsAmount'],
+//            requiresCamera: list['requiresCamera'],
+//            serviceDescription: list['serviceDescription'],
+//            hasChildren: list['hasChildren'],
+//            parentID: list.documentID,
+//            serviceActions: serviceActions,
+//            primaryColor:widget.primaryColor,
+//            needsScan: list["needsScan"],
+//            carrierID: widget.carrierId,
+////            favouritesMap: _favouritesMap,
+//          ),
+//        );
       } else {
         tmp.add(
           ServiceItem(
