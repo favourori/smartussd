@@ -6,7 +6,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:kene/auth/verify_phone.dart';
 import 'package:kene/control.dart';
 import 'package:kene/pages/homepage.dart';
-import 'package:kene/pages/settings.dart';
 import 'package:kene/utils/functions.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:kene/utils/stylesguide.dart';
@@ -14,6 +13,7 @@ import 'package:kene/widgets/custom_nav.dart';
 import 'dart:io';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:package_info/package_info.dart';
+
 
 class Signin extends StatefulWidget {
   final analytics;
@@ -102,21 +102,7 @@ class _SigninState extends State<Signin> {
                     centerTitle: true,
                     forceElevated: isScrolled,
                     actions: <Widget>[
-                      IconButton(
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              CustomPageRoute(
-                                  navigateTo: Settings(
-                                analytics: widget.analytics,
-                              )));
-                        },
-                        icon: Icon(
-                          Icons.more_vert,
-                          color: Colors.white,
-                          size: 30,
-                        ),
-                      ),
+
                     ],
                     title: AutoSizeText(
                       isSignUp ? "Signup" : "Login",
@@ -506,86 +492,91 @@ class _SigninState extends State<Signin> {
                                                               // ),
                                                               ),
                                                         ),
-                                                        GestureDetector(
-                                                          onTap: () {
-                                                            DatePicker.showDatePicker(
-                                                                context,
-                                                                showTitleActions:
-                                                                    true,
-                                                                minTime:
-                                                                    DateTime(
-                                                                        1770,
-                                                                        3,
-                                                                        5),
-                                                                maxTime:
-                                                                    DateTime(
-                                                                        2019,
-                                                                        6,
-                                                                        7),
-                                                                onChanged:
-                                                                    (date) {},
-                                                                onConfirm:
-                                                                    (date) {
-                                                              setState(() {
-                                                                yob = date
-                                                                    .toString()
-                                                                    .substring(
-                                                                        0, 10);
-                                                              });
-                                                            },
-                                                                currentTime:
-                                                                    DateTime
-                                                                        .now(),
-                                                                locale:
-                                                                    LocaleType
-                                                                        .en);
-                                                          },
-                                                          child: Container(
-                                                            margin:
-                                                                EdgeInsets.only(
-                                                                    top: 10),
-                                                            height: 43,
-                                                            decoration: BoxDecoration(
-                                                                border: Border.all(
-                                                                    color: accentColor
-                                                                        .withOpacity(
-                                                                            0.5)),
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            5)),
-                                                            child: Padding(
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                            .only(
-                                                                        left:
-                                                                            20.0),
-                                                                child: Row(
-                                                                  children: <
-                                                                      Widget>[
-                                                                    Text(
-                                                                      "Date of birth",
-                                                                      style: TextStyle(
-                                                                          fontSize:
-                                                                              14,
-                                                                          color:
-                                                                              Colors.black),
-                                                                    ),
-                                                                    SizedBox(
-                                                                      width: 30,
-                                                                    ),
-                                                                    Text(
-                                                                      yob,
-                                                                      style: TextStyle(
-                                                                          fontSize:
-                                                                              14,
-                                                                          color:
-                                                                              Colors.black),
-                                                                    )
-                                                                  ],
-                                                                )),
-                                                          ),
+
+
+                                                        SizedBox(
+                                                          height: MediaQuery.of(context).size.height * 0.05,
                                                         ),
+//                                                        GestureDetector(
+//                                                          onTap: () {
+//                                                            DatePicker.showDatePicker(
+//                                                                context,
+//                                                                showTitleActions:
+//                                                                    true,
+//                                                                minTime:
+//                                                                    DateTime(
+//                                                                        1770,
+//                                                                        3,
+//                                                                        5),
+//                                                                maxTime:
+//                                                                    DateTime(
+//                                                                        2019,
+//                                                                        6,
+//                                                                        7),
+//                                                                onChanged:
+//                                                                    (date) {},
+//                                                                onConfirm:
+//                                                                    (date) {
+//                                                              setState(() {
+//                                                                yob = date
+//                                                                    .toString()
+//                                                                    .substring(
+//                                                                        0, 10);
+//                                                              });
+//                                                            },
+//                                                                currentTime:
+//                                                                    DateTime
+//                                                                        .now(),
+//                                                                locale:
+//                                                                    LocaleType
+//                                                                        .en);
+//                                                          },
+//                                                          child: Container(
+//                                                            margin:
+//                                                                EdgeInsets.only(
+//                                                                    top: 10),
+//                                                            height: 43,
+//                                                            decoration: BoxDecoration(
+//                                                                border: Border.all(
+//                                                                    color: accentColor
+//                                                                        .withOpacity(
+//                                                                            0.5)),
+//                                                                borderRadius:
+//                                                                    BorderRadius
+//                                                                        .circular(
+//                                                                            5)),
+//                                                            child: Padding(
+//                                                                padding:
+//                                                                    const EdgeInsets
+//                                                                            .only(
+//                                                                        left:
+//                                                                            20.0),
+//                                                                child: Row(
+//                                                                  children: <
+//                                                                      Widget>[
+//                                                                    Text(
+//                                                                      "Date of birth",
+//                                                                      style: TextStyle(
+//                                                                          fontSize:
+//                                                                              14,
+//                                                                          color:
+//                                                                              Colors.black),
+//                                                                    ),
+//                                                                    SizedBox(
+//                                                                      width: 30,
+//                                                                    ),
+//                                                                    Text(
+//                                                                      yob,
+//                                                                      style: TextStyle(
+//                                                                          fontSize:
+//                                                                              14,
+//                                                                          color:
+//                                                                              Colors.black),
+//                                                                    )
+//                                                                  ],
+//                                                                )),
+//                                                          ),
+//                                                        ),
                                                       ],
                                                     )
                                                   : Container(),

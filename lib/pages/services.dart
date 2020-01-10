@@ -20,12 +20,9 @@ import 'package:flutter/cupertino.dart';
 
 //
 // TODO: Support country selection, multiple input and map structure of services
-// TODO: fetch all sub-services on load
 // TODO: session count for users
-// TODO: language locale null on french
 // TODO: make swipe for items with children open the children
 // TODO: submit button inactive when fields are empty
-// TODO: signup, signin and welcome pages design
 // TODO: edit saved accounts
 //
 

@@ -412,6 +412,7 @@ Future<Map> getPageData(String pageName) async{
 
 String getTextFromPageData(Map pageData, String str, String locale){
 //  print(pageData);
+//  print(locale);
   if(pageData.containsKey(str)){
 //    print(pageData[str][locale]);
     var data = pageData[str][locale];

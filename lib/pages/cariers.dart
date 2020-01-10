@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:kene/components/CustomFloatingButton.dart';
@@ -15,7 +14,6 @@ import 'package:kene/utils/stylesguide.dart';
 import 'package:kene/widgets/bloc_provider.dart';
 import 'package:kene/widgets/custom_nav.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:qr_flutter/qr_flutter.dart';
 
 
 class Carriers extends StatefulWidget {
@@ -35,7 +33,6 @@ class _CarriersState extends State<Carriers> {
 
 
   bool isOlderVersion;
-  var _qrScan;
 
   var collectionsCache = [];
 
@@ -89,17 +86,7 @@ class _CarriersState extends State<Carriers> {
 //    });
 
 
-    FirebaseAuth.instance.currentUser().then((f){ // Set the logged in phone number as qrCode data
-      if(f != null){
-        setState(() {
-          _qrScan = QrImage(
-            data: f.phoneNumber.toString(),
-            version: QrVersions.auto,
-            size: 200.0,
-          );
-        });
-      }
-    });
+
     // Scroll controller for listView
     _scrollController = ScrollController(initialScrollOffset: 0.0);
     _scrollController.addListener(listener);
@@ -433,63 +420,6 @@ getActiveCarriers(list){
     );
   }
   }
-
-//  tmp.add(
-//    GestureDetector(
-//        onTap: () async{
-//          var uid = await getUserID();
-//          Navigator.push(context,  CustomPageRoute(
-//                     navigateTo: NShortcuts(
-//                       userID:uid,
-//                       primaryColor: Colors.orangeAccent,
-//                       carrierTitle: getTextFromPageData(pageData, "shortcuts", locale),
-//                       analytics: widget.analytics,
-//                     )
-//                 ));
-//        },
-//        child:
-//      Container(
-//        // height: 200,
-//        padding: EdgeInsets.symmetric(horizontal:10),
-//        decoration: BoxDecoration(
-//          color: Color(0xfff6f7f9),
-//          // border: Border.all(color: Colors.blue),
-//          borderRadius: BorderRadius.circular(8),
-//        ),
-//        child: Center(child:Column(
-//          mainAxisAlignment: MainAxisAlignment.center,
-//          children: <Widget>[
-//          SizedBox(
-//                    height: 60,
-//                    width: 60,
-//                    child: ClipRRect(
-//                      borderRadius: BorderRadius.circular(10),
-//                      child: CachedNetworkImage(
-//                        fit: BoxFit.cover,
-//                        imageUrl: "",
-//                        placeholder: (context, url) => new Icon(
-//                          Icons.favorite,
-//                          size: 60,
-//                          color: Colors.orangeAccent,
-//                        ),
-//                        errorWidget: (context, url, error) => new Icon(
-//                          Icons.favorite,
-//                          size: 60,
-//                          color: Colors.orangeAccent,
-//                        ),
-//                      ),
-//                    ),
-//                  ),
-//                  SizedBox(
-//                    height: 10,
-//                  ),
-//          Text(getTextFromPageData(pageData, "shortcuts", locale), textAlign: TextAlign.center, style: TextStyle(
-//              fontWeight: FontWeight.w600
-//          ),)
-//        ],),
-//      ))
-//      )
-//  );
 
   return tmp;
 }

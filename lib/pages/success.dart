@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
@@ -63,19 +65,24 @@ class _SuccessPageState extends State<SuccessPage> {
   }
 
   handleRate() {
-    _rateMyApp.init().then((_) {
-      _rateMyApp.showRateDialog(
-        context,
-        title: 'Rate this app',
-        message:
-        'If you like this app, please take a little bit of your time to review it !\nIt really helps us and it shouldn\'t take you more than one minute.',
-        rateButton: 'RATE',
-        noButton: 'NO THANKS',
-        laterButton: '',
-        ignoreIOS: false,
-        dialogStyle: DialogStyle(),
-      );
-    });
+    if(Platform.isIOS){
+      upDateButtonAction();
+    }
+    else {
+      _rateMyApp.init().then((_) {
+        _rateMyApp.showRateDialog(
+          context,
+          title: 'Rate this app',
+          message:
+          'If you like this app, please take a little bit of your time to review it !\nIt really helps us and it shouldn\'t take you more than one minute.',
+          rateButton: 'RATE',
+          noButton: 'NO THANKS',
+          laterButton: '',
+          ignoreIOS: false,
+          dialogStyle: DialogStyle(),
+        );
+      });
+    }
   }
 
 
@@ -250,7 +257,7 @@ class _SuccessPageState extends State<SuccessPage> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
-                            pageButtons("Redo same operation", () async{
+                            pageButtons(getTextFromPageData(pageData, "redo", locale), () async{
                               Navigator.pop(context);
                             }, Icons.loop, context, true),
 
@@ -281,7 +288,7 @@ class _SuccessPageState extends State<SuccessPage> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
-                            pageButtons("Tweet Nokanda", () async{
+                            pageButtons(getTextFromPageData(pageData, "tweet", locale), () async{
                               var url =
                                   'https://twitter.com/intent/tweet?hashtags=Nokanda&text=${makeTweetText()}';
                               if (await canLaunch(url)) {
@@ -336,12 +343,15 @@ class _SuccessPageState extends State<SuccessPage> {
               icon,
               color: accentColor,
             ),
-            Text(
+
+            Expanded(child: Text(
               label,
+//              maxFontSize: 14,
+//              minFontSize: 11,
               style: TextStyle(
                 color: accentColor,
               ),
-            )
+            ))
           ],
         ),
       ),

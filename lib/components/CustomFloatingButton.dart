@@ -36,10 +36,6 @@ class CustomFloatingButton extends StatelessWidget {
         else{
           Navigator.pushReplacement(context, CustomPageRoute(navigateTo: ShortcutAdd(userID: uid, analytics: analytics,)));
         }
-//          Navigator.push(context, CustomPageRoute(
-//            navigateTo: ReceivePage(qrImage: _qrScan, analytics: widget.analytics,)
-
-//          ));
       },
     );
   }

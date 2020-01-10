@@ -9,8 +9,10 @@ class ReceivePage extends StatefulWidget{
 
   final qrImage;
   final analytics;
+  final text;
+  final title;
 
-  ReceivePage({this.qrImage, this.analytics});
+  ReceivePage({this.qrImage, this.analytics, this.title,  this.text});
 
 
   @override
@@ -94,7 +96,7 @@ class _ReceivePageState extends State<ReceivePage>{
                         Align(
                           alignment: Alignment.center,
                           child: Text(
-                            "Receive MoMo",
+                            "${widget.title}",
                             style: TextStyle(color: Colors.white, fontSize: 14),
                           ),
                         )
@@ -143,7 +145,7 @@ class _ReceivePageState extends State<ReceivePage>{
                         Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
-                              Text("Your QR code for receiving MoMo $phone", textAlign: TextAlign.center, style:
+                              Text("${widget.text} $phone", textAlign: TextAlign.center, style:
                               TextStyle(color: Colors.orange, fontSize: 18, fontWeight: FontWeight.bold),),
                               SizedBox(height: 30,),
                               Container(

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:kene/pages/settings.dart';
 import 'package:kene/utils/functions.dart';
 import 'package:kene/utils/stylesguide.dart';
+import 'package:kene/widgets/bloc_provider.dart';
 import 'package:kene/widgets/custom_nav.dart';
 
 class ShortcutAdd extends StatefulWidget {
@@ -23,6 +24,10 @@ class _ShortcutAddState extends State<ShortcutAdd> {
   String currentId = "";
   bool isLoading = false;
 
+  // Data to hold the pages string from fireBase for translations
+  var pageData = {};
+  String locale = "en";
+
   ScrollController _scrollController;
   ScrollController _listViewController = new ScrollController();
 
@@ -35,6 +40,24 @@ class _ShortcutAddState extends State<ShortcutAdd> {
   @override
   void initState() {
     super.initState();
+
+    var appBloc;
+
+    appBloc = BlocProvider.of(context);
+
+    appBloc.localeOut.listen((data) {
+      setState(() {
+        locale = data != null ? data : locale;
+      });
+    });
+
+
+    getPageData("shortcuts").then((data){
+      setState(() {
+        pageData = data;
+      });
+    });
+
 
     _scrollController = ScrollController(initialScrollOffset: 0.0);
     _scrollController.addListener(listener);
@@ -125,7 +148,7 @@ class _ShortcutAddState extends State<ShortcutAdd> {
                       Align(
                         alignment: Alignment.center,
                         child: Text(
-                          "Add Shortcuts",
+                          getTextFromPageData(pageData, "sub_title", locale),
                           style: TextStyle(color: Colors.white, fontSize: 14),
                         ),
                       )

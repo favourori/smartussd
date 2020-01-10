@@ -99,11 +99,11 @@ class _SaveAccountState extends State<SaveAccount> {
                 SizedBox(
                   width: MediaQuery.of(context).size.width * 0.1,
                 ),
-                AutoSizeText(
+                Expanded(child: AutoSizeText(
                   getTextFromPageData(pageData, "title", locale),
                   style: TextStyle(color: Colors.white, fontSize: 28),
                   maxLines: 2,
-                )
+                )),
               ],
             ),
           ),
