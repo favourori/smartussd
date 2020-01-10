@@ -232,16 +232,16 @@ class _InputContainerState extends State<InputActionContainer>
             ],
           ),
         ),
-        label != "Amount" && showSubmit
+        !isAmount && showSubmit
             ? Padding(
                 padding: EdgeInsets.only(
                   top: 5,
                 ),
                 child: Text(
                   _recipientContactName.isNotEmpty
-                      ? "Sending to:  $_recipientContactName"
+                      ? "${getTextFromPageData(pageData, 'sending', locale)} ${_amountController.text} ${getTextFromPageData(pageData, 'to', locale)} ${_amountController.text} $_recipientContactName"
                       : "",
-                  style: TextStyle(fontSize: 12),
+                  style: TextStyle(fontSize: 14),
                 ))
             : Container(),
       ],
@@ -420,7 +420,7 @@ class _InputContainerState extends State<InputActionContainer>
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Icon(
-                      FontAwesomeIcons.barcode,
+                      FontAwesomeIcons.qrcode,
                       color: accentColor,
                     ),
                     SizedBox(
