@@ -323,7 +323,11 @@ class _SuccessPageState extends State<SuccessPage> {
 
   Widget pageButtons(
       String label, Function onPressedAction, IconData icon, context, bool fullWidth) {
-    return Container(
+    return
+      GestureDetector(
+        onTap: onPressedAction,
+        child:
+      Container(
       padding: EdgeInsets.symmetric(
           vertical: 5, horizontal: MediaQuery.of(context).size.width * 0.15),
       decoration: BoxDecoration(
@@ -335,9 +339,7 @@ class _SuccessPageState extends State<SuccessPage> {
       ),
       height: 55,
       width: fullWidth ? MediaQuery.of(context).size.width * 0.88 : MediaQuery.of(context).size.width * 0.42,
-      child: GestureDetector(
-        onTap: onPressedAction,
-        child: Column(
+      child: Column(
           children: <Widget>[
             Icon(
               icon,
@@ -354,7 +356,8 @@ class _SuccessPageState extends State<SuccessPage> {
             ))
           ],
         ),
-      ),
-    );
+
+    ),
+      );
   }
 }

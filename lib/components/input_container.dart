@@ -112,7 +112,6 @@ class _InputContainerState extends State<InputActionContainer>
       }
     });
 
-//    _amountController.addListener(_amountListener);
     _recipientController.addListener(_recipientControllerListener);
 
     FirebaseAuth.instance.currentUser().then((u) {
@@ -239,7 +238,7 @@ class _InputContainerState extends State<InputActionContainer>
                 ),
                 child: Text(
                   _recipientContactName.isNotEmpty
-                      ? "${getTextFromPageData(pageData, 'sending', locale)} ${_amountController.text} ${getTextFromPageData(pageData, 'to', locale)} ${_amountController.text} $_recipientContactName"
+                      ? "${getTextFromPageData(pageData, 'sending', locale)} ${_amountController.text} ${getTextFromPageData(pageData, 'to', locale)} $_recipientContactName"
                       : "",
                   style: TextStyle(fontSize: 14),
                 ))
@@ -252,40 +251,43 @@ class _InputContainerState extends State<InputActionContainer>
     return (serviceData['needsAmount'] != null && serviceData['needsAmount']) ||
         (serviceData['needsRecipient'] != null && serviceData['needsRecipient']) ?  GestureDetector(
       onTap: (){
-        print("submit button clicked");
-        print(_amountController.text);
-        if ((serviceData['canSaveLabels'] != null &&
-                serviceData['canSaveLabels']) &&
-            numberNotInSavedAccounts(_recipientController.text)) {
-          show(context);
-        } else {
 
-          // push analytics to Firebase
-          sendAnalytics(
-              widget.analytics,
-              widget.carrierTitle + "_" + serviceData['label'] + "_submit",
-              null);
+       // Deactivate the button when no input is given
+        if (_recipientController.text.isNotEmpty || _amountController.text.isNotEmpty){
+          // Determine whether its a new account and save for future use
+          if ((serviceData['canSaveLabels'] != null &&
+              serviceData['canSaveLabels']) &&
+              numberNotInSavedAccounts(_recipientController.text)) {
+            show(context);
+          } else {
 
-          // make the dial
-          sendCode(platform, serviceData['code'], _amountController.text,
-              _recipientController.text, context);
+            // push analytics to Firebase
+            sendAnalytics(
+                widget.analytics,
+                widget.carrierTitle + "_" + serviceData['label'] + "_submit",
+                null);
 
-          // send transaction if amount present
-          if (_amountController.text.isNotEmpty &&
-              _amountController.text != null) {
-            addTransactions(widget.carrierTitle + "_" + serviceData['label'],
-                int.parse(_amountController.text));
+            // make the dial
+            sendCode(platform, serviceData['code'], _amountController.text,
+                _recipientController.text, context);
 
-            // Empty the text fields
-            _amountController.text = "";
-            _recipientController.text = "";
+            // send transaction if amount present
+            if (_amountController.text.isNotEmpty &&
+                _amountController.text != null) {
+              addTransactions(widget.carrierTitle + "_" + serviceData['label'],
+                  int.parse(_amountController.text));
+
+              // Empty the text fields
+              _amountController.text = "";
+              _recipientController.text = "";
+            }
           }
         }
       },
       child: Container(
         height: 60,
         decoration: BoxDecoration(
-            color: accentColor,
+            color: _recipientController.text.isNotEmpty || _amountController.text.isNotEmpty ? accentColor : pageBackground,
             boxShadow: [
               buttonBoxShadow
             ],
@@ -294,7 +296,7 @@ class _InputContainerState extends State<InputActionContainer>
           child: AutoSizeText(
             getTextFromPageData(pageData, "submit", locale),
             style: TextStyle(
-              color: Colors.white,
+              color: _recipientController.text.isNotEmpty || _amountController.text.isNotEmpty ? Colors.white : Colors.black,
             ),
             minFontSize: 11,
             maxLines: 2,
@@ -352,49 +354,6 @@ class _InputContainerState extends State<InputActionContainer>
       ),
     );
   }
-
-//  GestureDetector openScanner(label) {
-//    return GestureDetector(
-//      onTap: () {
-//        _scanBarCode();
-//      },
-//      child: Container(
-//        // height: 58,
-//        width: MediaQuery.of(context).size.width,
-//
-//        child: Column(
-//          children: <Widget>[
-//            SizedBox(
-//              height: 10,
-//            ),
-//            Container(
-//              height: 58,
-//              decoration: BoxDecoration(
-//                  color: widget.primaryColor,
-//                  // Color(0xffED7937),
-//                  borderRadius: BorderRadius.circular(40)),
-//              child: Row(
-//                  mainAxisAlignment: MainAxisAlignment.center,
-//                  children: <Widget>[
-//                    Icon(
-//                      FontAwesomeIcons.barcode,
-//                      color: Colors.white,
-//                    ),
-//                    SizedBox(
-//                      width: 10,
-//                    ),
-//                    Text(
-//                      getTextFromPageData(pageData, "scan_code", locale),
-//                      style: TextStyle(
-//                          color: Colors.white, fontWeight: FontWeight.bold),
-//                    ),
-//                  ]),
-//            ),
-//          ],
-//        ),
-//      ),
-//    );
-//  }
 
   scanBardCodeContainer() {
     return GestureDetector(
