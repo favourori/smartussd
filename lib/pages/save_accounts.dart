@@ -29,6 +29,7 @@ class _SaveAccountState extends State<SaveAccount> {
 
   TextEditingController _numberController = TextEditingController();
   TextEditingController _labelController = TextEditingController();
+  TextEditingController _editNumberController = TextEditingController();
 
   @override
   void initState() {
@@ -308,6 +309,52 @@ class _SaveAccountState extends State<SaveAccount> {
               ],
             ),
             Spacer(),
+            IconButton(
+              icon: Icon(Icons.edit),
+              onPressed: (){
+                _editNumberController.text = number;
+                return showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        content:
+                        Container(
+                          height: 80,
+                          child: Column(
+                            children: <Widget>[
+                              Text("Edit $label "),
+                              TextFormField(
+                                controller: _editNumberController,
+                              )
+                            ],
+                          ),
+                        ),
+                        actions: <Widget>[
+                          FlatButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: Text("Cancel"),
+                          ),
+                          FlatButton(
+                            onPressed: () {
+                              print(_editNumberController.text);
+                              Firestore.instance.collection("accounts/$uid/data").document(docId).updateData({
+                                "number": _editNumberController.text
+                              });
+                              Navigator.pop(context);
+                              showFlushBar("Alert!", "$label has been edited");
+                            },
+                            child: Text("Save"),
+                          )
+                        ],
+                      );
+                    });
+              },
+              color: accentColor,
+              iconSize: 21,
+            ),
+            SizedBox(width: 10,),
             IconButton(
               icon: Icon(
                 Icons.delete_outline,
