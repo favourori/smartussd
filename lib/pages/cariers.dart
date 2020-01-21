@@ -440,29 +440,37 @@ getActiveCarriers(list){
     String lastLogin = prefs.getString("lastLogin");
     if (lastLogin == null){
       prefs.setString("lastLogin", today);
-      await updateLastLogin();
+      await updateUsageCount();
     }
     else{
-      await updateLastLogin();
       if(lastLogin != today){
-
         // Update database and last login
-        await updateLastLogin();
+        await updateUsageCount();
+        prefs.setString("lastLogin", today);
       }
     }
   }
 
 
-  updateLastLogin() async{
+  updateUsageCount() async{
+    
+    print("update usage count called, and user id is ========>");
 
     var userID = await getUserID();
+    print(userID);
     var res = await Firestore.instance.collection("users").where("user_id", isEqualTo: userID).getDocuments();
     var docs = res.documents;
 
     print(docs);
     if(docs.length > 0){
       for (var user in docs){
-
+        
+        var userDocID = user.documentID;
+        var currentUsage = user['usage_count'] != null ? user['usage_count'] : 0;
+        Firestore.instance.collection("users").document(userDocID).updateData({
+          'usage_count': currentUsage + 1,
+        });
+        
       }
 
     }
