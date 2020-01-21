@@ -14,6 +14,7 @@ import 'package:kene/utils/stylesguide.dart';
 import 'package:kene/widgets/bloc_provider.dart';
 import 'package:kene/widgets/custom_nav.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 
 class Carriers extends StatefulWidget {
@@ -60,6 +61,10 @@ class _CarriersState extends State<Carriers> {
     super.initState();
 
     var appBloc;
+
+    // Record daily usage
+    recordDailyUsage();
+
 
     firestoreInstance = Firestore.instance;
 
@@ -420,11 +425,48 @@ getActiveCarriers(list){
     );
   }
   }
-
   return tmp;
 }
 
+  recordDailyUsage() async{
+    String today = DateTime.now().toIso8601String().substring(0, 10);
+    print(today);
 
+    // If shared preference date is empty,
+    // set it, else, update usage if not logged in today
+
+    var prefs = await SharedPreferences.getInstance();
+
+    String lastLogin = prefs.getString("lastLogin");
+    if (lastLogin == null){
+      prefs.setString("lastLogin", today);
+      await updateLastLogin();
+    }
+    else{
+      await updateLastLogin();
+      if(lastLogin != today){
+
+        // Update database and last login
+        await updateLastLogin();
+      }
+    }
+  }
+
+
+  updateLastLogin() async{
+
+    var userID = await getUserID();
+    var res = await Firestore.instance.collection("users").where("user_id", isEqualTo: userID).getDocuments();
+    var docs = res.documents;
+
+    print(docs);
+    if(docs.length > 0){
+      for (var user in docs){
+
+      }
+
+    }
+  }
   int getServiceOrderNo(x) {
     return x['orderNo'];
   }
