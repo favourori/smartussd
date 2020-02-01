@@ -299,7 +299,12 @@ class _SettingsState extends State<Settings> {
   }
 
   _sendEmail(String email) async {
-    String url = 'mailto:$email?subject=Contact%20message%20from%20Nokanda%20App';
+    var res = await FirebaseAuth.instance.currentUser();
+    String phone = "";
+    if(res != null){
+      phone = res.phoneNumber;
+    }
+    String url = 'mailto:$email?subject=Contact%20message%20from%20Nokanda%20App%20-$phone';
     if (await canLaunch(url)) {
       await launch(url);
     } else {

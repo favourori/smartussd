@@ -18,7 +18,7 @@ dependencies:
   firebase_auth: ^0.14.0+2
   # google_sign_in: 3.2.4
   cloud_firestore: ^0.12.9
-  cached_network_image: ^1.1.1
+  cached_network_image: ^2.0.0
   flushbar: ^1.8.1
   image_picker: ^0.6.1+1
   flutter_launcher_icons: ^0.7.2+1
