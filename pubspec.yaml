@@ -22,7 +22,7 @@ dependencies:
   flushbar: ^1.8.1
   image_picker: ^0.6.1+1
   flutter_launcher_icons: ^0.7.2+1
-  firebase_ml_vision: ^0.9.3+3 #for firebase machine learning kits
+  firebase_ml_vision: ^0.9.3+5 #for firebase machine learning kits
   flutter_spinkit: "^4.0.0" # for custom spinners
   flutter_datetime_picker: ^1.2.6 #date time picker for choosing date on signup
   package_info: ^0.4.0+6 #for getting the build info of the application

@@ -158,6 +158,8 @@ Future sendCode(platform, code, aText, rText, context) async{
       Future.delayed(Duration(seconds: 2)).then((f){
         Navigator.push(context, MaterialPageRoute(builder: (context) => SuccessPage()));
       });
+
+      await askCallPermission(platform);
       await platform.invokeMethod("moMoDialNumber", {"code": codeToSend});
 
     }on PlatformException catch(e){
