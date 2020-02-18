@@ -107,10 +107,13 @@ class _ServiceItemState extends State<ServiceItem> {
         Future.delayed(Duration(milliseconds: 50)).then((f) {
           // delay for 300 milli secs before Navigating
           // Restore the boolean to revert the background color
-          setState(() {
-            itemClicked = false;
-          });
 
+          if(mounted){
+            setState(() {
+              itemClicked = false;
+            });
+
+          }
           // sending name for parent to update to update header title
           String name = widget.requiresInput != null && widget.requiresInput
               ? widget.name

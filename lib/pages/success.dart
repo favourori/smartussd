@@ -1,11 +1,9 @@
 import 'dart:io';
-
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:kene/components/CustomFloatingButton.dart';
 import 'package:kene/components/bottom_navigation.dart';
-import 'package:kene/pages/cariers.dart';
 import 'package:kene/pages/settings.dart';
 import 'package:kene/utils/stylesguide.dart';
 import 'package:kene/widgets/bloc_provider.dart';
@@ -14,6 +12,7 @@ import 'package:rate_my_app/rate_my_app.dart';
 import 'package:kene/utils/functions.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 
 class SuccessPage extends StatefulWidget {
   @override
@@ -87,7 +86,7 @@ class _SuccessPageState extends State<SuccessPage> {
 
 
  String makeTweetText(){
-    String tweet = getTextFromPageData(pageData, "tweet", locale);
+    String tweet = getTextFromPageData(pageData, "tweet_message", locale);
     String tweetToSend = "";
 
     for(int i=0; i < tweet.length; i++){
@@ -216,51 +215,12 @@ class _SuccessPageState extends State<SuccessPage> {
                         SizedBox(
                           height: 30, 
                         ),
-//                        Row(
-////                          mainAxisAlignment: MainAxisAlignment.center,
-////                          children: <Widget>[
-////
-////                            SizedBox(
-////                              width: 15,
-////                            ),
-//////                            pageButtons(getTextFromPageData(pageData, "redo", locale), () {
-//////                              Navigator.pop(context);
-//////                            }, Icons.loop, context, true)
-////
-////                            Row(
-////                              mainAxisAlignment: MainAxisAlignment.center,
-////                              children: <Widget>[
-////                                pageButtons("Tweet Nokanda", () async{
-////                                  var url =
-////                                      'https://twitter.com/intent/tweet?hashtags=Nokanda&text=${makeTweetText()}';
-////                                  if (await canLaunch(url)) {
-////                                    if (await launch(
-////                                      url,
-////                                      forceSafariVC: false,
-////                                      universalLinksOnly: true,
-////                                    )) {
-////                                      // print("tweeted");
-////                                    } else {
-////                                      // print("no apppp");
-////                                      await launch(url);
-////                                    }
-////                                  } else {
-////                                    throw 'Could not launch $url';
-////                                  }
-////                                }, FontAwesomeIcons.twitter, context, true),
-////
-////                              ],
-////                            ),
-////
-////                          ],
-////                        ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
                             pageButtons(getTextFromPageData(pageData, "redo", locale), () async{
                               Navigator.pop(context);
                             }, Icons.loop, context, true),
-
                           ],
                         ),
 

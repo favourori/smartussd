@@ -17,6 +17,10 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 
+// TODO: Update last seen and language of the user
+// TODO: UUID and date on transaction records
+// TODO: Refresh permissions page after user has set permissions on the settings page
+
 class Carriers extends StatefulWidget {
 
   /// Receives analytics to send events
@@ -61,6 +65,10 @@ class _CarriersState extends State<Carriers> {
     super.initState();
 
     var appBloc;
+
+//    // Check permissions
+//
+//    checkPermission();
 
     // Record daily usage
     recordDailyUsage();
@@ -469,6 +477,7 @@ getActiveCarriers(list){
         var currentUsage = user['usage_count'] != null ? user['usage_count'] : 0;
         Firestore.instance.collection("users").document(userDocID).updateData({
           'usage_count': currentUsage + 1,
+          'last_seen': DateTime.now(),
         });
         
       }

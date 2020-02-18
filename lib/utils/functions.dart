@@ -10,6 +10,32 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 import 'dart:io';
 import 'package:kene/database/db.dart';
+import 'package:kene/pages/NeedsPermissison.dart';
+import 'package:permission_handler/permission_handler.dart';
+
+
+requestPermission() async{
+  Map<PermissionGroup, PermissionStatus> permissions = await PermissionHandler().requestPermissions([PermissionGroup.phone]);
+  print("asked for permission and answer is");
+  print(permissions[PermissionGroup.phone]);
+
+  return permissions[PermissionGroup.phone];
+}
+
+checkPermission() async{
+
+  PermissionStatus permission = await PermissionHandler().checkPermissionStatus(PermissionGroup.phone);
+  print("app permisions for phone is");
+  print(permission);
+  return permission;
+
+}
+
+openAppSettings() async{
+  bool isOpened = await PermissionHandler().openAppSettings();
+  print(isOpened);
+  return isOpened;
+}
 
 
 
@@ -50,21 +76,6 @@ Future<Null> sendAnalytics(analytics, eventName, parameters) async{
 
 //Add thousand separator to figures
 String addFigureSeparator(String value){
-//
-//  String stringWithSeparator = "";
-//  int counter = 0;
-//
-//  for(int i = value.length-1; i >= 0; i--){
-//    counter += 1;
-//
-//    if(counter % 3 == 0){
-//      stringWithSeparator = stringWithSeparator + "," +value[i];
-//    }
-//    else{
-//      stringWithSeparator = stringWithSeparator +  value[i];
-//    }
-//
-//  }
 
   return value;
 
@@ -146,6 +157,8 @@ Future sendCode(platform, code, aText, rText, context) async{
     }on PlatformException catch(e){
 
       print("error check balance is $e");
+      Navigator.push(context, MaterialPageRoute(builder: (context) => NeedsPermission()));
+
     }
 
 
@@ -155,16 +168,31 @@ Future sendCode(platform, code, aText, rText, context) async{
   }
   else{
     try{
-      Future.delayed(Duration(seconds: 2)).then((f){
-        Navigator.push(context, MaterialPageRoute(builder: (context) => SuccessPage()));
-      });
 
-      await askCallPermission(platform);
-      await platform.invokeMethod("moMoDialNumber", {"code": codeToSend});
+        requestPermission().then((res) async{
+          if(res == PermissionStatus.granted){
+
+            var sendCode = await platform.invokeMethod("moMoDialNumber", {"code": codeToSend});
+            print("resposne from sendcode");
+            print(sendCode);
+
+            Future.delayed(Duration(seconds: 5)).then((f){
+              Navigator.push(context, MaterialPageRoute(builder: (context) => SuccessPage()));
+            });
+          }
+
+          else if(res == PermissionStatus.neverAskAgain){
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => NeedsPermission()));
+          }
+          else{
+            // Do nothing here
+          }
+        });
 
     }on PlatformException catch(e){
 
         print("error check balance is $e");
+        Navigator.push(context, MaterialPageRoute(builder: (context) => NeedsPermission()));
       }
     }
 
