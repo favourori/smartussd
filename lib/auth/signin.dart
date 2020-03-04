@@ -13,7 +13,6 @@ import 'package:kene/widgets/custom_nav.dart';
 import 'dart:io';
 import 'package:package_info/package_info.dart';
 
-
 class Signin extends StatefulWidget {
   final analytics;
   final observer;
@@ -100,9 +99,7 @@ class _SigninState extends State<Signin> {
                     floating: true,
                     centerTitle: true,
                     forceElevated: isScrolled,
-                    actions: <Widget>[
-
-                    ],
+                    actions: <Widget>[],
                     title: AutoSizeText(
                       isSignUp ? "Signup" : "Login",
                       style: TextStyle(
@@ -223,7 +220,9 @@ class _SigninState extends State<Signin> {
                                                   children: <Widget>[
                                                     Expanded(
                                                       child: Container(
-                                                          padding: EdgeInsets.only(left: 5),
+                                                          padding:
+                                                              EdgeInsets.only(
+                                                                  left: 5),
                                                           decoration: BoxDecoration(
                                                               borderRadius:
                                                                   BorderRadius
@@ -251,29 +250,29 @@ class _SigninState extends State<Signin> {
 //                                                                alignedDropdown:
 //                                                                    true,
 //                                                                child:
-                                                                    DropdownButton(
-                                                                        underline:
-                                                                            Container(),
-                                                                        icon: Icon(
-                                                                            Icons
-                                                                                .arrow_drop_down,
-                                                                            size:
-                                                                                16,
-                                                                            color:
-                                                                                accentColor),
-                                                                        value:
-                                                                            countryCode,
-                                                                        items: populateCountryCodes(snapshot
-                                                                            .data
-                                                                            .documents),
-                                                                        onChanged:
-                                                                            (v) {
-                                                                          setState(
-                                                                              () {
-                                                                            countryCode =
-                                                                                v;
-                                                                          });
+                                                                  DropdownButton(
+                                                                      underline:
+                                                                          Container(),
+                                                                      icon: Icon(
+                                                                          Icons
+                                                                              .arrow_drop_down,
+                                                                          size:
+                                                                              16,
+                                                                          color:
+                                                                              accentColor),
+                                                                      value:
+                                                                          countryCode,
+                                                                      items: populateCountryCodes(snapshot
+                                                                          .data
+                                                                          .documents),
+                                                                      onChanged:
+                                                                          (v) {
+                                                                        setState(
+                                                                            () {
+                                                                          countryCode =
+                                                                              v;
                                                                         });
+                                                                      });
 //                                                              );
                                                             },
                                                           )),
@@ -315,8 +314,8 @@ class _SigninState extends State<Signin> {
                                                           keyboardType:
                                                               TextInputType
                                                                   .phone,
-                                                          cursorColor: accentColor,
-
+                                                          cursorColor:
+                                                              accentColor,
                                                           decoration: InputDecoration(
                                                               hintText:
                                                                   "Phone number",
@@ -337,8 +336,9 @@ class _SigninState extends State<Signin> {
                                                       ),
                                                       flex: 7,
                                                     ),
-
-                                                    Expanded(child: Container(), flex:2),
+                                                    Expanded(
+                                                        child: Container(),
+                                                        flex: 2),
                                                   ],
                                                 ),
                                               ),
@@ -492,9 +492,12 @@ class _SigninState extends State<Signin> {
                                                               ),
                                                         ),
 
-
                                                         SizedBox(
-                                                          height: MediaQuery.of(context).size.height * 0.05,
+                                                          height: MediaQuery.of(
+                                                                      context)
+                                                                  .size
+                                                                  .height *
+                                                              0.05,
                                                         ),
 //                                                        GestureDetector(
 //                                                          onTap: () {
@@ -636,31 +639,34 @@ class _SigninState extends State<Signin> {
                                                                 });
                                                               },
                                                               child: Row(
-                                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                                children: <Widget>[
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .center,
+                                                                children: <
+                                                                    Widget>[
                                                                   Text(
                                                                     "Don't have an account? ",
                                                                     style:
-                                                                    TextStyle(
+                                                                        TextStyle(
 
 //                                fontSize: 12
-                                                                    ),
+                                                                            ),
                                                                     textAlign:
-                                                                    TextAlign
-                                                                        .center,
+                                                                        TextAlign
+                                                                            .center,
                                                                   ),
                                                                   Text(
                                                                     "Sign up",
                                                                     style:
-                                                                    TextStyle(
+                                                                        TextStyle(
                                                                       fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
+                                                                          FontWeight
+                                                                              .bold,
 //                                fontSize: 12
                                                                     ),
                                                                     textAlign:
-                                                                    TextAlign
-                                                                        .center,
+                                                                        TextAlign
+                                                                            .center,
                                                                   )
                                                                 ],
                                                               ),
@@ -673,54 +679,69 @@ class _SigninState extends State<Signin> {
                                                                 });
                                                               },
                                                               child: Row(
-                                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                                children: <Widget>[
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .center,
+                                                                children: <
+                                                                    Widget>[
                                                                   Text(
                                                                     "Already have an account? ",
                                                                     style:
-                                                                    TextStyle(
-                                                                    ),
+                                                                        TextStyle(),
                                                                     textAlign:
-                                                                    TextAlign
-                                                                        .center,
-                                                                  ),Text(
+                                                                        TextAlign
+                                                                            .center,
+                                                                  ),
+                                                                  Text(
                                                                     "Log in",
                                                                     style:
-                                                                    TextStyle(
+                                                                        TextStyle(
                                                                       fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
+                                                                          FontWeight
+                                                                              .bold,
 //                                fontSize: 12
                                                                     ),
                                                                     textAlign:
-                                                                    TextAlign
-                                                                        .center,
+                                                                        TextAlign
+                                                                            .center,
                                                                   ),
                                                                 ],
                                                               ),
                                                             ),
-                                                      isSignUp ? Padding(
-                                                        padding:
-                                                            EdgeInsets.only(
-                                                                top: 30,
-                                                                left: 30,
-                                                                right: 30),
-                                                        child: Text(
-                                                          "By continuing, you agree to Nokanda's Terms of use and Privacy Policy",
-                                                          style: TextStyle(
-                                                              fontSize: 12,
-                                                              color:
-                                                                  Colors.grey),
-                                                        ),
-                                                      ): Container()
+                                                      isSignUp
+                                                          ? Padding(
+                                                              padding: EdgeInsets
+                                                                  .only(
+                                                                      top: 30,
+                                                                      left: 30,
+                                                                      right:
+                                                                          30),
+                                                              child: Text(
+                                                                "By continuing, you agree to Nokanda's Terms of use and Privacy Policy",
+                                                                style: TextStyle(
+                                                                    fontSize:
+                                                                        12,
+                                                                    color: Colors
+                                                                        .grey),
+                                                              ),
+                                                            )
+                                                          : Container()
                                                     ],
                                                   )),
                                             ],
                                           ),
                                         ),
-                  SizedBox(
-                    height: isSignUp ? MediaQuery.of(context).size.height * 0.02 : MediaQuery.of(context).size.height * 0.08,
-                  ),
+                                        SizedBox(
+                                          height: isSignUp
+                                              ? MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.02
+                                              : MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.08,
+                                        ),
                                         Align(
                                           alignment: Alignment.bottomCenter,
                                           child: packageInfo != null
@@ -777,8 +798,8 @@ class _SigninState extends State<Signin> {
 
       hasInternetConnection().then((b) {
         if (!b) {
-          showFlushBar(
-              "Sorry!", "You need an internet connection to verify your number.");
+          showFlushBar("Sorry!",
+              "You need an internet connection to verify your number.");
           setState(() {
             isBtnClicked = false;
           });
@@ -811,7 +832,8 @@ class _SigninState extends State<Signin> {
 //      return showFlushBar("Hey Awesome!", "You need to add year of birth");
 //    }
     else {
-      showFlushBar("Hello!", "Please provide a real phone number to verify your account");
+      showFlushBar("Hello!",
+          "Please provide a real phone number to verify your account");
     }
   }
 
@@ -910,7 +932,8 @@ class _SigninState extends State<Signin> {
       String mess = "Error, try again later";
       if (exception.message.toString().contains("incorrect")) {
         setState(() {
-          mess = "The phone number provided is incorrect, please re-enter a correct one";
+          mess =
+              "The phone number provided is incorrect, please re-enter a correct one";
         });
       }
 
