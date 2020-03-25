@@ -74,13 +74,6 @@ Future<Null> sendAnalytics(analytics, eventName, parameters) async{
 }
 
 
-//Add thousand separator to figures
-String addFigureSeparator(String value){
-
-  return value;
-
-}
-
 addToShortcut(Map<String, dynamic> service) async{
   KDB db = KDB();
   print(service);
@@ -450,4 +443,34 @@ String getTextFromPageData(Map pageData, String str, String locale){
   }
 
   return "";
+}
+
+String addThousandDelimeter(String value){
+
+  // 1000
+  // 10000
+ // 100000
+ // 1000000
+  String tmp = "";
+  bool canAddComma = true;
+  int threesCount = 0;
+
+  if(value.length > 3){
+    for(int i=value.length-1; i >=0; i--){
+      threesCount += 1;
+      tmp = value[i] + tmp;
+      if(threesCount == 3 && canAddComma){
+
+        // Add the comma
+        tmp = ","+tmp;
+        threesCount = 0;
+        if(i < 4){
+          canAddComma = false;
+        }
+      }
+    }
+    return tmp;
+  }
+  return value;
+  
 }

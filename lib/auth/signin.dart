@@ -152,7 +152,7 @@ class _SigninState extends State<Signin> {
                       ),
                     ),
                     Positioned(
-                        top: isSignUp ? 10 : 150,
+                        top: 10,
                         child: Padding(
                             padding: const EdgeInsets.symmetric(
                                 vertical: 20.0, horizontal: 0),

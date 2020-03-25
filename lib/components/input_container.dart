@@ -238,7 +238,8 @@ class _InputContainerState extends State<InputActionContainer>
                 ),
                 child: Text(
                   _recipientContactName.isNotEmpty
-                      ? "${getTextFromPageData(pageData, 'sending', locale)} ${_amountController.text} ${getTextFromPageData(pageData, 'to', locale)} $_recipientContactName"
+                      ? "${getTextFromPageData(pageData, 'sending', locale)} ${addThousandDelimeter(_amountController.text)} ${getTextFromPageData(pageData, 'to', locale)} $_recipientContactName"
+                      : _amountController.text.isNotEmpty && _recipientController.text.isNotEmpty ? "${getTextFromPageData(pageData, 'sending', locale)} ${addThousandDelimeter(_amountController.text)} ${getTextFromPageData(pageData, 'to', locale)} ${_recipientController.text}"
                       : "",
                   style: TextStyle(fontSize: 14),
                 ))
