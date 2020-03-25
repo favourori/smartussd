@@ -11,9 +11,9 @@ pipelines:
         name: "Run test"
         script:
           - flutter test
-  branches:
-    development:
-      - step:
-          name: "Run build for Android Bundle"
-          script:
-            - flutter build appbundle --target-platform android-arm,android-arm64,android-x64
+#  branches:
+#    development:
+#      - step:
+#          name: "Run build for Android Bundle"
+#          script:
+#            - flutter build appbundle --target-platform android-arm,android-arm64,android-x64
