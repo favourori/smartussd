@@ -18,8 +18,8 @@ pipelines:
           script:
             - flutter build apk --debug
             
-      - step:
-          name: "Run build for IoS"
-          script:
-            - flutter build ios
+#      - step:
+#          name: "Run build for IoS"
+#          script:
+#            - flutter build ios
       
