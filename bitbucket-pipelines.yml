@@ -12,7 +12,7 @@ pipelines:
         script:
           - flutter test
   branches:
-    master:
+    development:
       - step:
           name: "Run build for Android Bundle"
           script:
