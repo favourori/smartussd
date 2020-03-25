@@ -1,0 +1,6 @@
+Nokanda app makes it easy to interact with Telco services and mobile money services through our secure app.
+
+Please note to use this app you must have a sim card installed from one of our supported networks. See bellow for the list of currently supported networks.
+
+MTN Rwanda
+Airtel Rwanda

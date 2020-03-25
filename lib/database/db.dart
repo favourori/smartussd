@@ -103,10 +103,12 @@ class KDB{
     Firestore.instance.collection(collection)
     .add(data)
     .then((d){
+      print("saved");
       return 1;
     })
     .catchError((err){
-      print(err.message);
+      print("error");
+      print(err);
       return -1;
     });
     return 1;

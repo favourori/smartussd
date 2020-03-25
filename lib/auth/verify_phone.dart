@@ -3,10 +3,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:kene/control.dart';
-import 'package:kene/pages/homepage.dart';
-import 'package:kene/utils/functions.dart';
-import 'package:kene/widgets/custom_nav.dart';
+import 'package:kene/utils/stylesguide.dart';
+//import 'package:kene/control.dart';
+//import 'package:kene/pages/homepage.dart';
+//import 'package:kene/utils/functions.dart';
+//import 'package:kene/widgets/custom_nav.dart';
 
 class PhoneVerify extends StatefulWidget {
   final analytics;
@@ -22,7 +23,9 @@ class PhoneVerify extends StatefulWidget {
 
 class _PhoneVerifyState extends State<PhoneVerify>
     with SingleTickerProviderStateMixin {
-  GlobalKey<FormState> _formkey = GlobalKey();
+  GlobalKey<FormState> _formKey = GlobalKey();
+  FocusNode focusNode;
+
   final FirebaseAuth _auth = FirebaseAuth.instance;
   String code;
   bool isBtnClicked = false;
@@ -82,6 +85,7 @@ class _PhoneVerifyState extends State<PhoneVerify>
 
   @override
   void initState() {
+    focusNode = FocusNode(debugLabel: "verifyInput");
     super.initState();
     durationCount();
   }
@@ -111,8 +115,20 @@ class _PhoneVerifyState extends State<PhoneVerify>
                   ],
                 ),
               )
-            : Form(
-                key: _formkey,
+            :
+
+            GestureDetector(
+              onTap: (){
+                if(FocusScope.of(context) != null && FocusScope.of(context).focusedChild != null && FocusScope.of(context).focusedChild.debugLabel == "verifyInput"){
+                  FocusScope.of(context).unfocus();
+                }
+                else{
+                  print("nothing to unfocus");
+                }
+
+              },
+              child: Form(
+                key: _formKey,
                 child: Padding(
                     padding: EdgeInsets.symmetric(horizontal: 20),
                     child: ListView(
@@ -130,7 +146,9 @@ class _PhoneVerifyState extends State<PhoneVerify>
                           height: MediaQuery.of(context).size.height * 0.18,
                         ),
                         TextFormField(
+                          focusNode: focusNode,
                           onChanged: (v) {
+                            FocusScope.of(context).requestFocus(focusNode);
                             this.code = v;
                           },
                           keyboardAppearance: Brightness.dark,
@@ -158,15 +176,6 @@ class _PhoneVerifyState extends State<PhoneVerify>
 
                               signInPhone(code);
 
-//                       FirebaseAuth.instance.currentUser().then((user) {
-//                    if (user != null) {
-//                      print("thanks for verifying your phone, welcome");
-//                      Navigator.push(context, CustomPageRoute(navigateTo: Control()));
-//                    } else {
-//                      // Navigator.pop(context);
-//                      widget.signInPhone(code);
-//                    }
-//                  });
                             } else {
                               print("enter number");
                               showFlushBar("Error", "Enter Pin");
@@ -174,29 +183,31 @@ class _PhoneVerifyState extends State<PhoneVerify>
                           },
                           child: Container(
                             decoration: BoxDecoration(
-                                color: Colors.orangeAccent,
-                                borderRadius: BorderRadius.circular(40)),
+                                color: accentColor,
+                                borderRadius: BorderRadius.circular(serviceItemBorderRadius)),
                             width: MediaQuery.of(context).size.width,
                             height: 50,
                             child: Center(
                                 child: !isBtnClicked ?  Text(
-                              "Verify",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ):
-                            
-                            CupertinoActivityIndicator(
-                                // animating: true,
-                                radius: 15,
+                                  "Verify",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ):
+
+                                CupertinoActivityIndicator(
+                                  // animating: true,
+                                  radius: 15,
                                   // backgroundColor: Colors.white,
                                 )),
                           ),
                         )
                       ],
                     )),
-              ));
+              ),
+            )
+    );
   }
 
   showFlushBar(String title, String message) {

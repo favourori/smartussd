@@ -1,10 +1,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:kene/auth/signin.dart';
+import 'package:kene/pages/NeedsPermissison.dart';
 import 'package:kene/pages/cariers.dart';
 import 'package:kene/pages/welcome.dart';
+import 'package:kene/utils/functions.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:permission_handler/permission_handler.dart';
+
+
 
 class Control extends StatefulWidget {
   final analytics;
@@ -17,13 +21,13 @@ class Control extends StatefulWidget {
 }
 
 class _ControlState extends State<Control> {
-  bool isLogedIn = false;
+  bool isLoggedIn = false;
 
+  var pageToGo;
 
   SharedPreferences prefs;
-
-  
   @override
+
   void initState() {
     super.initState();
 
@@ -31,8 +35,11 @@ class _ControlState extends State<Control> {
     FirebaseAuth.instance.currentUser().then((user) {
       if (user != null) {
         setState(() {
-          isLogedIn = true;
+          isLoggedIn = true;
         });
+
+
+        getLocale(context); // Set the locale
 
          SharedPreferences.getInstance().then((f){
       f.setBool("isFirstLogin", false);
@@ -52,12 +59,38 @@ class _ControlState extends State<Control> {
     });
       }
     });
+
+
+
+    SharedPreferences.getInstance().then((prefs) async{
+
+      setState(() {
+        pageToGo =  Carriers(analytics: widget.analytics,);
+      });
+
+      var res = await checkPermission();
+      if(res == PermissionStatus.neverAskAgain){
+        setState(() {
+          pageToGo =  NeedsPermission(analytics: widget.analytics,);
+        });
+        print("is going to neverask again");
+        return 0;
+      }
+      else{
+        setState(() {
+          pageToGo =  Carriers(analytics: widget.analytics,);
+        });
+        return 0;
+      }
+
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return prefs != null && prefs.getBool("isFirstLogin")  ? Welcome()  : isLogedIn ? Carriers(analytics: widget.analytics,) : Signin();
+    return prefs != null && prefs.getBool("isFirstLogin")  ? Welcome()  : isLoggedIn ? pageToGo : Signin();
   }
 }
+
 
 

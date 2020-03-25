@@ -36,6 +36,7 @@ public class MainActivity extends FlutterActivity {
 
                       startService(new Intent(MainActivity.this, USSDService.class));
                       dialNumber(code);
+                      result.success(1);
 
                   }
 
@@ -56,7 +57,7 @@ public class MainActivity extends FlutterActivity {
         String codeToSend = code + Uri.encode("#");
         System.out.println(codeToSend);
 
-            askForCallPermission();
+//            askForCallPermission();
             startActivity(new Intent("android.intent.action.CALL", Uri.parse("tel:" + codeToSend)));
 
 

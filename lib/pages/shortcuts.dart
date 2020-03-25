@@ -1,0 +1,531 @@
+import 'dart:core';
+import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:kene/components/CustomFloatingButton.dart';
+import 'package:kene/components/bottom_navigation.dart';
+import 'package:kene/components/input_container.dart';
+import 'package:kene/components/loader.dart';
+import 'package:kene/database/db.dart';
+import 'package:kene/pages/receive.dart';
+import 'package:kene/pages/settings.dart';
+import 'package:kene/pages/shortcut_add.dart';
+import 'package:kene/pages/shortcut_item.dart';
+import 'package:kene/utils/functions.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:kene/utils/stylesguide.dart';
+import 'package:kene/widgets/bloc_provider.dart';
+import 'package:kene/widgets/custom_nav.dart';
+import 'package:auto_size_text/auto_size_text.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:qr_flutter/qr_flutter.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
+
+class NShortcuts extends StatefulWidget {
+  final userID;
+  final primaryColor;
+  final carrierTitle;
+  final analytics;
+
+  NShortcuts(
+      {this.userID, this.primaryColor, this.carrierTitle, this.analytics});
+  @override
+  State<StatefulWidget> createState() {
+    return _NShortcutsState();
+  }
+}
+
+class _NShortcutsState extends State<NShortcuts> with TickerProviderStateMixin {
+  static const platform = const MethodChannel('com.kene.momouusd');
+
+  // Scroll NestedScrollView when listView is scrolled
+  scrollListener() {
+    var innerScrollPos = _listViewController.offset;
+//    _scrollController.animateTo(innerScrollPos/2, duration: Duration(microseconds: 10), curve: Curves.linear);
+    _scrollController.jumpTo(innerScrollPos / 2);
+  }
+
+  ScrollController _listViewController = new ScrollController();
+
+  TextEditingController _amountController = TextEditingController();
+  TextEditingController _recipientController = TextEditingController();
+
+  bool showSubmit = false;
+
+  String uid = "";
+
+  var _qrScan;
+
+  ///default values that are changed when option clicked
+
+  List navigationStack = [];
+  String collectionURL = "";
+  List headTitleStack = [];
+  String codeToSend = "";
+  bool needsContact = false;
+  bool needsRecipient = false;
+  String recipientLabel = "";
+  int optionID = 0;
+  bool showActionSection = false;
+  String serviceLabel = "";
+  bool canSaveLabels;
+  bool needsAmount;
+  bool requiresCamera;
+  bool isCardPinNext = false;
+  bool cameraBtnClicked = false;
+  bool hasChildren = false;
+  String serviceDescription;
+  String pinFound = "";
+  String childrenValue = "Select";
+  String parentID = "";
+  List<dynamic> savedAccounts = [];
+
+  // Data to hold the pages string from fireBase for translations
+  var pageData = {};
+  String locale = "en";
+
+//  var _labelFormKey = GlobalKey<FormState>();
+//  TextEditingController _labelController = TextEditingController();
+  KDB db = KDB();
+
+  // Add listener on recipient Input to aid submit button display
+  // Initialize headerTitle stack to the service title
+  // Set the authenticated user id for accounts checking
+  // Set initial collection Url to the service title
+
+  ScrollController _scrollController;
+
+  listener() {
+    if (_scrollController.offset >= 45) {
+      _scrollController.jumpTo(45);
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    var appBloc;
+
+    appBloc = BlocProvider.of(context);
+
+    appBloc.localeOut.listen((data) {
+      setState(() {
+        locale = data != null ? data : locale;
+      });
+    });
+
+    getPageData("shortcuts").then((data) {
+      setState(() {
+        pageData = data;
+      });
+    });
+
+    FirebaseAuth.instance.currentUser().then((f){ // Set the logged in phone number as qrCode data
+      if(f != null){
+        setState(() {
+          _qrScan = QrImage(
+            data: f.phoneNumber.toString(),
+            version: QrVersions.auto,
+            size: 200.0,
+          );
+        });
+      }
+    });
+
+
+    _scrollController = ScrollController(initialScrollOffset: 0.0);
+    _scrollController.addListener(listener);
+
+    print("analytics is==========>>>>");
+    print(widget.analytics);
+
+    // Send analytics on page load/initialize
+    sendAnalytics(widget.analytics, "ServicesPage_Open", null);
+
+    var tmpHeader = [widget.carrierTitle];
+    setState(() {
+      headTitleStack = tmpHeader;
+    });
+    _listViewController.addListener(scrollListener);
+    FirebaseAuth.instance.currentUser().then((u) {
+      if (u != null) {
+        setState(() {
+          uid = u.uid;
+        });
+      }
+    });
+
+    String initialCollection = "shortcuts/${widget.userID}/shortcuts";
+    navigationStack.add(initialCollection);
+    setState(() {
+      collectionURL = initialCollection;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        bottomNavigationBar: CustomBottomNavigation(),
+        floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
+        floatingActionButton: CustomFloatingButton(
+          pageData: {},
+          analytics: widget.analytics,
+          locale: "en",
+          isCurrentPage: true,
+        ),
+        body: GestureDetector(
+            onTap: () {
+              FocusScope.of(context).unfocus();
+            },
+            child: NestedScrollView(
+              controller: _scrollController,
+              headerSliverBuilder: (context, bool isScrolled) {
+                return <Widget>[
+                  SliverAppBar(
+                    expandedHeight: MediaQuery.of(context).size.height * 0.175,
+                    elevation: 14,
+                    pinned: true,
+                    floating: true,
+                    centerTitle: true,
+                    forceElevated: isScrolled,
+                    actions: <Widget>[
+                      IconButton(
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              CustomPageRoute(
+                                  navigateTo: Settings(
+                                analytics: widget.analytics,
+                              )));
+                        },
+                        icon: Icon(
+                          Icons.more_vert,
+                          color: Colors.white,
+                          size: 30,
+                        ),
+                      ),
+                    ],
+                    title: AutoSizeText(
+                      "Nokanda",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 24,
+                        fontWeight: FontWeight.w900,
+                      ),
+                      maxLines: 2,
+                    ),
+                    backgroundColor: widget.primaryColor,
+                    leading: navigationStack.length > 1 || showActionSection
+                        ? IconButton(
+                            onPressed: () {
+                              if (!showActionSection) {
+                                navigationStack.removeLast();
+
+                                setState(() {
+                                  collectionURL = navigationStack[
+                                      navigationStack.length - 1];
+                                });
+                              }
+                              headTitleStack.removeLast();
+                              var ht2 = headTitleStack;
+                              setState(() {
+                                serviceDescription = "";
+                                headTitleStack = ht2;
+                                showActionSection = false;
+                                _amountController.text = "";
+                                _recipientController.text = "";
+                                cameraBtnClicked = false;
+                              });
+                            },
+                            icon: Icon(
+                              Icons.arrow_back,
+                              color: Colors.white,
+                              size: 30,
+                            ),
+                          )
+                        : IconButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            icon: Icon(
+                              Icons.arrow_back,
+                              color: Colors.white,
+                              size: 30,
+                            ),
+                          ),
+                    flexibleSpace: Container(
+                      decoration: BoxDecoration(
+                          color: widget.primaryColor,
+                          borderRadius: BorderRadius.only(
+                              bottomLeft: Radius.circular(40),
+                              bottomRight: Radius.circular(40))),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: <Widget>[
+                          Align(
+                            alignment: Alignment.center,
+                            child: Text(
+                              "${headTitleStack[headTitleStack.length - 1]}",
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 14),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  )
+                ];
+              },
+              body: Container(
+                height: MediaQuery.of(context).size.height,
+                child: Stack(
+                  children: <Widget>[
+                    Container(
+                      width: double.infinity,
+                      height: MediaQuery.of(context).size.height * 0.175,
+                      decoration: BoxDecoration(
+                          color: widget.primaryColor,
+                          borderRadius: BorderRadius.only(
+                              bottomLeft: Radius.circular(40),
+                              bottomRight: Radius.circular(40))),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[],
+                      ),
+                    ),
+                    Positioned(
+                      top: 0,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 20.0, horizontal: 0),
+                        child: Container(
+                          width: MediaQuery.of(context).size.width,
+                          // MediaQuery.of(context).size.width - 40,
+                          height: MediaQuery.of(context).size.height * 0.75,
+                          decoration: BoxDecoration(
+                              color: Color(0xfff6f7f9),
+                              borderRadius: BorderRadius.circular(40)),
+                          child: Padding(
+                            padding: const EdgeInsets.all(20.0),
+                            child: ListView(
+                              controller: _listViewController,
+                              children: <Widget>[
+                                !showActionSection
+                                    ? fetchServices()
+                                    : InputActionContainer(
+                                        primaryColor: widget.primaryColor,
+                                        analytics: widget.analytics,
+                                        carrierTitle: widget.carrierTitle),
+//                        actionContainer(),
+                                SizedBox(
+                                  height: 100,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            )));
+  }
+
+  /// Receives collection url and fetches children
+  Column fetchServices() {
+    return Column(
+      children: <Widget>[
+        GestureDetector(
+          onTap: (){
+          Navigator.push(context, CustomPageRoute(
+              navigateTo: ReceivePage(qrImage: _qrScan, analytics: widget.analytics,
+                title: getTextFromPageData(pageData, "qrcode_receive_title", locale,),
+                text: getTextFromPageData(pageData, "qrcode_receive_text", locale)
+                ,)
+
+          ));
+          },
+          child: Container(
+            margin: EdgeInsets.only(bottom: 10),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              boxShadow: [
+                buttonBoxShadow
+              ],
+              borderRadius: BorderRadius.circular(serviceItemBorderRadius),
+            ),
+            height: 50,
+            width: double.infinity,
+            child: Row(
+              children: <Widget>[
+                Expanded(flex: 2, child: Icon(FontAwesomeIcons.qrcode),),
+                Expanded(flex: 8, child: Text(getTextFromPageData(pageData, "show_qrcode", locale)),)
+              ],
+            ),
+
+          ),
+        ),
+        StreamBuilder(
+          stream: Firestore.instance.collection("$collectionURL").snapshots(),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return Center(child: NLoader());
+            }
+
+            if (snapshot.data.documents.length < 1) {
+              return Center(
+                  child: Column(
+                children: <Widget>[
+                  SizedBox(
+                    height: 50,
+                  ),
+                  Text(
+                    getTextFromPageData(pageData, "no_shortcuts_text", locale),
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(
+                    height: 30,
+                  ),
+                  RaisedButton(
+                    color: accentColor,
+                    onPressed: () {
+                      Navigator.pushReplacement(
+                          context,
+                          CustomPageRoute(
+                              navigateTo: ShortcutAdd(
+                            userID: widget.userID,
+                            analytics: widget.analytics,
+                          )));
+                    },
+                    child: Text(
+                      getTextFromPageData(pageData, "add_shortcut", locale),
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  )
+                ],
+              ));
+            }
+            return Column(
+                children: displayServices(
+                    snapshot.data.documents) //display the services fetched
+                );
+          },
+        ),
+      ],
+    );
+  }
+
+  int getServiceOrderNo(x) {
+    return x['orderNo'];
+  }
+
+// Function called from serviceItem class
+// Receives motive from child and performs actions accordingly
+  serviceActions(String url, int motive, Map<String, dynamic> data) {
+    if (motive == 0) {
+      // If service has children, this condition is met
+      if (url.isNotEmpty) {
+        var tmp = navigationStack;
+        tmp.add(collectionURL + url);
+        setState(() {
+          collectionURL = collectionURL + url;
+          navigationStack = tmp;
+        });
+      }
+    }
+
+    // If service has no input and no children, condition is met
+    else if (motive == 1) {
+      sendCode(platform, data['code'], _amountController.text,
+          _recipientController.text, context);
+    }
+
+    // If leaf service [has input and no children], condition is met
+    else {
+      setState(() {
+        showActionSection = true;
+      });
+      _listViewController.animateTo(0,
+          duration: Duration(milliseconds: 10), curve: Curves.easeIn);
+    }
+
+    sendAnalytics(
+        widget.analytics, widget.carrierTitle + "_" + data['label'], null);
+
+    // Check for name and update the headerText
+    var hT = headTitleStack;
+    if (data['name'] != null) {
+      hT.add(data['name']);
+
+      setState(() {
+        headTitleStack = hT;
+      });
+    }
+  }
+
+  // Receive list data and create a service item out the data and returns list of service data
+  displayServices(lists) {
+    List<Widget> tmp = [];
+    for (var list in lists) {
+      if (list['label'] == "LoadAirtime" && Platform.isIOS) {
+//        continue;
+        tmp.add(
+          ShortcutItem(
+            backgroundColor: Colors.white,
+            icon: list['icon'],
+            name: list['name'],
+            nameMap: list['name_map'],
+            label: list['label'],
+            needsContact: list['needsContact'],
+            needsRecipient: list['needsRecipient'],
+            requiresInput: list['requiresInput'],
+            codeToSend: list['code'],
+            recipientLabel: list['recipientLabel'],
+            canSaveLabels: list['canSaveLabels'],
+            needsAmount: list['needsAmount'],
+            requiresCamera: list['requiresCamera'],
+            serviceDescription: list['serviceDescription'],
+            hasChildren: list['hasChildren'],
+            parentID: list.documentID,
+            serviceActions: serviceActions,
+            primaryColor: widget.primaryColor,
+            needsScan: list["needsScan"],
+            carrierID: list['carrier'],
+          ),
+        );
+      } else {
+        tmp.add(
+          ShortcutItem(
+            backgroundColor: Colors.white,
+            icon: list['icon'],
+            name: list['name'],
+            nameMap: list['name_map'],
+            label: list['label'],
+            needsContact: list['needsContact'],
+            needsRecipient: list['needsRecipient'],
+            requiresInput: list['requiresInput'],
+            codeToSend: list['code'],
+            recipientLabel: list['recipientLabel'],
+            canSaveLabels: list['canSaveLabels'],
+            needsAmount: list['needsAmount'],
+            requiresCamera: list['requiresCamera'],
+            serviceDescription: list['serviceDescription'],
+            hasChildren: list['hasChildren'],
+            parentID: list.documentID,
+            serviceActions: serviceActions,
+            primaryColor: widget.primaryColor,
+            needsScan: list["needsScan"],
+            carrierID: list['carrier'],
+          ),
+        );
+      }
+    }
+
+    return tmp;
+  }
+}
