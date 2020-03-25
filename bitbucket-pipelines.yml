@@ -16,7 +16,7 @@ pipelines:
       - step:
           name: "Run build for Android"
           script:
-            - flutter build apk
+            - flutter build apk --debug
             
       - step:
           name: "Run build for IoS"
