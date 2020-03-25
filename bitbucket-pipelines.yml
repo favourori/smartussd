@@ -14,13 +14,6 @@ pipelines:
   branches:
     development:
       - step:
-          name: "Run code coverage"
-          image: atlassian/default-image:2
-          script: 
-            - apt-get update
-            - apt-get install lcov
-            - genhtml -o coverage coverage/lcov.info
-      - step:
           name: "Run build for Android"
           script:
             - flutter build apk --debug
