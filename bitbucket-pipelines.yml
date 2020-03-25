@@ -1,0 +1,19 @@
+# This is a sample build configuration for Other.
+# Check our guides at https://confluence.atlassian.com/x/5Q4SMw for more examples.
+# Only use spaces to indent your .yml configuration.
+# -----
+# You can specify a custom docker image from Docker Hub as your build environment.
+image: cirrusci/flutter:latest
+
+pipelines:
+  default:
+    - step:
+        name: "Run test"
+        script:
+          - flutter test
+  branches:
+    master:
+      - step:
+          name: "Run build for Android Bundle"
+          script:
+            - flutter build appbundle --target-platform android-arm,android-arm64,android-x64
