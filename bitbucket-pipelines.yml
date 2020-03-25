@@ -17,7 +17,7 @@ pipelines:
           name: "Run code coverage"
           image: atlassian/default-image:2
           script: 
-            - sudo apt-get install -y lcov
+            - apt-get install -y lcov
             - genhtml -o coverage coverage/lcov.info
       - step:
           name: "Run build for Android"
