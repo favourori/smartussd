@@ -47,6 +47,20 @@
 	<string>Needs to access camera to aid with image to text recognition</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Needs to access photo library to aid with image to text recognition</string>
+	<key>NSContactsUsageDescription</key>
+	<string>Needs to access to contacts to aid with easy number selection for users, to avoid typing out the numbers</string>
+	<key>NSCalendarsUsageDescription</key>
+	<string>Needs to access to calendar to aid user&apos;s experience</string>
+	<key>kTCCServiceMediaLibrary</key>
+	<string>Needs to access to music usage to aid user&apos;s experience</string>
+	<key>NSMotionUsageDescription</key>
+	<string>Needs to access to motion to aid user&apos;s experience</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>Needs to access to speech recognition to aid user&apos;s experience</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Needs to access to locaiotn to aid user&apos;s experience</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Needs to access to location to aid user&apos;s experience</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>

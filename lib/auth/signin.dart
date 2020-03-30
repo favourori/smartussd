@@ -219,6 +219,7 @@ class _SigninState extends State<Signin> {
                                                 child: Row(
                                                   children: <Widget>[
                                                     Expanded(
+                                                      key: Key("countrySelectorKey"),
                                                       child: Container(
                                                           padding:
                                                               EdgeInsets.only(
@@ -251,6 +252,7 @@ class _SigninState extends State<Signin> {
 //                                                                    true,
 //                                                                child:
                                                                   DropdownButton(
+                                                                    
                                                                       underline:
                                                                           Container(),
                                                                       icon: Icon(
@@ -293,6 +295,7 @@ class _SigninState extends State<Signin> {
                                                                     .withOpacity(
                                                                         0.5))),
                                                         child: TextFormField(
+                                                          key: Key("phoneNumberTextInput"),
                                                           focusNode: fNode,
                                                           onChanged: (v) {
                                                             FocusScope.of(
@@ -389,6 +392,7 @@ class _SigninState extends State<Signin> {
                                                                       left:
                                                                           20.0),
                                                               child: Row(
+                                                                key: Key("genderWidgetKey"),
                                                                 children: <
                                                                     Widget>[
                                                                   GestureDetector(
@@ -586,6 +590,7 @@ class _SigninState extends State<Signin> {
                                                 height: 30,
                                               ),
                                               GestureDetector(
+                                                key: Key("LoginSignupKey"),
                                                 onTap: () {
                                                   validate();
                                                 },
@@ -606,6 +611,7 @@ class _SigninState extends State<Signin> {
                                                   child: Center(
                                                       child: !isBtnClicked
                                                           ? Text(
+                                                              
                                                               !isSignUp
                                                                   ? "Log in"
                                                                   : "Sign up",
@@ -618,7 +624,7 @@ class _SigninState extends State<Signin> {
                                                               ),
                                                             )
                                                           : CupertinoActivityIndicator(
-                                                              // animating: true,
+                                                            key: Key("loginButtonClickedLoader"),
                                                               radius: 15,
                                                               // backgroundColor: Colors.white,
                                                             )),
@@ -1068,7 +1074,8 @@ class _SigninState extends State<Signin> {
   }
 
   showFlushBar(String title, String message) {
-    Flushbar(
+    return Flushbar(
+      key: Key("flushBarKey"),
       title: title,
       message: message,
       duration: Duration(seconds: 8),

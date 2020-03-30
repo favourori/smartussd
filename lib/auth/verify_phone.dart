@@ -146,6 +146,7 @@ class _PhoneVerifyState extends State<PhoneVerify>
                           height: MediaQuery.of(context).size.height * 0.18,
                         ),
                         TextFormField(
+                          key: Key("pinTextInput"),
                           focusNode: focusNode,
                           onChanged: (v) {
                             FocusScope.of(context).requestFocus(focusNode);
@@ -167,6 +168,7 @@ class _PhoneVerifyState extends State<PhoneVerify>
                           height: 40,
                         ),
                         GestureDetector(
+                          key: Key("verifyPinButton"),
                           onTap: () {
                             if (code != "") {
                               print("$code");
@@ -212,6 +214,7 @@ class _PhoneVerifyState extends State<PhoneVerify>
 
   showFlushBar(String title, String message) {
     Flushbar(
+      key: Key("verifyFlushBar"),
       title: title,
       message: message,
       duration: Duration(seconds: 8),

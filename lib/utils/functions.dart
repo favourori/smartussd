@@ -139,7 +139,7 @@ bool isNumeric(String str) {
 Future sendCode(platform, code, aText, rText, context) async{
   int motive = 1;
 
-  String codeToSend = _computeCodeToSend(code, aText, rText);
+  String codeToSend = computeCodeToSend(code, aText, rText);
   if(Platform.isIOS){
 
 
@@ -207,7 +207,7 @@ Future sendCode(platform, code, aText, rText, context) async{
 
 
 // Decode and add appropriate numbers to the code to eventually send as phone call
-String _computeCodeToSend(String rawCode, aText, rText){
+String computeCodeToSend(String rawCode, aText, rText){
   String tmp = "";
   for(int x=0; x < rawCode.length; x++){
       if(rawCode[x] == "N"){
@@ -474,3 +474,11 @@ String addThousandDelimeter(String value){
   return value;
   
 }
+
+// setLastVersionNumber(){
+//   String version = "";
+//   SharedPreferences.getInstance().then((p){
+//     p.setString("version", version);
+//   });
+// }
+
