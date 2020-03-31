@@ -30,7 +30,7 @@ class _ControlState extends State<Control> {
 
   void initState() {
     super.initState();
-
+    updatePerOpenUsageCount();
    
     FirebaseAuth.instance.currentUser().then((user) {
       if (user != null) {

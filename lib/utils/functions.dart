@@ -65,12 +65,16 @@ Future<Null> sendAnalytics(analytics, eventName, parameters) async{
     }
   }
 
-  await analytics.logEvent(
+  try {
+    await analytics.logEvent(
     name:"$eventNameToSend",
     parameters: parameters,
   ).then((f) =>
       print("event logged")
   );
+  } catch (e) {
+
+  }
 }
 
 
@@ -488,4 +492,53 @@ String addThousandDelimeter(String value){
 //     p.setString("version", version);
 //   });
 // }
+
+  updateUsageCount() async{
+    print("update usage count called, and user id is ========>");
+
+    var userID = await getUserID();
+    print(userID);
+    var res = await Firestore.instance.collection("users").where("user_id", isEqualTo: userID).getDocuments();
+    var docs = res.documents;
+
+    print(docs);
+    if(docs.length > 0){
+      for (var user in docs){
+        
+        var userDocID = user.documentID;
+        var currentUsage = user['usage_count'] != null ? user['usage_count'] : 0;
+        Firestore.instance.collection("users").document(userDocID).updateData({
+          'usage_count': currentUsage + 1,
+          'last_seen': DateTime.now(),
+        });
+        
+      }
+
+    }
+  }
+
+  updatePerOpenUsageCount() async{
+    print("update usage count called, and user id is ========>");
+
+    var userID = await getUserID();
+    print(userID);
+    var res = await Firestore.instance.collection("users").where("user_id", isEqualTo: userID).getDocuments();
+    var docs = res.documents;
+
+    print(docs);
+    if(docs.length > 0){
+      for (var user in docs){
+        
+        var userDocID = user.documentID;
+        var currentUsage = user['per_open_usage_count'] != null ? user['per_open_usage_count'] : 0;
+        Firestore.instance.collection("users").document(userDocID).updateData({
+          'per_open_usage_count': currentUsage + 1,
+          'last_seen': DateTime.now(),
+        });
+        
+      }
+
+    }
+
+  }
 
