@@ -304,8 +304,15 @@ Future<void> share() async {
 
 
 // Record the transactions made to database
-void addTransactions(String label, int amount){
-  Firestore.instance.collection("transactions").add({"service": label, "amount":amount, "created_at": DateTime.now()});
+void addTransactions(String label, int amount) async{
+  var uuid = await getUserID();
+  Firestore.instance.collection("transactions")
+  .add(
+    {
+      "service": label, 
+      "amount":amount, 
+      "uuid": uuid,
+      "created_at": DateTime.now()});
 
 }
 

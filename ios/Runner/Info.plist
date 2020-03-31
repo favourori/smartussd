@@ -51,6 +51,8 @@
 	<string>Needs to access to contacts to aid with easy number selection for users, to avoid typing out the numbers</string>
 	<key>NSCalendarsUsageDescription</key>
 	<string>Needs to access to calendar to aid user&apos;s experience</string>
+	<key>NSAppleMusicUsageDescription</key>
+	<string>We use access to music responsibly</string>
 	<key>kTCCServiceMediaLibrary</key>
 	<string>Needs to access to music usage to aid user&apos;s experience</string>
 	<key>NSMotionUsageDescription</key>
